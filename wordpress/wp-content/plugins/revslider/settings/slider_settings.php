@@ -118,9 +118,11 @@
 				
 				self::storeSettings("slider_main",$sliderMainSettings);
 				
-				//set "slider_params" settings. 
-				$sliderParamsSettings = new UniteSettingsAdvancedRev();	
+				//set "slider_params" settings.
+				$sliderParamsSettings = new UniteSettingsAdvancedRev();
+				libxml_disable_entity_loader(false); // appengine disables entity loading by default
 				$sliderParamsSettings->loadXMLFile(self::$path_settings."/slider_settings.xml");
+				libxml_disable_entity_loader(true);
 				
 				//update transition type setting.
 				$settingFirstType = $sliderParamsSettings->getSettingByName("first_transition_type");
