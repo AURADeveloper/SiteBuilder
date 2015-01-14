@@ -1,5 +1,5 @@
-application: app-engine-id
-version: demo
+application: iqo-consulting-website
+version: 1
 runtime: php
 api_version: 1
 
