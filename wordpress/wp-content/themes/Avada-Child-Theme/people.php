@@ -9,7 +9,7 @@ get_header(); ?>
 			<div class="post-content">
 				<div class="fusion-fullwidth fullwidth-box aura-people">
 					<div class="avada-row">
-						<div class="fusion-one-half one_half fusion-layout-column fusion-column spacing-yes aura-people-profile">
+						<div class="fusion-one-third one_third fusion-layout-column fusion-column spacing-yes aura-people-profile">
 							<div class="fusion-column-wrapper">
 								<?php if (get_post_meta(get_the_ID(), 'person_is_root', true)): ?>
 									<?php the_content(); ?>
@@ -24,7 +24,7 @@ get_header(); ?>
 								<?php endif; ?>
 							</div>
 						</div>
-						<div class="fusion-one-half one_half fusion-layout-column fusion-column last spacing-yes aura-people-list">
+						<div class="fusion-two_thirds two_thirds fusion-layout-column fusion-column last spacing-yes aura-people-list">
 							<div class="fusion-column-wrapper">
 								<?php if (get_post_meta(get_the_ID(), 'person_is_root', true)): ?>
 									<?php $parent_id = get_the_ID(); ?>
@@ -39,7 +39,7 @@ get_header(); ?>
 									);
 									$pages = get_pages($args);
 									$num_people = count($pages);
-								    $num_people_per_row = 4;
+								    $num_people_per_row = 3;
 								    $current_person = 0;
 									switch($num_people_per_row) {
 										case 2:
