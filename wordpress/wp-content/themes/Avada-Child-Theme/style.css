@@ -1,26 +1,27 @@
 /*
-Theme Name: IQO Consulting
-Description: A customized Wordpress theme
-Author: AURA Access [www.auraaccess.com.au]
+Theme Name: Avada Child
+Description: Child theme for the Avada
+Author: Your name here
 Template: Avada
 */
-.aura-people { }
+.aura-people p { text-align: justify; }
 .aura-people-profile { }
-.aura-people-profile h1 { margin: 0; }
-.aura-people-profile h2 { margin: 0; }
-.aura-people-profile h3 { margin: 0; }
 .aura-people-profile img.aura-person-photo {
     float: left;
-    margin: 0 10px 10px 0;
-    border: 5px solid white;
-    max-width: 128px;
+    margin-right: 10px;
+    border: 3px solid #eee;
+    max-width: 160px;
     height: auto;
 }
 .aura-people-list img.aura-person-photo {
     max-width: 100%;
     height: auto;
     border: 5px solid white;
+    transition: all 0.24s;
+}
+.aura-people-list img.aura-person-photo:hover {
+    border: 5px solid #cd2027;
 }
 .aura-people-list img.aura-person-photo.active {
-    border: 5px solid #888;
+    border: 5px solid #cd2027;
 }
