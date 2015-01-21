@@ -33,7 +33,14 @@ function alignCoverDiv() {
     var documentHeight = jQuery(window).height();
     var coverHeight = documentHeight - headerHeight - footerHeight - (margin * 3);
 
-    jQuery(".iqo-cover").css('height', coverHeight + 'px');
+    var cover = jQuery(".iqo-cover");
+    var minHeight = 600;//cover.first().outerHeight();
+
+    if (coverHeight > minHeight) {
+        cover.css('height', coverHeight + 'px');
+    } else {
+        cover.css('height','auto');
+    }
 }
 
 jQuery(document).ready(
