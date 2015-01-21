@@ -26,9 +26,20 @@ function shiftLine(s) {
     return true;
 }
 
+function alignCoverDiv() {
+    var margin = 30;
+    var headerHeight = jQuery(".header-wrapper").outerHeight();
+    var footerHeight = jQuery(".footer-area").outerHeight() + jQuery("#footer").outerHeight();
+    var documentHeight = jQuery(window).height();
+    var coverHeight = documentHeight - headerHeight - footerHeight - (margin * 3);
+
+    jQuery(".iqo-cover").css('height', coverHeight + 'px');
+}
+
 jQuery(document).ready(
     function() {
         var bottomBarElement = '<div class="avada-row"><div class="bottom-bar"></div></div>';
+
         jQuery("#small-nav").append(bottomBarElement);
         if (shiftLine('.current-menu-parent') == false) {
             shiftLine('.current-menu-item');
@@ -43,5 +54,17 @@ jQuery(document).ready(
                 }
             }
         );
+
+        // if the front page is being viewed (as determined by the iqo-cover class,
+        // then attach a resize function to the iqo-cover element that dynamically
+        // adjust the height of this element.
+        if (jQuery('.iqo-cover').length) {
+            // call once on load
+            alignCoverDiv();
+
+            // add the resize handler
+            jQuery(window).resize(alignCoverDiv);
+        }
+
     }
 );
