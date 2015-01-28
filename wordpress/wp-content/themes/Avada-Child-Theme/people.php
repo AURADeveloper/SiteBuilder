@@ -14,6 +14,13 @@ get_header(); ?>
 								<?php if (get_post_meta(get_the_ID(), 'person_is_root', true)): ?>
 									<?php the_content(); ?>
 								<?php else: ?>
+									<?php $linkedin = get_post_meta(get_the_ID(), 'person_linkedin', true);
+									if ($linkedin): ?>
+									<a class="pull-right" target="_blank"
+									   href="https://www.linkedin.com/profile/view?id=<?php echo $linkedin; ?>">
+										<img src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/linkedin_badge.png" alt="LinkedIn Profile" />
+									</a>
+									<? endif; ?>
 									<h1><?php echo get_post_meta(get_the_ID(), 'person_full_name', true); ?></h1>
 									<h2><?php echo get_post_meta(get_the_ID(), 'person_title', true); ?></h2>
 									<h3><?php echo get_post_meta(get_the_ID(), 'person_qualification', true); ?></h3>
@@ -70,9 +77,12 @@ get_header(); ?>
 										<div class="<?php echo $column_css; ?> fusion-column spacing-yes">
 											<div class="fusion-column-wrapper">
 												<a href="<?php echo get_page_link($page->ID); ?>">
-													<img class="<?php echo $person_css; ?>"
-														 alt="<?php echo get_post_meta($page->ID, 'person_full_name', true); ?>"
-														 src="<?php echo get_post_meta($page->ID, 'person_photo', true); ?>" />
+													<div class="<?php echo $person_css; ?>"
+														 style="background-image: url('<?php echo get_post_meta($page->ID, 'person_photo', true); ?>');">
+														<div class="aura-photo-overlay">
+															<?php echo get_post_meta($page->ID, 'person_full_name', true); ?>
+														</div>
+													</div>
 												</a>
 											</div>
 										</div>
