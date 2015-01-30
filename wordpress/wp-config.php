@@ -24,7 +24,7 @@
     if (isset($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'],'Google App Engine') !== false) {
         /** Live environment Cloud SQL login and SITE_URL info */
         /** Note that from App Engine, the password is not required, so leave it blank here */
-        define('DB_HOST', ':/cloudsql/app-engine-id:wordpress');
+        define('DB_HOST', ':/cloudsql/aura-sites:wordpress');
         define('DB_USER', 'root');
         define('DB_PASSWORD', '');
     } else {
