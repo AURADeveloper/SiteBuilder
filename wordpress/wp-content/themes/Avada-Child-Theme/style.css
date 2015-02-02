@@ -4,3 +4,29 @@ Description: Child theme for the Avada
 Author: Your name here
 Template: Avada
 */
+.aura-people-list { }
+
+.aura-people-snaps { }
+.aura-people-snaps .aura-person { }
+.aura-people-snaps .aura-person h1 { }
+.aura-people-snaps .aura-person h2 { }
+.aura-people-snaps .aura-person .aura-person-group {
+    display: flex;
+}
+.aura-people-snaps .aura-person .aura-person-group .aura-person-photo {
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    min-width: 100px;
+    height: 120px;
+    margin-right: 5px;
+}
+.aura-people-snaps .aura-person .aura-person-group .aura-person-links { width: 100%; }
+.aura-people-snaps .aura-person .aura-person-group a {
+    width: 100%;
+    background-color: #dddddd;
+    padding: 10px;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+.aura-people-snaps .aura-person .aura-person-blurb { }
