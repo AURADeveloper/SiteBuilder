@@ -50,7 +50,7 @@ if( ! class_exists( 'Fusion_Core_PageBuilder' ) ) {
 		 */
 		protected $plugin_slug = 'fusion-core_page-builder';
 
-		var $allowed_post_types = array('page','post','avada_faq','avada_portfolio');
+		var $allowed_post_types = array('page','post','avada_faq','avada_portfolio', 'person');
 
 		/**
 		 * Initialize the plugin by loading admin scripts & styles and adding a
