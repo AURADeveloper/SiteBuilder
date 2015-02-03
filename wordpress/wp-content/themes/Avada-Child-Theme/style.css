@@ -12,13 +12,11 @@ Template: Avada
 .aura-people-snaps .aura-person h2 { }
 .aura-people-snaps .aura-person .aura-person-group {
     display: flex;
+    align-items: flex-start;
 }
 .aura-people-snaps .aura-person .aura-person-group .aura-person-photo {
-    background-position: center center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    min-width: 100px;
-    height: 120px;
+    width: 100%;
+    height: auto;
     margin-right: 5px;
 }
 .aura-people-snaps .aura-person .aura-person-group .aura-person-links { width: 100%; }
@@ -30,3 +28,4 @@ Template: Avada
     margin-bottom: 5px;
 }
 .aura-people-snaps .aura-person .aura-person-blurb { }
+

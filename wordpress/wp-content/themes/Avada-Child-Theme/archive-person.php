@@ -53,10 +53,10 @@
             }
             ?>
             <div class="<?php echo $css; ?>">
-                <h1><?php the_field('persons_name'); ?></h1>
-                <h2><?php the_field('persons_job_role_title'); ?></h2>
+                <h1><?php the_field( 'persons_name' ); ?></h1>
+                <h2><?php the_field( 'persons_job_role_title' ); ?></h2>
                 <div class="aura-person-group">
-                    <img class="aura-person-photo" style="background-image: url('<?php the_post_thumbnail(); ?>');" />
+                    <?php the_post_thumbnail( 'thumbnail', array( 'class' => 'aura-person-photo' ) ); ?>
                     <div class="aura-person-links">
                         <a>Email</a>
                         <a href="<?php the_permalink(); ?>">More</a>

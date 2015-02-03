@@ -21,9 +21,11 @@
 	<?php if(!is_page_template('blank.php')): ?>
 	<?php if( ($smof_data['footer_widgets'] && get_post_meta($c_pageID, 'pyre_display_footer', true) != 'no') ||
 			  ( ! $smof_data['footer_widgets'] && get_post_meta($c_pageID, 'pyre_display_footer', true) == 'yes') ): ?>
-	<div class="avada-row sponsorship-row">
-		<?php layerslider(1) ?>
-	</div>
+	<footer class="sponsorship-area">
+		<div class="avada-row">
+			<?php layerslider(1) ?>
+		</div>
+	</footer>
 	<footer class="footer-area">
 		<div class="avada-row">
 			<div class="fusion-columns row fusion-columns-<?php echo $smof_data['footer_widgets_columns']; ?> columns columns-<?php echo $smof_data['footer_widgets_columns']; ?>">
