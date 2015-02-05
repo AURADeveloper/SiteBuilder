@@ -24,6 +24,9 @@
 	<footer class="sponsorship-area">
 		<div class="avada-row">
 			<?php layerslider(1) ?>
+<!--			<div id="sponsor-marquee">-->
+<!--				<img src="--><?php //get_stylesheet_directory() ?><!--/images/sponsors/coopers.png" />-->
+<!--			</div>-->
 		</div>
 	</footer>
 	<footer class="footer-area">

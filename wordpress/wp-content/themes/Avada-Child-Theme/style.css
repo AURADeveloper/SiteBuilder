@@ -4,12 +4,39 @@ Description: Child theme for the Avada
 Author: Your name here
 Template: Avada
 */
-.aura-people-list { }
+.aura-people-list h3 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    text-decoration: underline;
+}
+.aura-people-list ul {
+    list-style-type: none;
+    padding: 0 0 5px 0;
+    margin: 0;
+}
+.aura-people-list ul li a {
+    border-left: 5px solid white;
+    padding-left: 1px;
+}
+.aura-people-list ul li a:hover {
+    border-left: 5px solid #52a8fc;
+    transition: all .42s ease;
+}
 
-.aura-people-snaps { }
-.aura-people-snaps .aura-person { }
-.aura-people-snaps .aura-person h1 { }
-.aura-people-snaps .aura-person h2 { }
+.aura-person h1 {
+    font-size: 21px;
+    line-height: 21px;
+    margin-bottom: 5px;
+    margin-top: 0;
+}
+.aura-person h1 span {
+    font-weight: normal;
+    text-underline: none;
+    font-size: 19px;
+}
+.aura-person h2 {
+
+}
 .aura-people-snaps .aura-person .aura-person-group {
     display: flex;
     align-items: flex-start;
@@ -19,13 +46,64 @@ Template: Avada
     height: auto;
     margin-right: 5px;
 }
-.aura-people-snaps .aura-person .aura-person-group .aura-person-links { width: 100%; }
-.aura-people-snaps .aura-person .aura-person-group a {
+.aura-people-snaps .aura-person .aura-person-blurb { }
+
+.aura-person .aura-person-links {
     width: 100%;
-    background-color: #dddddd;
+}
+.aura-person .aura-person-links a {
+    width: 100%;
+    background-color: #f0f0f0;
     padding: 10px;
     display: inline-block;
     margin-bottom: 5px;
+    transition: all .42s ease;
+    border-left: 0 solid #52a8fc;
 }
-.aura-people-snaps .aura-person .aura-person-blurb { }
+.aura-person .aura-person-links a:hover {
+    background-color: #52a8fc;
+    color: #f0f0f0;
+    border-left: 5px solid #f0f0f0;
+}
+.aura-person .aura-person-photo {
+    /*float: left;*/
+    /*padding-right: 20px;*/
+}
+.aura-person .fa {
+    width: 16px;
+    text-align: center;
+}
 
+.aura-person .aura-person-profile {
+    display: flex;
+    width: 100%;
+}
+
+.aura-person-singular .aura-person h1 {
+    margin-bottom: 20px;
+}
+.aura-person-singular .aura-person p {
+    margin-top: 0;
+}
+.aura-person-singular .aura-person .aura-person-photo {
+    width: 100%;
+}
+.aura-person-singular .aura-person .aura-person-profile {
+
+}
+.aura-person-singular .aura-person .aura-person-profile > div:nth-child(1) {
+    flex: 1;
+    padding-right: 20px;
+    min-width: 120px;
+}
+.aura-person-singular .aura-person .aura-person-profile > div:nth-child(2) {
+    width: 80%;
+}
+
+.aura-people-snaps .aura-person { margin-bottom: 50px; }
+.aura-people-snaps .aura-person .aura-person-blurb {
+    display: none;
+}
+
+.aura-people-snaps .aura-person h1 { }
+.aura-people-snaps .aura-person h2 { font-size: 15px !important; line-height: 16px; margin-bottom: 10px; }

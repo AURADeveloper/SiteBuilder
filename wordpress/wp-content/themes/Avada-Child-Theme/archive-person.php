@@ -1,14 +1,34 @@
 <?php get_header(); ?>
 
 <div id="content" role="main" class="full-width">
-    <div class="fusion-one-fourth one_fourth fusion-layout-column fusion-column spacing-no aura-people-list">
-        <ul>
-        <?php while ( have_posts() ) : the_post(); ?>
-            <li><a href="<?php the_permalink(); ?>"><?php the_field('persons_name'); ?></a></li>
-        <?php endwhile; ?>
-        </ul>
+    <div class="fusion-one-fifth one_fifth fusion-layout-column fusion-column spacing-no aura-people-list">
+        <?php
+        $roles = get_terms( 'roles' );
+        foreach( $roles as $role) : ?>
+            <h3><?php echo $role->name ?></h3>
+            <?php
+            //
+            $args = array(
+                'post_type' => 'person',
+                'tax_query' => array(
+                    array(
+                        'taxonomy' => 'roles',
+                        'field' => 'slug',
+                        'terms' => $role->slug
+                    )
+                )
+            );
+
+            //
+            $query = new WP_Query( $args ); ?>
+            <ul>
+            <?php while ( $query->have_posts() ) : $query->the_post(); ?>
+                <li><a href="<?php the_permalink(); ?>"><?php echo the_title(); ?></a></li>
+            <?php endwhile; ?>
+            </ul>
+        <?php endforeach; ?>
     </div>
-    <div class="fusion-three-fourth three_fourth fusion-layout-column fusion-column last spacing-no aura-people-snaps">
+    <div class="fusion-four-fifth four_fifth fusion-layout-column fusion-column last spacing-no aura-people-snaps">
         <?php
             // the number of profiles per row
             $cols_per_row = 3;
@@ -18,8 +38,16 @@
             // track current person
             $i = 0;
         ?>
-        <?php while ( have_posts() ) : the_post(); ?>
+        <?php
+        $args= array(
+            'order' => 'ASC',
+            'orderby' => 'menu_order'
+        );
+        global $query_string;
+        query_posts( $query_string . '&order=ASC&orderby=menu_order&posts_per_page=25' );
+        while ( have_posts() ) : the_post(); ?>
             <?php
+            $first_in_row = ($i % $cols_per_row == 0);
             $last_in_row = ($i % $cols_per_row == ($cols_per_row-1));
             $last_person = $i == $num_people-1;
             $empty_cols = $cols_per_row - ($i+1 % $cols_per_row);
@@ -51,6 +79,10 @@
             if ( $last_in_row ) {
                 $css .= " last";
             }
+
+            if ( $first_in_row ) {
+                $css .= " fusion-clearfix";
+            }
             ?>
             <div class="<?php echo $css; ?>">
                 <h1><?php the_field( 'persons_name' ); ?></h1>
@@ -58,8 +90,8 @@
                 <div class="aura-person-group">
                     <?php the_post_thumbnail( 'thumbnail', array( 'class' => 'aura-person-photo' ) ); ?>
                     <div class="aura-person-links">
-                        <a>Email</a>
-                        <a href="<?php the_permalink(); ?>">More</a>
+                        <a href="#"><i class="fa fa-envelope"></i> Email</a>
+                        <a href="<?php the_permalink(); ?>"><i class="fa fa-user"></i> More</a>
                     </div>
                 </div>
                 <div class="aura-person-blurb">

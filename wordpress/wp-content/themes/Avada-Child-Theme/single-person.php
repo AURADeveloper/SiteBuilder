@@ -1,30 +1,50 @@
 <?php get_header(); ?>
 
 <div id="content" role="main" class="full-width">
-    <div class="fusion-one-fourth one_fourth fusion-layout-column fusion-column spacing-no aura-people-list">
+    <div class="fusion-one-fifth one_fifth fusion-layout-column fusion-column spacing-no aura-people-list">
         <?php
-        $args = array( 'post_type' => 'person' );
-        $the_query = new WP_Query( $args );
-        if ( $the_query->have_posts() ): ?>
+        $roles = get_terms( 'roles' );
+        foreach( $roles as $role) : ?>
+            <h3><?php echo $role->name ?></h3>
+            <?php
+            //
+            $args = array(
+                'post_type' => 'person',
+                'tax_query' => array(
+                    array(
+                        'taxonomy' => 'roles',
+                        'field' => 'slug',
+                        'terms' => $role->slug
+                    )
+                ),
+//                'meta_key' => 'order',
+//                'orderby' => 'meta_value',
+//                'order' => 'ASC'
+            );
+
+            //
+            $query = new WP_Query( $args ); ?>
             <ul>
-            <?php while ( $the_query->have_posts() ) : $the_query->the_post(); ?>
-                <li>
-                    <a href="<?php the_permalink(); ?>"><?php the_field('persons_name'); ?></a>
-                </li>
+            <?php while ( $query->have_posts() ) : $query->the_post(); ?>
+                <li><a href="<?php the_permalink(); ?>"><?php echo the_title(); ?></a></li>
             <?php endwhile; ?>
             </ul>
-        <?php endif; ?>
+        <?php endforeach; ?>
     </div>
-    <div class="fusion-three-fourth three_fourth fusion-layout-column fusion-column last spacing-no aura-person">
+    <div class="fusion-four-fifth four_fifth fusion-layout-column fusion-column last spacing-no aura-person-singular">
         <?php while ( have_posts() ) : the_post(); ?>
-            <div class="aura-person-group">
-                <div>
-                    <?php the_post_thumbnail( '', array( 'class' => 'aura-person-photo' ) ); ?>
-                </div>
-                <div>
-                    <h1><?php the_field('persons_name'); ?></h1>
-                    <h2><?php the_field('persons_job_role_title'); ?></h2>
-                    <?php the_content(); ?>
+            <div class="aura-person">
+                <h1><?php the_field('persons_name'); ?><span> <?php the_field('persons_job_role_title'); ?></span></h1>
+                <div class="aura-person-profile">
+                    <div>
+                        <?php the_post_thumbnail( '', array( 'class' => 'aura-person-photo' ) ); ?>
+                        <div class="aura-person-links">
+                            <a href="#"><i class="fa fa-envelope"></i> Email</a>
+                        </div>
+                    </div>
+                    <div>
+                        <?php the_content(); ?>
+                    </div>
                 </div>
             </div>
         <?php endwhile; // end of the loop. ?>
