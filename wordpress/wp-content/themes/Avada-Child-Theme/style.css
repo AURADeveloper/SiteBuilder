@@ -15,14 +15,13 @@ Template: Avada
     margin: 0;
 }
 .aura-people-list ul li a {
-    border-left: 5px solid white;
-    padding-left: 1px;
+    border-left: 5px solid #fff;
+    padding-left: 2px;
 }
 .aura-people-list ul li a:hover {
-    border-left: 5px solid #52a8fc;
+    border-color: #52a8fc;
     transition: all .42s ease;
 }
-
 .aura-person h1 {
     font-size: 21px;
     line-height: 21px;
@@ -37,17 +36,6 @@ Template: Avada
 .aura-person h2 {
 
 }
-.aura-people-snaps .aura-person .aura-person-group {
-    display: flex;
-    align-items: flex-start;
-}
-.aura-people-snaps .aura-person .aura-person-group .aura-person-photo {
-    width: 100%;
-    height: auto;
-    margin-right: 5px;
-}
-.aura-people-snaps .aura-person .aura-person-blurb { }
-
 .aura-person .aura-person-links {
     width: 100%;
 }
@@ -73,12 +61,32 @@ Template: Avada
     width: 16px;
     text-align: center;
 }
+.aura-people-snaps .aura-person { margin-bottom: 50px; }
+.aura-people-snaps .aura-person .aura-person-blurb {
+    display: none;
+}
+.aura-people-snaps .aura-person h1 { }
+.aura-people-snaps .aura-person h2 {
+    font-size: 15px;
+    line-height: 16px;
+    margin-bottom: 10px;
+}
+.aura-people-snaps .aura-person .aura-person-group {
+    display: flex;
+    align-items: flex-start;
+}
+.aura-people-snaps .aura-person .aura-person-group .aura-person-photo {
+    width: 100%;
+    height: auto;
+    margin-right: 5px;
+}
+.aura-people-snaps .aura-person .aura-person-blurb { }
+
 
 .aura-person .aura-person-profile {
     display: flex;
     width: 100%;
 }
-
 .aura-person-singular .aura-person h1 {
     margin-bottom: 20px;
 }
@@ -100,10 +108,36 @@ Template: Avada
     width: 80%;
 }
 
-.aura-people-snaps .aura-person { margin-bottom: 50px; }
-.aura-people-snaps .aura-person .aura-person-blurb {
-    display: none;
-}
+.sponsorship-area { padding: 10px 0; }
+#sponsor-marquee img { padding: 0 20px; }
 
-.aura-people-snaps .aura-person h1 { }
-.aura-people-snaps .aura-person h2 { font-size: 15px !important; line-height: 16px; margin-bottom: 10px; }
+.footer-area h3 { display: none; }
+.footer-area .sub-menu {
+    margin-left: 0;
+    display: block;
+}
+.footer-area .sub-menu a {
+    margin-bottom: 0;
+}
+.footer-area ul {
+    width: 100%;
+}
+.footer-area ul li {
+    display: inline-block;
+    vertical-align: text-top;
+    width: 20%;
+}
+.footer-area ul li ul li {
+    display: block;
+    width: 100%;
+}
+.footer-area ul li a {
+    border-bottom: none;
+    padding: 0;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 5px;
+}
+.footer-area ul li ul li a {
+    font-weight: normal;
+}

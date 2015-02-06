@@ -23,10 +23,41 @@
 			  ( ! $smof_data['footer_widgets'] && get_post_meta($c_pageID, 'pyre_display_footer', true) == 'yes') ): ?>
 	<footer class="sponsorship-area">
 		<div class="avada-row">
-			<?php layerslider(1) ?>
-<!--			<div id="sponsor-marquee">-->
-<!--				<img src="--><?php //get_stylesheet_directory() ?><!--/images/sponsors/coopers.png" />-->
-<!--			</div>-->
+			<div id="sponsor-marquee">
+				<a href="http://www.coopers.com.au/">
+					<img src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/sponsors/coopers.png" />
+				</a>
+				<a href="http://www.perpetual.com.au/">
+					<img src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/sponsors/perpetual.png" />
+				</a>
+				<a href="http://foundation.rch.org.au/">
+					<img src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/sponsors/royal_children.png" />
+				</a>
+				<a href="http://www.tswf.com.au/">
+					<img src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/sponsors/shane_warne.png" />
+				</a>
+				<a href="http://www.eurekafm.com.au/">
+					<img src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/sponsors/eureka.png" />
+				</a>
+				<a href="http://www.conocophillips.com.au/">
+					<img src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/sponsors/conoco.png" />
+				</a>
+				<a href="http://www.emeraldpress.com.au/">
+					<img src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/sponsors/emerald.png" />
+				</a>
+				<a href="http://www.jnjmedical.com.au/">
+					<img src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/sponsors/johnson.png" />
+				</a>
+				<a href="http://www.westonprint.com.au/">
+					<img src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/sponsors/weston.png" />
+				</a>
+				<a href="http://www.flysolomons.com/">
+					<img src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/sponsors/solomons.png" />
+				</a>
+				<a href="http://www.regionalimaging.com.au/">
+					<img src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/sponsors/regional.png" />
+				</a>
+			</div>
 		</div>
 	</footer>
 	<footer class="footer-area">
@@ -140,6 +171,8 @@
 	<?php wp_footer(); ?>
 
 	<?php echo $smof_data['space_body']; ?>
+
+	<script type="text/javascript" src="<?php echo get_stylesheet_directory_uri(); ?>; ?>/js/init.js"></script>
 
 	<!--[if lte IE 8]>
 	<script type="text/javascript" src="<?php echo get_template_directory_uri(); ?>/js/respond.js"></script>
