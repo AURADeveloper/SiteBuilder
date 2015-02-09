@@ -90,7 +90,7 @@
                 <div class="aura-person-group">
                     <?php the_post_thumbnail( 'thumbnail', array( 'class' => 'aura-person-photo' ) ); ?>
                     <div class="aura-person-links">
-                        <a href="#"><i class="fa fa-envelope"></i> Email</a>
+                        <a href="/contact/?recipient=<?php the_ID(); ?>"><i class="fa fa-envelope"></i> Email</a>
                         <a href="<?php the_permalink(); ?>"><i class="fa fa-user"></i> More</a>
                     </div>
                 </div>

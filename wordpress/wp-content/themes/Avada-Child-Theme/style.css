@@ -141,3 +141,6 @@ Template: Avada
 .footer-area ul li ul li a {
     font-weight: normal;
 }
+
+.aura-contact-form { }
+.aura-contact-form textarea { width: 100%; }
