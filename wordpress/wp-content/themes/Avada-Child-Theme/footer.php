@@ -22,8 +22,8 @@
 	<?php if( ($smof_data['footer_widgets'] && get_post_meta($c_pageID, 'pyre_display_footer', true) != 'no') ||
 			  ( ! $smof_data['footer_widgets'] && get_post_meta($c_pageID, 'pyre_display_footer', true) == 'yes') ): ?>
 	<footer class="sponsorship-area">
-		<div class="avada-row">
-			<div id="sponsor-marquee">
+		<div class="marquee">
+			<span>
 				<a href="http://www.coopers.com.au/">
 					<img src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/sponsors/coopers.png" />
 				</a>
@@ -57,7 +57,7 @@
 				<a href="http://www.regionalimaging.com.au/">
 					<img src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/sponsors/regional.png" />
 				</a>
-			</div>
+			</span>
 		</div>
 	</footer>
 	<footer class="footer-area">

@@ -4,6 +4,9 @@ Description: Child theme for the Avada
 Author: Your name here
 Template: Avada
 */
+.text-center {
+    text-align: center;
+}
 .aura-people-list h3 {
     margin-top: 0;
     margin-bottom: 5px;
@@ -121,11 +124,13 @@ Template: Avada
 }
 .footer-area ul {
     width: 100%;
+    float: left;
 }
 .footer-area ul li {
     display: inline-block;
     vertical-align: text-top;
     width: 20%;
+    float: left;
 }
 .footer-area ul li ul li {
     display: block;
@@ -143,4 +148,115 @@ Template: Avada
 }
 
 .aura-contact-form { }
-.aura-contact-form textarea { width: 100%; }
+.aura-contact-form input[type="text"],
+.aura-contact-form input[type="password"],
+.aura-contact-form input[type="email"],
+.aura-contact-form input[type="url"],
+.aura-contact-form input[type="date"],
+.aura-contact-form input[type="month"],
+.aura-contact-form input[type="time"],
+.aura-contact-form input[type="datetime"],
+.aura-contact-form input[type="datetime-local"],
+.aura-contact-form input[type="week"],
+.aura-contact-form input[type="number"],
+.aura-contact-form input[type="search"],
+.aura-contact-form input[type="tel"],
+.aura-contact-form input[type="color"],
+.aura-contact-form select,
+.aura-contact-form textarea {
+    padding: 0.5em 0.6em;
+    /*display: inline-block;*/
+    border: 1px solid #ccc;
+    box-shadow: inset 0 1px 3px #ddd;
+    border-radius: 4px;
+    vertical-align: middle;
+    color: #333;
+}
+.aura-contact-form select {
+    /* Normalizes the height; padding is not sufficient. */
+    height: 2.25em;
+    border: 1px solid #ccc;
+    background-color: white;
+}
+.aura-contact-form hr {
+    border-color: #eee;
+    border-bottom-width: 0;
+    clear: both;
+}
+.aura-contact-form input[type="submit"] {
+    background-color: #f0f0f0;
+    color: #52a8fc;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    font-size: 17px;
+    border-radius: 2px;
+}
+.aura-contact-form input[type="submit"]:hover {
+    background-color: #52a8fc;
+    color: #f0f0f0;
+    border-color: #0073fc;;
+}
+
+
+.aura-msg {
+    text-align: center;
+    font-size: 15px;
+}
+.aura-msg div {
+    padding: 20px;
+    color: white;
+}
+.aura-msg .aura-msg-success {
+    background-color: #63a43c;
+}
+.aura-msg .aura-msg-failure {
+    background-color: #690e0e;
+}
+
+.aura-info-box {
+    margin-bottom: 20px;
+}
+.aura-info-box h3 {
+    background-color: #f0f0f0;
+    color: #52a8fc;
+    padding: 5px 10px;
+    margin: 0;
+}
+.aura-info-box h4 {
+    margin: 10px 0 0;
+    font-size: 15px;
+    text-decoration: underline;
+}
+.aura-info-box p {
+    margin: 0 0 10px;
+}
+.aura-info-box .aura-info-box-body {
+    padding: 10px 10px 5px;
+    background-color: #fafafa;
+}
+
+
+.marquee {
+    max-width: 1100px;
+    margin: 0 auto;
+    white-space: nowrap;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+.marquee span {
+    display: inline-block;
+    padding-left: 100%;  /* show the marquee just outside the paragraph */
+    animation: marquee 25s linear infinite;
+    -webkit-animation: marquee 25s linear infinite;
+}
+.marquee img {
+    padding: 0 20px;
+}
+.marquee span:hover {
+    animation-play-state: paused
+}
+/* Make it move */
+@keyframes marquee {
+    0%   { transform: translate(0, 0); }
+    100% { transform: translate(-100%, 0); }
+}
