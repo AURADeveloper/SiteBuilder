@@ -3,7 +3,18 @@
 <div id="content" role="main" class="full-width">
     <div class="fusion-one-fifth one_fifth fusion-layout-column fusion-column spacing-no aura-people-list">
         <?php
-        $roles = get_terms( 'roles' );
+        $roles = get_terms( 'roles', 'orderby=count&hide_empty=0&order=DESC' );
+
+//        function sort_by_tax_order( $a, $b ) {
+//            var_dump($a, $b);
+//            $order_a = get_field( 'order', $a );
+//            $order_b = get_field( 'order', $b );
+//            var_dump( $order_a, $order_b );
+//            return ( $order_a > $order_b ) ? -1 : 0;
+//        }
+
+//        uasort( $roles, 'sort_by_tax_order' );
+
         foreach( $roles as $role) : ?>
             <h3><?php echo $role->name ?></h3>
             <?php
@@ -20,7 +31,9 @@
             );
 
             //
-            $query = new WP_Query( $args ); ?>
+            $query = new WP_Query( $args );
+
+            ?>
             <ul>
             <?php while ( $query->have_posts() ) : $query->the_post(); ?>
                 <li><a href="<?php the_permalink(); ?>"><?php echo the_title(); ?></a></li>
