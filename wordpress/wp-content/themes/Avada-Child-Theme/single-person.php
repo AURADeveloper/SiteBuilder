@@ -3,7 +3,7 @@
 <div id="content" role="main" class="full-width">
     <div class="fusion-one-fifth one_fifth fusion-layout-column fusion-column spacing-no aura-people-list">
         <?php
-        $roles = get_terms( 'roles' );
+        $roles = get_terms( 'roles', 'orderby=count&hide_empty=0&order=DESC' );
         foreach( $roles as $role) : ?>
             <h3><?php echo $role->name ?></h3>
             <?php
@@ -17,9 +17,6 @@
                         'terms' => $role->slug
                     )
                 ),
-//                'meta_key' => 'order',
-//                'orderby' => 'meta_value',
-//                'order' => 'ASC'
             );
 
             //
@@ -34,7 +31,7 @@
     <div class="fusion-four-fifth four_fifth fusion-layout-column fusion-column last spacing-no aura-person-singular">
         <?php while ( have_posts() ) : the_post(); ?>
         <div class="aura-person">
-            <h1><?php the_field('persons_name'); ?><span> <?php the_field('persons_job_role_title'); ?></span></h1>
+            <h1><?php the_field('persons_name'); ?><span><?php the_field('persons_job_role_title'); ?></span></h1>
             <div class="aura-person-profile">
                 <div>
                     <?php the_post_thumbnail( '', array( 'class' => 'aura-person-photo' ) ); ?>
