@@ -172,8 +172,6 @@
 
 	<?php echo $smof_data['space_body']; ?>
 
-	<script type="text/javascript" src="<?php echo get_stylesheet_directory_uri(); ?>; ?>/js/init.js"></script>
-
 	<!--[if lte IE 8]>
 	<script type="text/javascript" src="<?php echo get_template_directory_uri(); ?>/js/respond.js"></script>
 	<![endif]-->

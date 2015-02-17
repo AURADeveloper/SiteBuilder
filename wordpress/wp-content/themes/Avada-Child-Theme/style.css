@@ -7,18 +7,41 @@ Template: Avada
 .text-center {
     text-align: center;
 }
-
 .aura-patron-list .aura-patron {
     display: flex;
 }
+.aura-patron-list .aura-patron:nth-child(odd) {
+    justify-content: flex-start;
+}
+.aura-patron-list .aura-patron:nth-child(odd) {
+    justify-content: flex-end;
+}
+.aura-patron-list .aura-patron:not(:last-child) {
+    margin-bottom: 40px;
+}
+.aura-patron-list .aura-patron h1 {
+    margin: 0;
+    border-bottom: 1px solid #ccc;
+}
+.aura-patron-list .aura-patron h1 span {
+    font-size: 17px;
+    font-weight: normal;
+}
+.aura-patron-list .aura-patron div:nth-child(2) {
+    max-width: 880px;
+}
 .aura-patron-list .aura-patron:nth-child(odd) div:nth-child(1) {
     order: 1;
+    margin-right: 20px;
+    min-width: 128px;
 }
 .aura-patron-list .aura-patron:nth-child(odd) div:nth-child(2) {
     order: 2;
 }
 .aura-patron-list .aura-patron:nth-child(even) div:nth-child(1) {
     order: 2;
+    margin-left: 20px;
+    min-width: 128px;
 }
 .aura-patron-list .aura-patron:nth-child(even) div:nth-child(2) {
     order: 1;
@@ -26,8 +49,7 @@ Template: Avada
 
 
 .aura-patron .aura-patron-photo {
-    border-radius: 64px;
-    max-width: 128px;
+    border-radius: 128px;
     border: 1px solid rgba(0,0,0,.25);
     padding: 5px;
     box-shadow: 2px 2px 2px rgba(0,0,0,.25);
@@ -228,6 +250,14 @@ Template: Avada
     background-color: #52a8fc;
     color: #f0f0f0;
     border-color: #0073fc;;
+}
+.aura-contact-form input[type="submit"]:disabled {
+    opacity: .5;
+}
+.aura-contact-form input[type="submit"]:disabled:hover {
+    background-color: #f0f0f0;
+    color: #52a8fc;
+    border: 1px solid #ddd;
 }
 
 
