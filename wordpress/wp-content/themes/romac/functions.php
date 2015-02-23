@@ -46,7 +46,7 @@ function romac_setup() {
 	 *
 	 * @link http://codex.wordpress.org/Function_Reference/add_theme_support#Post_Thumbnails
 	 */
-	//add_theme_support( 'post-thumbnails' );
+	add_theme_support( 'post-thumbnails' );
 
 	// This theme uses wp_nav_menu() in one location.
 	register_nav_menus( array(
@@ -102,6 +102,8 @@ add_action( 'widgets_init', 'romac_widgets_init' );
 function romac_scripts() {
 	wp_enqueue_style( 'romac-style', get_stylesheet_uri() );
 
+    wp_enqueue_style( 'romac-layout-style', get_template_directory_uri() . '/layouts/layout.css' );
+
 	wp_enqueue_script( 'romac-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20120206', true );
 
 	wp_enqueue_script( 'romac-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20130115', true );
@@ -111,6 +113,14 @@ function romac_scripts() {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'romac_scripts' );
+
+/**
+ * Enqueue admin specific scripts and styles.
+ */
+function romac_admin_scripts() {
+    wp_enqueue_style( 'romac-admin-style', get_template_directory_uri() . '/admin.css');
+}
+add_action( 'admin_enqueue_scripts', 'romac_admin_scripts' );
 
 /**
  * Implement the Custom Header feature.
@@ -137,3 +147,279 @@ require get_template_directory() . '/inc/customizer.php';
  */
 require get_template_directory() . '/inc/jetpack.php';
 
+/**
+ * Register the team member post type.
+ *
+ * @link http://codex.wordpress.org/Function_Reference/register_post_type
+ */
+function our_team_init() {
+    $labels = array(
+        'name'               => _x( 'Our Team', 'post type general name', 'rot-textdomain' ),
+        'singular_name'      => _x( 'Team Member', 'post type singular name', 'rot-textdomain' ),
+        'menu_name'          => _x( 'Team Members', 'admin menu', 'rot-textdomain' ),
+        'name_admin_bar'     => _x( 'Team Member', 'add new on admin bar', 'rot-textdomain' ),
+        'add_new'            => _x( 'Add New', 'book', 'rot-textdomain' ),
+        'add_new_item'       => __( 'Add New Team Member', 'rot-textdomain' ),
+        'new_item'           => __( 'New Team Member', 'rot-textdomain' ),
+        'edit_item'          => __( 'Edit Team Member', 'rot-textdomain' ),
+        'view_item'          => __( 'View Team Member', 'rot-textdomain' ),
+        'all_items'          => __( 'All Team Members', 'rot-textdomain' ),
+        'search_items'       => __( 'Search Team Members', 'rot-textdomain' ),
+        'parent_item_colon'  => __( 'Parent Team Members:', 'rot-textdomain' ),
+        'not_found'          => __( 'No team members found.', 'rot-textdomain' ),
+        'not_found_in_trash' => __( 'No team members found in Trash.', 'rot-textdomain' )
+    );
+
+    $args = array(
+        'labels'               => $labels,
+        'public'               => true,
+        'publicly_queryable'   => true,
+        'show_ui'              => true,
+        'show_in_menu'         => true,
+        'query_var'            => true,
+        'rewrite'              => array( 'slug' => 'about-romac/our-team' ),
+        'capability_type'      => 'post',
+        'has_archive'          => true,
+        'hierarchical'         => false,
+        'menu_position'        => null,
+        'menu_icon'            => 'dashicons-id-alt',
+        'supports'             => array( 'title', 'editor', 'thumbnail' ),
+        'register_meta_box_cb' => 'add_our_team_meta_boxes'
+    );
+
+    register_post_type( 'our_team', $args );
+}
+add_action( 'init', 'our_team_init' );
+
+/**
+ * Adds custom meta fields to the our team post type
+ */
+function add_our_team_meta_boxes() {
+    add_meta_box(
+        'rot_meta_box',
+        __( 'Team Member Meta', 'rot-textdomain' ),
+        'rot_meta_box_callback',
+        'our_team',
+        'side',
+        'default'
+    );
+}
+
+/**
+ * Prints the box content.
+ *
+ * @param WP_Post $post The object for the current post/page.
+ */
+function rot_meta_box_callback( $post ) {
+    // Add an nonce field so we can check for it later.
+    wp_nonce_field( 'rot_meta_box', 'rot_meta_box_nonce' );
+
+    /*
+     * Use get_post_meta() to retrieve an existing value
+     * from the database and use the value for the form.
+     */
+    $name  = get_post_meta( $post->ID, '_rot_name',  true );
+    $role  = get_post_meta( $post->ID, '_rot_role',  true );
+    $email = get_post_meta( $post->ID, '_rot_email', true );
+
+    // Echo the template fields
+
+    // Team members name:
+    echo '<label for="team-member-name">';
+    _e( 'Full Name', 'romac-our-team-textdomain' );
+    echo '</label> ';
+    echo '<input type="text" id="team-member-name" name="team-member-name" value="' . esc_attr( $name ) . '" size="25" />';
+
+    // Team members job role:
+    echo '<label for="team-member-role">';
+    _e( 'Job Role Title', 'romac-our-team-textdomain' );
+    echo '</label> ';
+    echo '<input type="text" id="team-member-role" name="team-member-role" value="' . esc_attr( $role ) . '" size="25" />';
+
+    // Team members email address:
+    echo '<label for="team-member-email">';
+    _e( 'E-Mail Address', 'romac-our-team-textdomain' );
+    echo '</label> ';
+    echo '<input type="email" id="team-member-email" name="team-member-email" value="' . esc_attr( $email ) . '" />';
+}
+
+/**
+ * Creates the organisational units taxonomy that is applied to the our team post type.
+ *
+ * @link http://codex.wordpress.org/Function_Reference/register_taxonomy
+ */
+function create_organisational_units_taxonomy() {
+    $labels = array(
+        'name'                       => _x( 'Organisational Units', 'taxonomy general name' ),
+        'singular_name'              => _x( 'Organisational Unit', 'taxonomy singular name' ),
+        'search_items'               => __( 'Search Organisational Units' ),
+        'popular_items'              => __( 'Popular Organisational Units' ),
+        'all_items'                  => __( 'All Organisational Units' ),
+        'parent_item'                => null,
+        'parent_item_colon'          => null,
+        'edit_item'                  => __( 'Edit Organisational Unit' ),
+        'update_item'                => __( 'Update Organisational Unit' ),
+        'add_new_item'               => __( 'Add New Organisational Unit' ),
+        'new_item_name'              => __( 'New Organisational Unit' ),
+        'separate_items_with_commas' => __( 'Separate units with commas' ),
+        'add_or_remove_items'        => __( 'Add or remove units' ),
+        'choose_from_most_used'      => __( 'Choose from the most used units' ),
+        'not_found'                  => __( 'No units found.' ),
+        'menu_name'                  => __( 'Organisational Units' ),
+    );
+
+    $args = array(
+        'hierarchical'          => true,
+        'labels'                => $labels,
+        'show_ui'               => true,
+        'show_admin_column'     => true,
+        'update_count_callback' => '_update_post_term_count',
+        'query_var'             => true,
+        'rewrite'               => array( 'slug' => 'organisational-units' ),
+    );
+
+    register_taxonomy( 'ou', 'our_team', $args );
+}
+add_action( 'init', 'create_organisational_units_taxonomy' );
+
+/**
+ * When the post is saved, saves our custom data.
+ *
+ * @param int $post_id The ID of the post being saved.
+ */
+function rot_save_meta_box_data( $post_id ) {
+
+    /*
+     * We need to verify this came from our screen and with proper authorization,
+     * because the save_post action can be triggered at other times.
+     */
+
+    // Check if our nonce is set.
+    if ( ! isset( $_POST['rot_meta_box_nonce'] ) ) {
+        return;
+    }
+
+    // Verify that the nonce is valid.
+    if ( ! wp_verify_nonce( $_POST['rot_meta_box_nonce'], 'rot_meta_box' ) ) {
+        return;
+    }
+
+    // If this is an autosave, our form has not been submitted, so we don't want to do anything.
+    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+        return;
+    }
+
+    // Check the user's permissions.
+    if ( isset( $_POST['post_type'] ) && 'page' == $_POST['post_type'] ) {
+
+        if ( ! current_user_can( 'edit_page', $post_id ) ) {
+            return;
+        }
+
+    } else {
+
+        if ( ! current_user_can( 'edit_post', $post_id ) ) {
+            return;
+        }
+    }
+
+    /* OK, it's safe for us to save the data now. */
+
+    // Make sure that it is set.
+    if ( ! isset( $_POST['team-member-name'] ) )  return;
+    if ( ! isset( $_POST['team-member-role'] ) )  return;
+    if ( ! isset( $_POST['team-member-email'] ) ) return;
+
+    // Sanitize user input.
+    $name =  sanitize_text_field( $_POST['team-member-name'] );
+    $role =  sanitize_text_field( $_POST['team-member-role'] );
+    $email = sanitize_text_field( $_POST['team-member-email'] );
+
+    // Update the meta field in the database.
+    update_post_meta( $post_id, '_rot_name', $name );
+    update_post_meta( $post_id, '_rot_role', $role );
+    update_post_meta( $post_id, '_rot_email', $email );
+}
+add_action( 'save_post', 'rot_save_meta_box_data' );
+
+/**
+ * Register the patrons and ambassadors post type.
+ *
+ * @link http://codex.wordpress.org/Function_Reference/register_post_type
+ */
+function patrons_init() {
+    $labels = array(
+        'name'               => _x( 'Our Patrons and Ambassadors', 'post type general name', 'rpab-textdomain' ),
+        'singular_name'      => _x( 'Patron', 'post type singular name', 'rpab-textdomain' ),
+        'menu_name'          => _x( 'Patrons', 'admin menu', 'rpab-textdomain' ),
+        'name_admin_bar'     => _x( 'Patron', 'add new on admin bar', 'rpab-textdomain' ),
+        'add_new'            => _x( 'Add New', 'book', 'rpab-textdomain' ),
+        'add_new_item'       => __( 'Add New Patron', 'rpab-textdomain' ),
+        'new_item'           => __( 'New Patron', 'rpab-textdomain' ),
+        'edit_item'          => __( 'Edit Patron', 'rpab-textdomain' ),
+        'view_item'          => __( 'View Patron', 'rpab-textdomain' ),
+        'all_items'          => __( 'All Patrons', 'rpab-textdomain' ),
+        'search_items'       => __( 'Search Patrons', 'rpab-textdomain' ),
+        'parent_item_colon'  => __( 'Parent Patrons:', 'rpab-textdomain' ),
+        'not_found'          => __( 'No patrons found.', 'rpab-textdomain' ),
+        'not_found_in_trash' => __( 'No patrons found in Trash.', 'rpab-textdomain' )
+    );
+
+    $args = array(
+        'labels'             => $labels,
+        'public'             => true,
+        'publicly_queryable' => true,
+        'show_ui'            => true,
+        'show_in_menu'       => true,
+        'query_var'          => true,
+        'rewrite'            => array( 'slug' => 'about-romac/patrons-and-ambassadors' ),
+        'capability_type'    => 'post',
+        'has_archive'        => true,
+        'hierarchical'       => false,
+        'menu_position'      => null,
+        'menu_icon'          => 'dashicons-universal-access',
+        'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' )
+    );
+
+    register_post_type( 'patrons', $args );
+}
+add_action( 'init', 'patrons_init' );
+
+/**
+ * Creates the designation taxonomy that is applied to the patrons post type.
+ *
+ * @link http://codex.wordpress.org/Function_Reference/register_taxonomy
+ */
+function create_designation_taxonomy() {
+    $labels = array(
+        'name'                       => _x( 'Designation', 'taxonomy general name' ),
+        'singular_name'              => _x( 'Designation', 'taxonomy singular name' ),
+        'search_items'               => __( 'Search Designations' ),
+        'popular_items'              => __( 'Popular Designations' ),
+        'all_items'                  => __( 'All Designations' ),
+        'parent_item'                => __( 'Parent Designation' ),
+        'parent_item_colon'          => __( 'Parent Designations:' ),
+        'edit_item'                  => __( 'Edit Designation' ),
+        'update_item'                => __( 'Update Designation' ),
+        'add_new_item'               => __( 'Add New Designation' ),
+        'new_item_name'              => __( 'New Designation' ),
+        'separate_items_with_commas' => __( 'Separate designations with commas' ),
+        'add_or_remove_items'        => __( 'Add or remove designations' ),
+        'choose_from_most_used'      => __( 'Choose from the most used designations' ),
+        'not_found'                  => __( 'No designations found.' ),
+        'menu_name'                  => __( 'Designations' ),
+    );
+
+    $args = array(
+        'hierarchical'          => true,
+        'labels'                => $labels,
+        'show_ui'               => true,
+        'show_admin_column'     => true,
+        'update_count_callback' => '_update_post_term_count',
+        'query_var'             => true,
+        'rewrite'               => array( 'slug' => 'designations' ),
+    );
+
+    register_taxonomy( 'designation', 'patrons', $args );
+}
+add_action( 'init', 'create_designation_taxonomy' );
