@@ -100,6 +100,8 @@ add_action( 'widgets_init', 'romac_widgets_init' );
  * Enqueue scripts and styles.
  */
 function romac_scripts() {
+    wp_enqueue_style(  'font-awesome', get_bloginfo( 'template_directory' ) . '/css/font-awesome.min.css' );
+
 	wp_enqueue_script( 'romac-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20120206', true );
 
 	wp_enqueue_script( 'romac-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20130115', true );
@@ -468,3 +470,97 @@ function enqueue_less_styles($tag, $handle) {
     return $tag;
 }
 add_filter( 'style_loader_tag', 'enqueue_less_styles', 5, 2);
+
+/**
+ * Helper that writes bread crumbs.
+ */
+function write_breadcrumbs() {
+    global $post;
+    echo '<span class="breadcrumbs"><ul>';
+
+    if ( !is_front_page() ) {
+        echo '<li><a href="';
+        echo home_url();
+        echo '">'.__('Home', 'Avada');
+        echo "</a></li>";
+    }
+
+    $params['link_none'] = '';
+    $separator = '';
+
+    if (is_category()) {
+        $category = get_the_category();
+        $ID = $category[0]->cat_ID;
+        echo is_wp_error( $cat_parents = get_category_parents($ID, TRUE, '', FALSE ) ) ? '' : '<li>'.$cat_parents.'</li>';
+    }
+
+    if (is_tax()) {
+        $term = get_term_by( 'slug', get_query_var( 'term' ), get_query_var( 'taxonomy' ) );
+        $link = get_term_link( $term );
+
+        if ( is_wp_error( $link ) ) {
+            echo sprintf('<li>%s</li>', $term->name );
+        } else {
+            echo sprintf('<li><a href="%s" title="%s">%s</a></li>', $link, $term->name, $term->name );
+        }
+    }
+
+    if(is_home()) { echo '<li>'.$smof_data['blog_title'].'</li>'; }
+    if(is_page() && !is_front_page()) {
+        $parents = array();
+        $parent_id = $post->post_parent;
+        while ( $parent_id ) :
+            $page = get_page( $parent_id );
+            if ( $params["link_none"] )
+                $parents[]  = get_the_title( $page->ID );
+            else
+                $parents[]  = '<li><a href="' . get_permalink( $page->ID ) . '" title="' . get_the_title( $page->ID ) . '">' . get_the_title( $page->ID ) . '</a></li>' . $separator;
+            $parent_id  = $page->post_parent;
+        endwhile;
+        $parents = array_reverse( $parents );
+        echo join( '', $parents );
+        echo '<li>'.get_the_title().'</li>';
+    }
+
+    if(is_single()) {
+        $categories_1 = get_the_category($post->ID);
+        if($categories_1):
+            foreach($categories_1 as $cat_1):
+                $cat_1_ids[] = $cat_1->term_id;
+            endforeach;
+            $cat_1_line = implode(',', $cat_1_ids);
+        endif;
+        if( isset( $cat_1_line ) && $cat_1_line ) {
+            $categories = get_categories(array(
+                'include' => $cat_1_line,
+                'orderby' => 'id'
+            ));
+            if ( $categories ) :
+                foreach ( $categories as $cat ) :
+                    $cats[] = '<li><a href="' . get_category_link( $cat->term_id ) . '" title="' . $cat->name . '">' . $cat->name . '</a></li>';
+                endforeach;
+                echo join( '', $cats );
+            endif;
+        }
+        echo '<li>'.get_the_title().'</li>';
+    }
+    if( is_tag() ){ echo '<li>'."Tag: ".single_tag_title('',FALSE).'</li>'; }
+    if( is_search() ){ echo '<li>'.__("Search", 'Avada').'</li>'; }
+    if( is_year() ){ echo '<li>'.get_the_time('Y').'</li>'; }
+
+    if( is_404() ) {
+       echo '<li>'.__("404 - Page not Found", 'Avada').'</li>';
+    }
+
+    if( is_archive() && is_post_type_archive() ) {
+        $title = post_type_archive_title( '', false );
+
+        $sermon_settings = get_option('wpfc_options');
+        if( is_array( $sermon_settings ) ) {
+            $title = $sermon_settings['archive_title'];
+        }
+        echo '<li>'. $title .'</li>';
+    }
+
+    echo "</ul></span>";
+}

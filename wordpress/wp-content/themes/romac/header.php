@@ -34,4 +34,10 @@
 		</nav><!-- #site-navigation -->
 	</header><!-- #masthead -->
 
+    <?php if ( !is_front_page() ): ?>
+    <div id="site-title" class="site-title" role="heading">
+        <?php write_breadcrumbs(); ?>
+    </div>
+    <?php endif; ?>
+
 	<div id="content" class="site-content">

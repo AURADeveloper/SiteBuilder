@@ -58,6 +58,9 @@ Nicolas Gallagher and Jonathan Neal http://necolas.github.com/normalize.css/
 // background colors
 @bg-compliment: #bdbdae;
 
+// dimensions
+@site-max-width: 1100px;
+
 /*--------------------------------------------------------------
 0.1 Mix-ins
 --------------------------------------------------------------*/
@@ -297,7 +300,7 @@ textarea {
   color: #404040;
   font-size: 16px;
   font-size: 1rem;
-  line-height: 1.5;
+  line-height: 1.2;
   font-family: 'Open Sans', sans-serif;
 }
 
@@ -396,10 +399,10 @@ q {
 }
 
 hr {
-  background-color: #ccc;
+  background-color: @bg-compliment;
   border: 0;
   height: 1px;
-  margin-bottom: 1.5em;
+  margin: 0.5em 0;
 }
 
 ul,
@@ -519,17 +522,18 @@ textarea {
 5.1 Links
 --------------------------------------------------------------*/
 a {
-  color: @malibu;;
+  color: @malibu;
+  text-decoration: none;
 }
 
 a:visited {
-  color: purple;
+  color: darken(@malibu, 5);
 }
 
 a:hover,
 a:focus,
 a:active {
-  color: midnightblue;
+  color: lighten(@malibu, 5);
 }
 
 a:focus {
@@ -559,107 +563,108 @@ a:active {
 }
 
 /*--------------------------------------------------------------
-5.2.2 Classes
+5.2.2 Main Navigation
 --------------------------------------------------------------*/
-.main-navigation {
-  ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
+.site-header {
+  .main-navigation {
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
 
-    li {
-      width: 100%;
-      position: relative;
-      background-color: #F2EFEF;;
+      li {
+        width: 100%;
+        position: relative;
+        background-color: #F2EFEF;;
 
-      // mix in color variations
-      &.malibu {
-        .menu-item-color(@malibu);
-      }
-      &.apple {
-        .menu-item-color(@apple);
-      }
-      &.cerise {
-        .menu-item-color(@cerise);
-      }
-      &.puce {
-        .menu-item-color(@puce);
-      }
-      &.jaffa {
-        .menu-item-color(@jaffa);
-      }
+        // mix in color variations
+        &.malibu {
+          .menu-item-color(@malibu);
+        }
+        &.apple {
+          .menu-item-color(@apple);
+        }
+        &.cerise {
+          .menu-item-color(@cerise);
+        }
+        &.puce {
+          .menu-item-color(@puce);
+        }
+        &.jaffa {
+          .menu-item-color(@jaffa);
+        }
 
-      &:hover {
-        > ul {
-          // brings sub-menu into view
-          left: auto;
+        &:hover {
+          > ul {
+            // brings sub-menu into view
+            left: auto;
 
-          li {
-            // for transition in
-            max-height: 1024px;
+            li {
+              // for transition in
+              max-height: 1024px;
+            }
           }
         }
-      }
 
-      a {
-        height: 44px;
-        line-height: 44px;
-        vertical-align: middle;
-        display: block;
-        text-decoration: none;
-        text-align: center;
-        font-weight: bold;
-        text-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
-        text-transform: uppercase;
-        color: #eee;
-        font-size: 18px;
-        font-size: 1.125rem;
-      }
+        a {
+          height: 44px;
+          line-height: 44px;
+          vertical-align: middle;
+          display: block;
+          text-decoration: none;
+          text-align: center;
+          font-weight: bold;
+          text-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
+          text-transform: uppercase;
+          color: #eee;
+          font-size: 18px;
+          font-size: 1.125rem;
+        }
 
-      ul {
-        display: block;
-        width: 100%;
-        box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+        ul {
+          display: block;
+          width: 100%;
+          box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
 
-        // offset to the side, hover selector will reset
-        position: absolute;
-        left: -999em;
-        z-index: 99999;
+          // offset to the side, hover selector will reset
+          position: absolute;
+          left: -999em;
+          z-index: 99999;
 
-        li {
-          // used to a fade in transition
-          max-height: 0;
-          overflow: hidden;
-          -webkit-transition: max-height 1.42s;
-          border-bottom: 1px solid #ccc;
-
-          &:hover {
-            > ul {
-              left: 100%;
-            }
-          }
-
-          a {
-            margin-left: 1em;
-            color: #404040;
-            text-align: left;
-            font-size: 12px;
-            font-size: 0.75rem;
-            height: 32px;
-            line-height: 32px;
-            text-shadow: none;
-            font-weight: normal;
-            text-transform: none;
-
+          li {
+            // used to a fade in transition
+            max-height: 0;
+            overflow: hidden;
+            -webkit-transition: max-height 1.42s;
+            border-bottom: 1px solid #ccc;
 
             &:hover {
-              font-weight: bold;
+              > ul {
+                left: 100%;
+              }
             }
-          }
 
-          ul {
-            left: -999em;
+            a {
+              margin-left: 1em;
+              color: #404040;
+              text-align: left;
+              font-size: 13px;
+              font-size: 0.8125rem;
+              height: 32px;
+              line-height: 32px;
+              text-shadow: none;
+              font-weight: normal;
+              text-transform: none;
+
+              &:hover {
+                font-weight: bold;
+              }
+            }
+
+            ul {
+              left: -999em;
+            }
           }
         }
       }
@@ -780,7 +785,9 @@ a:active {
 .site-content:before,
 .site-content:after,
 .site-footer:before,
-.site-footer:after {
+.site-footer:after,
+.site-title:before,
+.site-title:after {
   content: "";
   display: table;
 }
@@ -790,7 +797,8 @@ a:active {
 .comment-content:after,
 .site-header:after,
 .site-content:after,
-.site-footer:after {
+.site-footer:after,
+.site-title:after {
   clear: both;
 }
 
@@ -813,44 +821,43 @@ a:active {
 /*--------------------------------------------------------------
 9.1 Site-map
 --------------------------------------------------------------*/
-.site-footer.widget-area {
-  background-color: @bg-compliment;
+.site-footer {
+  &.widget-area {
+    background-color: @bg-compliment;
+
+    ul {
+      width: 100%;
+      display: flex;
+      margin: 1em 0;
+      padding: 0;
+      list-style: none;
+
+      li {
+        width: 100%;
+
+        a {
+          font-size: 13px;
+          font-size: 0.8125rem;
+          color: white;
+          font-weight: bold;
+          text-shadow: 0 2px 2px rgba(0, 0, 0, 0.125);
+        }
+
+        ul {
+          display: block;
+          margin: 0.25em 0 0;
+
+          li {
+            a {
+              font-weight: normal;
+            }
+          }
+        }
+      }
+    }
+  }
 }
-.site-footer.widget-area .sub-menu {
-  margin-left: 0;
-  display: block;
-}
-.site-footer.widget-area .sub-menu a {
-  margin-bottom: 0;
-}
-.site-footer.widget-area ul {
-  width: 100%;
-  margin: 0;
-}
-.site-footer.widget-area ul li {
-  display: inline-block;
-  vertical-align: text-top;
-  width: 20%;
-  float: left;
-}
-.site-footer.widget-area ul li ul li {
-  display: block;
-  width: 100%;
-}
-.site-footer.widget-area ul li a {
-  border-bottom: none;
-  padding: 0;
-  font-weight: bold;
-  color: white;
-  margin-bottom: 5px;
-  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.125);
-}
-.site-footer.widget-area .current-menu-item > a, .footer-area ul li a:hover {
-  text-shadow: none;
-}
-.site-footer.widget-area ul li ul li a {
-  font-weight: normal;
-}
+
 /*--------------------------------------------------------------
 10.0 Content
 --------------------------------------------------------------*/
@@ -905,7 +912,7 @@ a:active {
   display: block;
 }
 /*--------------------------------------------------------------
-12.4 Site Heading
+10.4 Site Heading
 --------------------------------------------------------------*/
 .site-header {
   .logo {
@@ -913,7 +920,7 @@ a:active {
   }
 }
 /*--------------------------------------------------------------
-12.4 Sponsorship Area
+10.5 Sponsorship Area
 --------------------------------------------------------------*/
 .sponsorship-area {
   padding: 10px 0;
@@ -948,6 +955,345 @@ a:active {
 @-webkit-keyframes shift {
   0%   { transform: translate(0, 0); }
   100% { transform: translate(-200%, 0); }
+}
+/*--------------------------------------------------------------
+10.6 Our Team Post Type
+--------------------------------------------------------------*/
+.aura-people {
+  display: flex;
+
+  .aura-people-list {
+    flex: 1;
+
+    h3 {
+      margin-top: 0;
+      margin-bottom: 2px;
+      text-decoration: underline;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0 0 5px 0;
+      margin: 0;
+
+      li a {
+        border-left: 5px solid #fff;
+        padding-left: 2px;
+
+        &:hover {
+          border-color: #52a8fc;
+          transition: all .42s ease;
+        }
+      }
+    }
+  }
+  .aura-people-snaps {
+    flex: 4;
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    flex-wrap: wrap;
+
+    .aura-person {
+      display: block;
+      padding: 0.5em;
+      flex-basis: 280px;
+
+      .aura-person-group {
+        display: flex;
+      }
+
+      .aura-person-photo {
+        width: 150px;
+        height: auto;
+        margin-right: 5px;
+      }
+    }
+  }
+
+  .aura-person-singular {
+    flex: 4;
+  }
+
+  .aura-person {
+    h1 {
+      font-size: 23px;
+      line-height: 23px;
+      margin-bottom: 0;
+      margin-top: 0;
+
+      span {
+        font-weight: normal;
+        text-underline: none;
+        font-size: 17px;
+        margin-left: 15px;
+      }
+    }
+
+    img {
+//      border-radius: 3px;
+//      border: 1px solid rgba(0,0,0,.125);
+//      padding: 5px;
+//      box-shadow: 1px 1px 1px rgba(0,0,0,.125);
+    }
+
+    h2 {
+      font-size: 15px;
+      line-height: 16px;
+      margin: 0 0 10px;
+      font-weight: normal;
+    }
+
+    .aura-person-links {
+      a {
+        width: 100%;
+        background-color: #f0f0f0;
+        padding: 10px;
+        display: inline-block;
+        margin-bottom: 5px;
+        transition: all .42s ease;
+        border-left: 0 solid #52a8fc;
+
+        &:hover {
+          background-color: #52a8fc;
+          color: #f0f0f0;
+          border-left: 5px solid #f0f0f0;
+        }
+      }
+    }
+
+    .fa {
+      width: 16px;
+      text-align: center;
+    }
+  }
+}
+
+.aura-people-snaps .aura-person { margin-bottom: 50px; }
+.aura-people-snaps .aura-person .aura-person-blurb {
+  display: none;
+}
+.aura-people-snaps .aura-person h1 { }
+.aura-people-snaps .aura-person h2
+.aura-people-snaps .aura-person .aura-person-group {
+  display: flex;
+  align-items: flex-start;
+}
+.aura-people-snaps .aura-person .aura-person-blurb { }
+
+
+.aura-person .aura-person-profile {
+  display: flex;
+  width: 100%;
+}
+.aura-person-singular .aura-person h1 {
+  margin-bottom: 10px;
+}
+.aura-person-singular .aura-person p {
+  margin-top: 0;
+}
+.aura-person-singular .aura-person .aura-person-photo {
+  width: 100%;
+}
+.aura-person-singular .aura-person .aura-person-profile {
+
+}
+.aura-person-singular .aura-person .aura-person-profile > div:nth-child(1) {
+  flex: 1;
+  padding-right: 20px;
+  min-width: 120px;
+}
+.aura-person-singular .aura-person .aura-person-profile > div:nth-child(2) {
+  width: 80%;
+}
+/*--------------------------------------------------------------
+10.7 Contact Form
+--------------------------------------------------------------*/
+.contact-page {
+  display: flex;
+
+  .contact-info {
+    flex: 1;
+  }
+  .contact-form {
+    flex: 3;
+    margin-left: 1em;
+  }
+}
+
+.aura-contact-form label {
+  margin-bottom: .25em;
+}
+.aura-contact-form { }
+.aura-contact-form input[type="text"],
+.aura-contact-form input[type="password"],
+.aura-contact-form input[type="email"],
+.aura-contact-form input[type="url"],
+.aura-contact-form input[type="date"],
+.aura-contact-form input[type="month"],
+.aura-contact-form input[type="time"],
+.aura-contact-form input[type="datetime"],
+.aura-contact-form input[type="datetime-local"],
+.aura-contact-form input[type="week"],
+.aura-contact-form input[type="number"],
+.aura-contact-form input[type="search"],
+.aura-contact-form input[type="tel"],
+.aura-contact-form input[type="color"],
+.aura-contact-form select,
+.aura-contact-form textarea {
+  padding: 0.5em 0.6em;
+  /*display: inline-block;*/
+  border: 1px solid #ccc;
+  box-shadow: inset 0 1px 3px #ddd;
+  border-radius: 4px;
+  vertical-align: middle;
+  color: #333;
+  width: 100%;
+  margin-bottom: .5em;
+}
+.aura-contact-form select {
+  /* Normalizes the height; padding is not sufficient. */
+  height: 2.25em;
+  border: 1px solid #ccc;
+  background-color: white;
+}
+.aura-contact-form hr {
+  border-color: #eee;
+  border-bottom-width: 0;
+  clear: both;
+}
+.aura-contact-form input[type="submit"] {
+  background-color: #f0f0f0;
+  color: #52a8fc;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  font-size: 17px;
+  border-radius: 2px;
+}
+.aura-contact-form input[type="submit"]:hover {
+  background-color: #52a8fc;
+  color: #f0f0f0;
+  border-color: #0073fc;;
+}
+.aura-contact-form input[type="submit"]:disabled {
+  opacity: .5;
+}
+.aura-contact-form input[type="submit"]:disabled:hover {
+  background-color: #f0f0f0;
+  color: #52a8fc;
+  border: 1px solid #ddd;
+}
+
+
+.aura-msg {
+  text-align: center;
+  font-size: 15px;
+}
+.aura-msg div {
+  padding: 20px;
+  color: white;
+}
+.aura-msg .aura-msg-success {
+  background-color: #63a43c;
+}
+.aura-msg .aura-msg-failure {
+  background-color: #690e0e;
+}
+
+.aura-info-box {
+  margin-bottom: 20px;
+}
+.aura-info-box h3 {
+  background-color: #f0f0f0;
+  color: #52a8fc;
+  padding: 5px 10px;
+  margin: 0;
+}
+.aura-info-box h4 {
+  margin: 10px 0 0;
+  font-size: 15px;
+  text-decoration: underline;
+}
+.aura-info-box p {
+  margin: 0 0 10px;
+}
+.aura-info-box .aura-info-box-body {
+  padding: 10px 10px 5px;
+  background-color: #fafafa;
+}
+
+/*--------------------------------------------------------------
+10.8 Site Info
+--------------------------------------------------------------*/
+.site-info {
+  > div {
+    margin-top: 1em;
+    font-size: 13px;
+    font-size: 0.8125rem;
+  }
+  img {
+    max-width: 320px;
+  }
+}
+/*--------------------------------------------------------------
+10.9 Patron Post Type
+--------------------------------------------------------------*/
+.aura-patron-list .aura-patron {
+  display: flex;
+}
+.aura-patron-list .aura-patron div:nth-child(1) {
+
+}
+.aura-patron-list .aura-patron div:nth-child(2) {
+  flex: 1;
+}
+
+.aura-patron-list .aura-patron:not(:last-child) {
+  margin-bottom: 40px;
+}
+.aura-patron-list .aura-patron h1 {
+  margin: 0;
+  border-bottom: 1px solid #ccc;
+}
+.aura-patron-list .aura-patron h1 span {
+  font-size: 17px;
+  font-weight: normal;
+}
+
+
+.aura-patron .aura-patron-photo {
+  border: 1px solid rgba(0,0,0,.25);
+  padding: 5px;
+  box-shadow: 2px 2px 2px rgba(0,0,0,.125);
+  width: 180px;
+  margin-right: 1em;
+}
+/*--------------------------------------------------------------
+10.10 Site Title / Heading
+--------------------------------------------------------------*/
+.site-title {
+  margin: 1em;
+
+
+  .breadcrumbs {
+    float: right;
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 1em 0;
+      text-align: right;
+
+      li {
+        display: inline;
+
+        &:not(:last-child):after {
+          margin: 0 4px;
+          content: "/";
+        }
+      }
+    }
+  }
 }
 /*--------------------------------------------------------------
 11.0 Infinite scroll
@@ -1051,4 +1397,11 @@ object {
 
 .gallery-caption {
   display: block;
+}
+/*--------------------------------------------------------------
+13.0 Layouts
+--------------------------------------------------------------*/
+.site-header, .site-content, .site-footer > div, .site-title {
+  max-width: @site-max-width;
+  margin: 0 auto;
 }

@@ -60,11 +60,11 @@
                 <a href="<?php echo esc_url( __( '#' ) ); ?>">Contact us</a> |
                 <a href="#">Privacy &amp; Legal</a> |
                 <a href="#">Site Map</a>
-                <span class="align-left">Copyright 2015 Rotary Oceania Medical Aid for Children Ltd. (ROMAC Ltd.) All rights reserved.</span>
+                <span class="alignright">Copyright 2015 Rotary Oceania Medical Aid for Children Ltd. (ROMAC Ltd.) All rights reserved.</span>
+                <hr>
+                <img src="http://romac-website.appspot.com.storage.googleapis.com/uploads/ROMAC-logo-Districts-of-Oceania.jpg" alt="Rotary | ROMAC" class="alignright">
+                Standard information about ROMAC's ATO charity status and text exempt info.<br>(Charity ID no.)
             </div>
-            <hr>
-            <img src="http://romac-website.appspot.com.storage.googleapis.com/uploads/ROMAC-logo-Districts-of-Oceania.jpg" alt="Rotary | ROMAC" class="alignright">
-            <p>Standard information about ROMAC's ATO charity status and text exempt info.<br>(Charity ID no.)</p>
 		</div><!-- .site-info -->
 	</footer><!-- #colophon -->
 </div><!-- #page -->
