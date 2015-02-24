@@ -100,10 +100,6 @@ add_action( 'widgets_init', 'romac_widgets_init' );
  * Enqueue scripts and styles.
  */
 function romac_scripts() {
-	wp_enqueue_style( 'romac-style', get_stylesheet_uri() );
-
-    wp_enqueue_style( 'romac-layout-style', get_template_directory_uri() . '/layouts/layout.css' );
-
 	wp_enqueue_script( 'romac-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20120206', true );
 
 	wp_enqueue_script( 'romac-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20130115', true );
@@ -111,6 +107,16 @@ function romac_scripts() {
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
+
+    // for localhost / testing environment, include the less css pre-processor
+    if (isset($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'],'Google App Engine') !== true) {
+        wp_enqueue_style(  'romac-style-less',        get_bloginfo( 'template_directory' ) . '/style.less' );
+        wp_enqueue_style(  'romac-layout-style-less', get_bloginfo( 'template_directory' ) . '/layouts/layout.less' );
+        wp_enqueue_script( 'less-processor',        get_template_directory_uri() . '/js/less.min.js', array(), '2.4.0', true );
+    } else {
+        wp_enqueue_style( 'romac-style',        get_stylesheet_uri() );
+        wp_enqueue_style( 'romac-layout-style', get_template_directory_uri() . '/layouts/layout.css' );
+    }
 }
 add_action( 'wp_enqueue_scripts', 'romac_scripts' );
 
@@ -146,6 +152,23 @@ require get_template_directory() . '/inc/customizer.php';
  * Load Jetpack compatibility file.
  */
 require get_template_directory() . '/inc/jetpack.php';
+
+/**.
+ * Register a widget area in the footer
+ *
+ * @link http://codex.wordpress.org/Widgetizing_Themes
+ */
+function footer_widgets_init() {
+    register_sidebar( array(
+        'name'          => 'Footer Area',
+        'id'            => 'footer-widgets',
+        'before_widget' => '<div>',
+        'after_widget'  => '</div>',
+        'before_title'  => '<h2 class="rounded">',
+        'after_title'   => '</h2>',
+    ) );
+}
+add_action( 'widgets_init', 'footer_widgets_init' );
 
 /**
  * Register the team member post type.
@@ -423,3 +446,25 @@ function create_designation_taxonomy() {
     register_taxonomy( 'designation', 'patrons', $args );
 }
 add_action( 'init', 'create_designation_taxonomy' );
+
+/**
+ * A custom style enqueue function used to loading less files. NB: Development only
+ *
+ * @param $tag
+ * @param $handle
+ * @return string The composited link tag containing the specified link
+ */
+function enqueue_less_styles($tag, $handle) {
+    global $wp_styles;
+    $match_pattern = '/\.less$/U';
+    if ( preg_match( $match_pattern, $wp_styles->registered[$handle]->src ) ) {
+        $handle = $wp_styles->registered[$handle]->handle;
+        $media = $wp_styles->registered[$handle]->args;
+        $href = $wp_styles->registered[$handle]->src . '?ver=' . $wp_styles->registered[$handle]->ver;
+        $title = isset($wp_styles->registered[$handle]->extra['title']) ? "title='" . esc_attr( $wp_styles->registered[$handle]->extra['title'] ) . "'" : '';
+
+        $tag = "<link rel='stylesheet' id='$handle' $title href='$href' type='text/less' media='$media' />\r\n";
+    }
+    return $tag;
+}
+add_filter( 'style_loader_tag', 'enqueue_less_styles', 5, 2);

@@ -22,6 +22,8 @@ Nicolas Gallagher and Jonathan Neal http://necolas.github.com/normalize.css/
 /*--------------------------------------------------------------
 >>> TABLE OF CONTENTS:
 ----------------------------------------------------------------
+0.0 Variables
+0.1 Mix-ins
 1.0 Normalize
 2.0 Typography
 3.0 Elements
@@ -43,6 +45,28 @@ Nicolas Gallagher and Jonathan Neal http://necolas.github.com/normalize.css/
 	12.2 Galleries
 --------------------------------------------------------------*/
 
+/*--------------------------------------------------------------
+0.0 Variables
+--------------------------------------------------------------*/
+// menu colors
+@malibu: #52a8fc;
+@apple: #63a43c;
+@cerise: #dc3381;
+@puce: #c372a1;
+@jaffa: #ef8443;
+
+// background colors
+@bg-compliment: #bdbdae;
+
+/*--------------------------------------------------------------
+0.1 Mix-ins
+--------------------------------------------------------------*/
+.font-size(@sizeValue) {
+  @remValue: @sizeValue;
+  @pxValue: (@sizeValue * 10);
+  font-size: ~"@{pxValue}px";
+  font-size: ~"@{remValue}rem";
+}
 /*--------------------------------------------------------------
 1.0 Normalize
 --------------------------------------------------------------*/
@@ -274,6 +298,7 @@ textarea {
 	font-size: 16px;
 	font-size: 1rem;
 	line-height: 1.5;
+    font-family: 'Open Sans', sans-serif;
 }
 
 h1,
@@ -494,7 +519,7 @@ textarea {
 5.1 Links
 --------------------------------------------------------------*/
 a {
-	color: royalblue;
+	color: @malibu;;
 }
 
 a:visited {
@@ -519,66 +544,127 @@ a:active {
 /*--------------------------------------------------------------
 5.2 Menus
 --------------------------------------------------------------*/
+
+/*--------------------------------------------------------------
+5.2.1 Mix-Ins
+--------------------------------------------------------------*/
+.menu-item-color(@color) {
+  background-color: @color;
+  li:hover {
+    background-color: darken(@color, 0.25);
+  }
+  .sub-menu li:hover {
+    background-color: lighten(@color, 10);
+  }
+}
+
+/*--------------------------------------------------------------
+5.2.2 Classes
+--------------------------------------------------------------*/
 .main-navigation {
-	clear: both;
-	display: block;
-	float: left;
-	width: 100%;
-}
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
 
-.main-navigation ul {
-	list-style: none;
-	margin: 0;
-	padding-left: 0;
-}
+    li {
+      width: 100%;
+      position: relative;
+      background-color: #F2EFEF;;
 
-.main-navigation li {
-	float: left;
-	position: relative;
-}
+      // mix in color variations
+      &.malibu {
+        .menu-item-color(@malibu);
+      }
+      &.apple {
+        .menu-item-color(@apple);
+      }
+      &.cerise {
+        .menu-item-color(@cerise);
+      }
+      &.puce {
+        .menu-item-color(@puce);
+      }
+      &.jaffa {
+        .menu-item-color(@jaffa);
+      }
 
-.main-navigation a {
-	display: block;
-	text-decoration: none;
-}
+      &:hover {
+        > ul {
+          // brings sub-menu into view
+          left: auto;
 
-.main-navigation ul ul {
-	box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
-	float: left;
-	position: absolute;
-	top: 1.5em;
-	left: -999em;
-	z-index: 99999;
-}
+          li {
+            // for transition in
+            max-height: 1024px;
+          }
+        }
+      }
 
-.main-navigation ul ul ul {
-	left: -999em;
-	top: 0;
-}
+      a {
+        height: 44px;
+        line-height: 44px;
+        vertical-align: middle;
+        display: block;
+        text-decoration: none;
+        text-align: center;
+        font-weight: bold;
+        text-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
+        text-transform: uppercase;
+        color: #eee;
+        font-size: 18px;
+        font-size: 1.125rem;
+      }
 
-.main-navigation ul ul a {
-	width: 200px;
-}
+      ul {
+        display: block;
+        width: 100%;
+        box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
 
-.main-navigation ul ul li {
+        // offset to the side, hover selector will reset
+        position: absolute;
+        left: -999em;
+        z-index: 99999;
 
-}
+        li {
+          // used to a fade in transition
+          max-height: 0;
+          overflow: hidden;
+          -webkit-transition: max-height 1.42s;
+          border-bottom: 1px solid #ccc;
 
-.main-navigation li:hover > a {
-}
+          &:hover {
+            > ul {
+              left: 100%;
+            }
+          }
 
-.main-navigation ul ul :hover > a {
-}
+          a {
+            margin-left: 1em;
+            color: #404040;
+            text-align: left;
+            font-size: 12px;
+            font-size: 0.75rem;
+            height: 32px;
+            line-height: 32px;
+            text-shadow: none;
+            font-weight: normal;
+            text-transform: none;
 
-.main-navigation ul ul a:hover {
-}
 
-.main-navigation ul li:hover > ul {
-	left: auto;
-}
+            &:hover {
+              font-weight: bold;
+            }
+          }
 
-.main-navigation ul ul li:hover > ul {
-	left: 100%;
+          ul {
+            left: -999em;
+          }
+        }
+      }
+    }
+  }
 }
 
 .main-navigation .current_page_item > a,
@@ -588,40 +674,40 @@ a:active {
 
 /* Small menu. */
 .menu-toggle {
-	display: none;
+  display: none;
 }
 
 @media screen and (max-width: 600px) {
-	.menu-toggle,
-	.main-navigation.toggled .nav-menu {
-		display: block;
-	}
+  .menu-toggle,
+  .main-navigation.toggled .nav-menu {
+    display: block;
+  }
 
-	.main-navigation ul {
-		display: none;
-	}
+  .main-navigation ul {
+    display: none;
+  }
 }
 
 .site-main .comment-navigation,
 .site-main .posts-navigation,
 .site-main .post-navigation {
-	margin: 0 0 1.5em;
-	overflow: hidden;
+  margin: 0 0 1.5em;
+  overflow: hidden;
 }
 
 .comment-navigation .nav-previous,
 .posts-navigation .nav-previous,
 .post-navigation .nav-previous {
-	float: left;
-	width: 50%;
+  float: left;
+  width: 50%;
 }
 
 .comment-navigation .nav-next,
 .posts-navigation .nav-next,
 .post-navigation .nav-next {
-	float: right;
-	text-align: right;
-	width: 50%;
+  float: right;
+  text-align: right;
+  width: 50%;
 }
 
 /*--------------------------------------------------------------
@@ -724,7 +810,47 @@ a:active {
 .widget_search .search-submit {
 	display: none;
 }
-
+/*--------------------------------------------------------------
+9.1 Site-map
+--------------------------------------------------------------*/
+.site-footer.widget-area {
+  background-color: @bg-compliment;
+}
+.site-footer.widget-area .sub-menu {
+  margin-left: 0;
+  display: block;
+}
+.site-footer.widget-area .sub-menu a {
+  margin-bottom: 0;
+}
+.site-footer.widget-area ul {
+  width: 100%;
+  margin: 0;
+}
+.site-footer.widget-area ul li {
+  display: inline-block;
+  vertical-align: text-top;
+  width: 20%;
+  float: left;
+}
+.site-footer.widget-area ul li ul li {
+  display: block;
+  width: 100%;
+}
+.site-footer.widget-area ul li a {
+  border-bottom: none;
+  padding: 0;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 5px;
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.125);
+}
+.site-footer.widget-area .current-menu-item > a, .footer-area ul li a:hover {
+  text-shadow: none;
+}
+.site-footer.widget-area ul li ul li a {
+  font-weight: normal;
+}
 /*--------------------------------------------------------------
 10.0 Content
 --------------------------------------------------------------*/
@@ -778,7 +904,51 @@ a:active {
 .bypostauthor {
 	display: block;
 }
-
+/*--------------------------------------------------------------
+12.4 Site Heading
+--------------------------------------------------------------*/
+.site-header {
+  .logo {
+    margin: 1em;
+  }
+}
+/*--------------------------------------------------------------
+12.4 Sponsorship Area
+--------------------------------------------------------------*/
+.sponsorship-area {
+  padding: 10px 0;
+}
+.marquee {
+  white-space: nowrap;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.marquee a {
+  text-decoration: none;
+}
+.marquee span {
+  display: inline-block;
+  padding-left: 100%;  /* show the marquee just outside the paragraph */
+  -webkit-animation: shift 25s linear infinite;
+  animation: shift 25s linear infinite;
+}
+.marquee img {
+  padding: 0 20px;
+}
+.marquee span:hover {
+  -webkit-animation-play-state: paused;
+  animation-play-state: paused;
+}
+/* Make it move */
+@keyframes shift {
+  0%   { transform: translate(0, 0); }
+  100% { transform: translate(-100%, 0); }
+}
+/* Make it move */
+@-webkit-keyframes shift {
+  0%   { transform: translate(0, 0); }
+  100% { transform: translate(-200%, 0); }
+}
 /*--------------------------------------------------------------
 11.0 Infinite scroll
 --------------------------------------------------------------*/

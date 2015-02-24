@@ -21,6 +21,8 @@ Nicolas Gallagher and Jonathan Neal http://necolas.github.com/normalize.css/
 /*--------------------------------------------------------------
 >>> TABLE OF CONTENTS:
 ----------------------------------------------------------------
+0.0 Variables
+0.1 Mix-ins
 1.0 Normalize
 2.0 Typography
 3.0 Elements
@@ -42,6 +44,12 @@ Nicolas Gallagher and Jonathan Neal http://necolas.github.com/normalize.css/
 	12.2 Galleries
 --------------------------------------------------------------*/
 /*--------------------------------------------------------------
+0.0 Variables
+--------------------------------------------------------------*/
+/*--------------------------------------------------------------
+0.1 Mix-ins
+--------------------------------------------------------------*/
+/*--------------------------------------------------------------
 1.0 Normalize
 --------------------------------------------------------------*/
 html {
@@ -51,6 +59,7 @@ html {
 }
 body {
   margin: 0;
+  font-size: 62.5%;
 }
 article,
 aside,
@@ -232,6 +241,7 @@ textarea {
   font-size: 16px;
   font-size: 1rem;
   line-height: 1.5;
+  font-family: 'Open Sans', sans-serif;
 }
 h1,
 h2,
@@ -424,7 +434,7 @@ textarea {
 5.1 Links
 --------------------------------------------------------------*/
 a {
-  color: royalblue;
+  color: #52a8fc;
 }
 a:visited {
   color: purple;
@@ -444,45 +454,114 @@ a:active {
 /*--------------------------------------------------------------
 5.2 Menus
 --------------------------------------------------------------*/
-.main-navigation {
-  clear: both;
-  display: block;
-  float: left;
-  width: 100%;
-}
+/*--------------------------------------------------------------
+5.2.1 Mix-Ins
+--------------------------------------------------------------*/
+/*--------------------------------------------------------------
+5.2.2 Classes
+--------------------------------------------------------------*/
 .main-navigation ul {
   list-style: none;
   margin: 0;
-  padding-left: 0;
+  padding: 0;
+  display: flex;
 }
-.main-navigation li {
-  float: left;
+.main-navigation ul li {
+  width: 100%;
   position: relative;
+  background-color: #F2EFEF;
 }
-.main-navigation a {
-  display: block;
-  text-decoration: none;
+.main-navigation ul li.malibu {
+  background-color: #52a8fc;
 }
-.main-navigation ul ul {
-  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
-  float: left;
-  position: absolute;
-  top: 1.5em;
-  left: -999em;
-  z-index: 99999;
+.main-navigation ul li.malibu li:hover {
+  background-color: #51a7fc;
 }
-.main-navigation ul ul ul {
-  left: -999em;
-  top: 0;
+.main-navigation ul li.malibu .sub-menu li:hover {
+  background-color: #6bb5fc;
 }
-.main-navigation ul ul a {
-  width: 200px;
+.main-navigation ul li.apple {
+  background-color: #63a43c;
+}
+.main-navigation ul li.apple li:hover {
+  background-color: #62a33c;
+}
+.main-navigation ul li.apple .sub-menu li:hover {
+  background-color: #6eb743;
+}
+.main-navigation ul li.cerise {
+  background-color: #dc3381;
+}
+.main-navigation ul li.cerise li:hover {
+  background-color: #dc3280;
+}
+.main-navigation ul li.cerise .sub-menu li:hover {
+  background-color: #e0498e;
+}
+.main-navigation ul li.puce {
+  background-color: #c372a1;
+}
+.main-navigation ul li.puce li:hover {
+  background-color: #c371a0;
+}
+.main-navigation ul li.puce .sub-menu li:hover {
+  background-color: #cb84ad;
+}
+.main-navigation ul li.jaffa {
+  background-color: #ef8443;
+}
+.main-navigation ul li.jaffa li:hover {
+  background-color: #ef8342;
+}
+.main-navigation ul li.jaffa .sub-menu li:hover {
+  background-color: #f1935b;
 }
 .main-navigation ul li:hover > ul {
   left: auto;
 }
-.main-navigation ul ul li:hover > ul {
+.main-navigation ul li:hover > ul li {
+  max-height: 1024px;
+}
+.main-navigation ul li a {
+  height: 44px;
+  line-height: 44px;
+  vertical-align: middle;
+  display: block;
+  text-decoration: none;
+  text-align: center;
+  font-weight: bold;
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
+  text-transform: uppercase;
+  color: #eee;
+}
+.main-navigation ul li ul {
+  display: block;
+  width: 100%;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  left: -999em;
+  z-index: 99999;
+}
+.main-navigation ul li ul li {
+  max-height: 0;
+  overflow: hidden;
+  -webkit-transition: max-height 2.5s;
+}
+.main-navigation ul li ul li:hover > ul {
   left: 100%;
+}
+.main-navigation ul li ul li a {
+  margin-left: 1em;
+  color: #404040;
+  text-align: left;
+  font-size: 13px;
+  font-size: 1.3rem;
+}
+.main-navigation ul li ul li a:hover {
+  color: #eee;
+}
+.main-navigation ul li ul li ul {
+  left: -999em;
 }
 /* Small menu. */
 .menu-toggle {
@@ -609,6 +688,48 @@ a:active {
   display: none;
 }
 /*--------------------------------------------------------------
+9.1 Site-map
+--------------------------------------------------------------*/
+.site-footer.widget-area {
+  background-color: #bdbdae;
+}
+.site-footer.widget-area .sub-menu {
+  margin-left: 0;
+  display: block;
+}
+.site-footer.widget-area .sub-menu a {
+  margin-bottom: 0;
+}
+.site-footer.widget-area ul {
+  width: 100%;
+  margin: 0;
+}
+.site-footer.widget-area ul li {
+  display: inline-block;
+  vertical-align: text-top;
+  width: 20%;
+  float: left;
+}
+.site-footer.widget-area ul li ul li {
+  display: block;
+  width: 100%;
+}
+.site-footer.widget-area ul li a {
+  border-bottom: none;
+  padding: 0;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 5px;
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.125);
+}
+.site-footer.widget-area .current-menu-item > a,
+.footer-area ul li a:hover {
+  text-shadow: none;
+}
+.site-footer.widget-area ul li ul li a {
+  font-weight: normal;
+}
+/*--------------------------------------------------------------
 10.0 Content
 --------------------------------------------------------------*/
 /*--------------------------------------------------------------
@@ -652,6 +773,58 @@ a:active {
 }
 .bypostauthor {
   display: block;
+}
+/*--------------------------------------------------------------
+12.4 Site Heading
+--------------------------------------------------------------*/
+.site-header .logo {
+  margin: 1em;
+}
+/*--------------------------------------------------------------
+12.4 Sponsorship Area
+--------------------------------------------------------------*/
+.sponsorship-area {
+  padding: 10px 0;
+}
+.marquee {
+  white-space: nowrap;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.marquee a {
+  text-decoration: none;
+}
+.marquee span {
+  display: inline-block;
+  padding-left: 100%;
+  /* show the marquee just outside the paragraph */
+  -webkit-animation: shift 25s linear infinite;
+  animation: shift 25s linear infinite;
+}
+.marquee img {
+  padding: 0 20px;
+}
+.marquee span:hover {
+  -webkit-animation-play-state: paused;
+  animation-play-state: paused;
+}
+/* Make it move */
+@keyframes shift {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(-100%, 0);
+  }
+}
+/* Make it move */
+@-webkit-keyframes shift {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(-200%, 0);
+  }
 }
 /*--------------------------------------------------------------
 11.0 Infinite scroll

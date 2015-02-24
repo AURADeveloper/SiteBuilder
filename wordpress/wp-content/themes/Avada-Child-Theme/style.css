@@ -8,13 +8,41 @@ Template: Avada
     text-align: center;
 }
 .aura-patron-list .aura-patron {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
     display: flex;
+    -webkit-box-direction: normal;
+    -moz-box-direction: normal;
+    -webkit-box-orient: horizontal;
+    -moz-box-orient: horizontal;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-wrap: nowrap;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-box-pack: center;
+    -moz-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-align-content: stretch;
+    -ms-flex-line-pack: stretch;
+    align-content: stretch;
+    -webkit-box-align: start;
+    -moz-box-align: start;
+    -webkit-align-items: flex-start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    margin: 0 auto;
 }
 .aura-patron-list .aura-patron:nth-child(odd) {
-    justify-content: flex-start;
+    /*justify-content: flex-start;*/
 }
 .aura-patron-list .aura-patron:nth-child(odd) {
-    justify-content: flex-end;
+    /*justify-content: flex-end;*/
 }
 .aura-patron-list .aura-patron:not(:last-child) {
     margin-bottom: 40px;
@@ -28,7 +56,7 @@ Template: Avada
     font-weight: normal;
 }
 .aura-patron-list .aura-patron div:nth-child(2) {
-    max-width: 880px;
+    max-width: 720px;
 }
 .aura-patron-list .aura-patron:nth-child(odd) div:nth-child(1) {
     order: 1;

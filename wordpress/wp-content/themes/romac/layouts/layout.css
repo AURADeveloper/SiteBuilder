@@ -1,6 +1,6 @@
 .site-header,
 .site-content,
-.site-footer {
+.site-footer > div {
   max-width: 1100px;
   margin: 0 auto;
 }
