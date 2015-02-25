@@ -12,6 +12,7 @@
     <footer id="romac-sponsors" class="site-footer sponsorship-area" role="presentation">
         <div class="marquee">
             <h3>Our Sponsors</h3>
+            <hr>
             <span>
                 <a href="http://www.coopers.com.au/" target="_blank">
                     <img src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/sponsors/coopers.png" alt="Coopers" />
@@ -52,19 +53,21 @@
 <?php if ( is_active_sidebar( 'footer-widgets' ) ) : ?>
     <footer id="footer-widgets" class="site-footer widget-area" role="contentinfo">
         <?php dynamic_sidebar( 'footer-widgets' ); ?>
-    </footer><!-- #primary-sidebar -->
+    </footer><!-- #footer-sidebar -->
 <?php endif; ?>
 	<footer id="colophon" class="site-footer" role="contentinfo">
 		<div class="site-info">
-            <div>
+            <span class="links">
                 <a href="<?php echo esc_url( __( '#' ) ); ?>">Contact us</a> |
                 <a href="#">Privacy &amp; Legal</a> |
                 <a href="#">Site Map</a>
-                <span class="alignright">Copyright 2015 Rotary Oceania Medical Aid for Children Ltd. (ROMAC Ltd.) All rights reserved.</span>
-                <hr>
-                <img src="http://romac-website.appspot.com.storage.googleapis.com/uploads/ROMAC-logo-Districts-of-Oceania.jpg" alt="Rotary | ROMAC" class="alignright">
-                Standard information about ROMAC's ATO charity status and text exempt info.<br>(Charity ID no.)
-            </div>
+            </span>
+            <span class="copyright">
+                Copyright 2015 Rotary Oceania Medical Aid for Children Ltd. (ROMAC Ltd.) All rights reserved.
+            </span>
+            <hr>
+            <img src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/logo-rotary.jpg" alt="Rotary | ROMAC" class="logo">
+            <span class="legal">Standard information about ROMAC's ATO charity status and text exempt info.</span>
 		</div><!-- .site-info -->
 	</footer><!-- #colophon -->
 </div><!-- #page -->

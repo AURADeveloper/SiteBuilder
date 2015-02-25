@@ -311,6 +311,7 @@ h4,
 h5,
 h6 {
   clear: both;
+  margin: 0.5em 0;
 }
 
 p {
@@ -857,7 +858,41 @@ a:active {
     }
   }
 }
+/*--------------------------------------------------------------
+9.2 Contact Info
+--------------------------------------------------------------*/
+.widget {
+  &.widget_text {
+    .widget-title {
+      display: none;
+    }
+  }
+}
 
+
+.aura-info-box {
+  margin-bottom: 20px;
+}
+.aura-info-box h3 {
+  background-color: #f0f0f0;
+  color: #52a8fc;
+  padding: 5px 10px;
+  margin: 0;
+}
+.aura-info-box h4 {
+  margin: 10px 0 0;
+  font-size: 15px;
+  text-decoration: underline;
+}
+.aura-info-box p {
+  margin: 0 0 10px;
+}
+.aura-info-box .aura-info-box-body {
+  padding: 10px 10px 5px;
+  background-color: #fafafa;
+  font-size: 14px;
+  font-size: 0.875rem;
+}
 /*--------------------------------------------------------------
 10.0 Content
 --------------------------------------------------------------*/
@@ -1001,6 +1036,10 @@ a:active {
 
       .aura-person-group {
         display: flex;
+
+        .aura-person-links {
+          flex: 1;
+        }
       }
 
       .aura-person-photo {
@@ -1110,14 +1149,56 @@ a:active {
 10.7 Contact Form
 --------------------------------------------------------------*/
 .contact-page {
-  display: flex;
+  .aura-msg {
+    text-align: center;
+    font-size: 18px;
+    font-size: 1.125rem;
 
-  .contact-info {
-    flex: 1;
+    div {
+      padding: 20px;
+      color: white;
+    }
+
+    .aura-msg-success {
+      background-color: #63a43c;
+    }
+    .aura-msg-failure {
+      background-color: #690e0e;
+    }
   }
-  .contact-form {
-    flex: 3;
-    margin-left: 1em;
+}
+
+.aura-contact-form {
+  .control-group {
+    display: flex;
+    flex-wrap: wrap;
+
+    label {
+      margin-top: .5em;
+      width: 120px;
+    }
+
+    input, select, textarea {
+      flex: 1;
+      flex-basis: 220px;
+    }
+
+    .checkbox {
+      margin: 1em 0;
+    }
+  }
+
+  .control-group.offset {
+    display: block;
+    margin-left: 120px;
+
+    input {
+      margin: .5em 0;
+    }
+  }
+
+  #g-recaptcha {
+    margin: .5em 0;
   }
 }
 
@@ -1184,54 +1265,24 @@ a:active {
   border: 1px solid #ddd;
 }
 
-
-.aura-msg {
-  text-align: center;
-  font-size: 15px;
-}
-.aura-msg div {
-  padding: 20px;
-  color: white;
-}
-.aura-msg .aura-msg-success {
-  background-color: #63a43c;
-}
-.aura-msg .aura-msg-failure {
-  background-color: #690e0e;
-}
-
-.aura-info-box {
-  margin-bottom: 20px;
-}
-.aura-info-box h3 {
-  background-color: #f0f0f0;
-  color: #52a8fc;
-  padding: 5px 10px;
-  margin: 0;
-}
-.aura-info-box h4 {
-  margin: 10px 0 0;
-  font-size: 15px;
-  text-decoration: underline;
-}
-.aura-info-box p {
-  margin: 0 0 10px;
-}
-.aura-info-box .aura-info-box-body {
-  padding: 10px 10px 5px;
-  background-color: #fafafa;
-}
-
 /*--------------------------------------------------------------
 10.8 Site Info
 --------------------------------------------------------------*/
 .site-info {
-  > div {
-    margin-top: 1em;
-    font-size: 13px;
-    font-size: 0.8125rem;
+  padding: 1em 0;
+  font-size: 13px;
+  font-size: 0.8125rem;
+
+  .links {
+
   }
-  img {
+
+  .copyright {
+    float: right;
+  }
+
+  .logo {
+    float: right;
     max-width: 320px;
   }
 }
@@ -1404,4 +1455,19 @@ object {
 .site-header, .site-content, .site-footer > div, .site-title {
   max-width: @site-max-width;
   margin: 0 auto;
+}
+
+.site-content {
+  display: flex;
+
+  #content {
+    flex: 1;
+    order: 2;
+    margin: 0 1em;
+  }
+  #secondary {
+    width: 240px;
+    order: 1;
+    margin: 0 1em;
+  }
 }

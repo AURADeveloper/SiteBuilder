@@ -110,52 +110,6 @@ if ( $submitted && $recaptcha_success ) {
 get_header();
 ?>
 <div id="content" role="main" class="contact-page">
-    <div class="contact-info">
-        <div class="aura-info-box">
-            <h3>Direct Contact</h3>
-            <div class="aura-info-box-body">
-                <p>Rotary Oceania Medical Aid for Children Ltd (ROMAC)</p>
-                <p><abbr title="Australian Business Number">ABN</abbr>: 17 101 370 003</p>
-
-                <h4>Phone</h4>
-                <p>
-                    <a href="/about-romac/our-team/brendan-porter/">Brendan Porter</a> - BOARD CHAIRMAN<br/>
-                    0488 768 279
-                </p>
-
-                <h4>Address</h4>
-                <p>
-                    ROMAC<br/>
-                    PO Box 779<br/>
-                    Parramatta, NSW<br/>
-                    Australia 2124
-                </p>
-
-                <h4>Email Contacts</h4>
-                <p>
-                    operations@romac.org.au
-                </p>
-
-                <h4>ROMAC Personnel</h4>
-                <p>
-                    Board members and regional contacts are listed on the <a href="/about-romac/our-team">Our Team</a> page.
-                </p>
-            </div>
-        </div>
-
-        <div class="aura-info-box">
-            <h3>ROMAC in New Zealand</h3>
-            <div class="aura-info-box-body">
-                <p>
-                    <img src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/New-Zealand-Flag-sm.png" alt="New Zealand Flag" class="pull-right" />
-                    Visit the Children's Charity in New Zealand website to contact ROMAC in NZ.
-                </p>
-                <p>
-                    <a href="http://www.charityforchildren.org.nz">www.charityforchildren.org.nz</a>
-                </p>
-            </div>
-        </div>
-    </div>
     <div class="contact-form">
         <div class="aura-msg">
             <?php
@@ -178,73 +132,79 @@ get_header();
         <form class="aura-contact-form" method="post"
               action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"] . '?' . $_SERVER['QUERY_STRING']); ?>">
             <h3>Your Contact Details</h3>
-            <label class="fusion-one-fifth one_fifth fusion-layout-column fusion-column" for="fname">First Name:</label>
-            <input class="fusion-four-fifth four_fifth fusion-layout-column fusion-column last" id="fname" type="text" name="fname" value="<?php echo $fname; ?>" required>
-            <label class="fusion-one-fifth one_fifth fusion-layout-column fusion-column" for="lname">Last Name:</label>
-            <input class="fusion-four-fifth four_fifth fusion-layout-column fusion-column last" id="lname" type="text" name="lname" value="<?php echo $lname; ?>" required>
-            <label class="fusion-one-fifth one_fifth fusion-layout-column fusion-column" for="email">Email:</label>
-            <input class="fusion-four-fifth four_fifth fusion-layout-column fusion-column last" id="email" type="email" name="email" value="<?php echo $email; ?>" placeholder="Please provide an email where we can reply to you" required>
-            <label class="fusion-one-fifth one_fifth fusion-layout-column fusion-column" for="phone">Telephone:</label>
-            <input class="fusion-four-fifth four_fifth fusion-layout-column fusion-column last" id="phone" type="tel" name="phone" value="<?php echo $phone; ?>" placeholder="You may optionally provide us your phone number for correspondence">
-
-            <hr>
-
+            <div class="control-group">
+                <label for="fname">First Name:</label>
+                <input id="fname" type="text" name="fname" value="<?php echo $fname; ?>" required>
+            </div>
+            <div class="control-group">
+                <label for="lname">Last Name:</label>
+                <input id="lname" type="text" name="lname" value="<?php echo $lname; ?>" required>
+            </div>
+            <div class="control-group">
+                <label for="email">Email:</label>
+                <input id="email" type="email" name="email" value="<?php echo $email; ?>" placeholder="Please provide an email where we can reply to you" required>
+            </div>
+            <div class="control-group">
+                <label for="phone">Telephone:</label>
+                <input id="phone" type="tel" name="phone" value="<?php echo $phone; ?>" placeholder="You may optionally provide us your phone number for correspondence">
+            </div>
             <h3>Enquiry</h3>
-            <label class="fusion-one-fifth one_fifth fusion-layout-column fusion-column" for="recipient">Recipient:</label>
-            <select class="fusion-four-fifth four_fifth fusion-layout-column fusion-column last" id="recipient" name="recipient" required>
-                <?php if ( $addressed ): ?>
-                <option selected value="<?php echo $id; ?>"><?php echo $recipient_name; ?> (<?php echo $recipient_role; ?>)</option>
-                <?php endif; ?>
-                <?php if ( ! $addressed ):
-                    $args = array( 'post_type' => array( 'person' ), 'nopaging' => true );
-                    $query = new WP_Query( $args );
-                    while ( $query->have_posts() ):
-                        $query->the_post();
-                        $selected = '';
-                        if ( $query->post->ID == $default_recipient) $selected = ' selected';
-                        echo '<option value="' . $query->post->ID . '"' . $selected . '>' .
-                                get_field( 'persons_name', $query->post->ID ) .
-                                ' (' . get_field( 'persons_job_role_title', $query->post->ID ) . ')' .
-                                '</option>';
-                    endwhile;
-                endif; ?>
-            </select>
+            <div class="control-group">
+                <label for="recipient">Recipient:</label>
+                <select id="recipient" name="recipient" required>
+                    <?php if ( $addressed ): ?>
+                    <option selected value="<?php echo $id; ?>"><?php echo $recipient_name; ?> (<?php echo $recipient_role; ?>)</option>
+                    <?php endif; ?>
+<!--                    --><?php //if ( ! $addressed ):
+//                        $args = array( 'post_type' => array( 'our_team' ), 'nopaging' => true );
+//                        $query = new WP_Query( $args );
+//                        while ( $query->have_posts() ):
+//                            $post = $query->next_post();
+//                            //$query->the_post();
+//                            $selected = '';
+//                            if ( $post->ID == $default_recipient) $selected = ' selected';
+//                            echo '<option value="' . $post->ID . '"' . $selected . '>' .
+//                                    get_post_meta( $post->ID, '_rot_name', true ) .
+//                                    ' (' . get_post_meta( $post->ID, '_rot_role', true ) . ')' .
+//                                    '</option>';
+//                        endwhile;
+//                    endif; ?>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="message">Message:</label>
+                <textarea rows="8" id="message" name="message" required><?php echo $message; ?></textarea>
+            </div>
 
-            <label class="fusion-one-fifth one_fifth fusion-layout-column fusion-column" for="message">Message:</label>
-            <textarea class="fusion-four-fifth four_fifth fusion-layout-column fusion-column last" rows="8" id="message" name="message" required><?php echo $message; ?></textarea>
+            <div class="control-group offset">
+                <div id="g-recaptcha"></div>
+            </div>
 
-            <hr>
+            <div class="control-group offset">
+                <label for="subscribe" class="checkbox">
+                    <input type="checkbox" id="subscribe" name="subscribe" <?php echo $subscribe ? 'checked' : ''; ?>> Yes, I would like to receive emails from ROMAC.
+                </label>
+            </div>
 
-            <h3>Email Subscriptions</h3>
-            <div class="fusion-one-fifth one_fifth fusion-layout-column fusion-column"></div>
-            <label class="fusion-four-fifth four_fifth fusion-layout-column fusion-column last" for="subscribe">
-                <input type="checkbox" id="subscribe" name="subscribe" <?php echo $subscribe ? 'checked' : ''; ?>> Yes, I would like to receive emails from ROMAC.
-            </label>
-
-            <div class="fusion-one-fifth one_fifth fusion-layout-column fusion-column"></div>
-            <div id="g-recaptcha" class="fusion-four-fifth four_fifth fusion-layout-column fusion-column last"></div>
-
-            <div class="fusion-one-fifth one_fifth fusion-layout-column fusion-column"></div>
-            <div class="fusion-four-fifth four_fifth fusion-layout-column fusion-column last">
+            <div class="control-group offset">
                 <input id="contact-form-submit" type="submit" value="Send" disabled>
             </div>
         </form>
+        <!-- The Google reCAPTCHA form control -->
+        <!-- It manually instantiates the widget so that the control can be validated. -->
+        <!-- The form submit button will be disabled until the reCAPTCHA control is completed. -->
+        <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+        <script type="text/javascript">
+            var onloadCallback = function() {
+                grecaptcha.render('g-recaptcha', {
+                    'sitekey': '<?php echo $public_key; ?>',
+                    'callback': function(response) {
+                        document.getElementById('contact-form-submit').removeAttribute('disabled');
+                    }
+                });
+            };
+        </script>
     </div>
 </div>
-
-<!-- The Google reCAPTCHA form control -->
-<!-- It manually instantiates the widget so that the control can be validated. -->
-<!-- The form submit button will be disabled until the reCAPTCHA control is completed. -->
-<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
-<script type="text/javascript">
-    var onloadCallback = function() {
-        grecaptcha.render('g-recaptcha', {
-            'sitekey': '<?php echo $public_key; ?>',
-            'callback': function(response) {
-                document.getElementById('contact-form-submit').removeAttribute('disabled');
-            }
-        });
-    };
-</script>
-
+<?php get_sidebar() ?>
 <?php get_footer(); ?>
