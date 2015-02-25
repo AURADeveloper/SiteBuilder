@@ -9,10 +9,14 @@
 ?>
 
 	</div><!-- #content -->
-    <footer id="romac-sponsors" class="site-footer sponsorship-area" role="presentation">
-        <div class="marquee">
+
+    <footer class="sponsors-title site-footer">
+        <div class="">
             <h3>Our Sponsors</h3>
-            <hr>
+        </div>
+    </footer>
+    <footer id="romac-sponsors" class="sponsorship-area" role="presentation">
+        <div class="marquee">
             <span>
                 <a href="http://www.coopers.com.au/" target="_blank">
                     <img src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/sponsors/coopers.png" alt="Coopers" />
@@ -63,7 +67,7 @@
                 <a href="#">Site Map</a>
             </span>
             <span class="copyright">
-                Copyright 2015 Rotary Oceania Medical Aid for Children Ltd. (ROMAC Ltd.) All rights reserved.
+                &copy; 2015 Rotary Oceania Medical Aid for Children Ltd. (ROMAC Ltd.)
             </span>
             <hr>
             <img src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/logo-rotary.jpg" alt="Rotary | ROMAC" class="logo">

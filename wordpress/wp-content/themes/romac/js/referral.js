@@ -1,0 +1,1 @@
+jQuery( '#referral-form' ).stepy();

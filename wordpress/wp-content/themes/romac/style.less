@@ -960,6 +960,15 @@ a:active {
 .sponsorship-area {
   padding: 10px 0;
 }
+.sponsors-title {
+  background-color: @bg-compliment;
+
+  h3 {
+    color: white;
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.125);
+  }
+}
+
 .marquee {
   white-space: nowrap;
   overflow: hidden;
@@ -1452,9 +1461,13 @@ object {
 /*--------------------------------------------------------------
 13.0 Layouts
 --------------------------------------------------------------*/
-.site-header, .site-content, .site-footer > div, .site-title {
+.container {
   max-width: @site-max-width;
   margin: 0 auto;
+}
+
+.site-header, .site-content, .site-title {
+  .container();
 }
 
 .site-content {

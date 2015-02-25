@@ -110,7 +110,13 @@ function romac_scripts() {
 		wp_enqueue_script( 'comment-reply' );
 	}
 
+    // enqueue a special form wizard helper for the referral template
+    if ( is_page_template( 'referral.php' ) ) {
+        wp_enqueue_script( 'romac-referral-js', get_template_directory_uri() . '/js/referral.js', array( 'jquery' ), '0.1', true );
+    }
+
     // for localhost / testing environment, include the less css pre-processor
+    //   otherwise, the compiled css
     if (isset($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'],'Google App Engine') !== false) {
         wp_enqueue_style( 'romac-style',        get_stylesheet_uri() );
         wp_enqueue_style( 'romac-layout-style', get_template_directory_uri() . '/layouts/layout.css' );
@@ -208,7 +214,7 @@ function our_team_init() {
         'hierarchical'         => false,
         'menu_position'        => null,
         'menu_icon'            => 'dashicons-id-alt',
-        'supports'             => array( 'title', 'editor', 'thumbnail' ),
+        'supports'             => array( 'title', 'editor', 'thumbnail', 'page-attributes' ),
         'register_meta_box_cb' => 'add_our_team_meta_boxes'
     );
 
