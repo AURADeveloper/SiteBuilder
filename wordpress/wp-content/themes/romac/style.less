@@ -261,9 +261,9 @@ input[type="search"]::-webkit-search-decoration {
 }
 
 fieldset {
-  border: 1px solid #c0c0c0;
+  border: 1px solid #ccc;
   margin: 0 2px;
-  padding: 0.35em 0.625em 0.75em;
+  padding: 1em 1em 0;
 }
 
 legend {
@@ -311,11 +311,11 @@ h4,
 h5,
 h6 {
   clear: both;
-  margin: 0.5em 0;
+  margin: 0 0 0.5em;
 }
 
 p {
-  margin-bottom: 1.5em;
+  margin-bottom: 1em;
 }
 
 dfn,
@@ -370,6 +370,9 @@ big {
   font-size: 125%;
 }
 
+.text-justify {
+  text-align: justify;
+}
 /*--------------------------------------------------------------
 3.0 Elements
 --------------------------------------------------------------*/
@@ -409,6 +412,9 @@ hr {
 ul,
 ol {
   margin: 0 0 1.5em 3em;
+  &.margin-right {
+    margin-right: 3em;
+  }
 }
 
 ul {
@@ -417,6 +423,10 @@ ul {
 
 ol {
   list-style: decimal;
+}
+
+li {
+//  margin-bottom: .25em;
 }
 
 li > ul,
@@ -456,10 +466,10 @@ input[type="submit"] {
   background: #e6e6e6;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 15px 17px rgba(255, 255, 255, 0.5), inset 0 -5px 12px rgba(0, 0, 0, 0.05);
   color: rgba(0, 0, 0, .8);
-  font-size: 12px;
-  font-size: 0.75rem;
+  font-size: 16px;
+  font-size: 1rem;
   line-height: 1;
-  padding: .6em 1em .4em;
+  padding: .5em 1em;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
@@ -484,37 +494,59 @@ input[type="submit"]:active {
 }
 
 input[type="text"],
+input[type="number"],
 input[type="email"],
 input[type="url"],
 input[type="password"],
 input[type="search"],
-textarea {
+textarea,
+select {
   color: #666;
   border: 1px solid #ccc;
   border-radius: 3px;
+  padding: 0.25em;
+  width: 100%;
+  margin: .25em 0 .5em;
 }
 
 input[type="text"]:focus,
+input[type="number"],
 input[type="email"]:focus,
 input[type="url"]:focus,
 input[type="password"]:focus,
 input[type="search"]:focus,
-textarea:focus {
+textarea:focus,
+select:focus {
   color: #111;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="url"],
-input[type="password"],
-input[type="search"] {
-  padding: 3px;
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled, {
+  opacity: 0.5;
 }
 
 textarea {
   padding-left: 3px;
   width: 100%;
 }
+
+
+select {
+  /* Normalizes the height; padding is not sufficient. */
+  height: 2em;
+  border: 1px solid #ccc;
+  background-color: white;
+}
+select[multiple] {
+  height: auto;
+}
+
+input[type="checkbox"] {
+  display: inline;
+}
+
 
 /*--------------------------------------------------------------
 5.0 Navigation
@@ -951,7 +983,6 @@ a:active {
 --------------------------------------------------------------*/
 .site-header {
   .logo {
-    margin: 1em;
   }
 }
 /*--------------------------------------------------------------
@@ -962,10 +993,12 @@ a:active {
 }
 .sponsors-title {
   background-color: @bg-compliment;
+  padding: 1em 0;
 
   h3 {
     color: white;
     text-shadow: 0 2px 2px rgba(0, 0, 0, 0.125);
+    margin: 0;
   }
 }
 
@@ -1162,6 +1195,8 @@ a:active {
     text-align: center;
     font-size: 18px;
     font-size: 1.125rem;
+    margin-bottom: 1em;
+    font-style: italic;
 
     div {
       padding: 20px;
@@ -1214,7 +1249,9 @@ a:active {
 .aura-contact-form label {
   margin-bottom: .25em;
 }
-.aura-contact-form { }
+.aura-contact-form {
+  margin-bottom: 1em;
+}
 .aura-contact-form input[type="text"],
 .aura-contact-form input[type="password"],
 .aura-contact-form input[type="email"],
@@ -1332,7 +1369,7 @@ a:active {
 10.10 Site Title / Heading
 --------------------------------------------------------------*/
 .site-title {
-  margin: 1em;
+  padding: 1em;
 
 
   .breadcrumbs {
@@ -1341,7 +1378,7 @@ a:active {
     ul {
       list-style: none;
       padding: 0;
-      margin: 1em 0;
+      margin: 0;
       text-align: right;
 
       li {
@@ -1352,6 +1389,18 @@ a:active {
           content: "/";
         }
       }
+    }
+  }
+}
+
+h1 {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: .25em;
+
+  &.page-title {
+    span {
+      font-size: 0.75em;
+      font-weight: normal;
     }
   }
 }
@@ -1466,21 +1515,147 @@ object {
   margin: 0 auto;
 }
 
+.site-branding {
+  padding: 1em;
+}
+
 .site-header, .site-content, .site-title {
   .container();
 }
 
+.content-area {
+  width: 100%;
+}
+
 .site-content {
   display: flex;
+  padding: 0 1em;
 
   #content {
     flex: 1;
     order: 2;
-    margin: 0 1em;
+//    margin: 0 1em;
   }
   #secondary {
     width: 240px;
     order: 1;
-    margin: 0 1em;
+    margin-right: 1em;
   }
 }
+
+.row {
+  width: 100%;
+  display: flex;
+
+  &.spacing {
+    .col {
+      margin: .5em;
+
+      &:first-child {
+        margin-left: 0;
+      }
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  .col-1-2 {
+    width: 100%;
+    flex: 1;
+  }
+}
+/*--------------------------------------------------------------
+13.1 Forms
+--------------------------------------------------------------*/
+form {
+  width: 100%;
+
+  .form-control {
+    margin: 0 .5em .5em;
+    width: 100%;
+
+    .form-control {
+      margin: 0 .5em;
+    }
+
+    &:first-child {
+      margin-left: 0;
+    }
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &.checkbox {
+      input[type="checkbox"] {
+
+      }
+    }
+  }
+
+  &.flex-form {
+    .row {
+      align-content: space-around;
+
+      .form-control {
+        flex: 1;
+      }
+    }
+  }
+
+}
+
+/*--------------------------------------------------------------
+14.0 Templates
+--------------------------------------------------------------*/
+/*--------------------------------------------------------------
+14.1 Patient Referral Form
+--------------------------------------------------------------*/
+#referral-progress {
+  margin-bottom: 1em;
+
+  ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+
+    li {
+      display: inline-block;
+      height: 40px;
+      width: 40px;
+      border-radius: 20px;
+      border: 1px solid @malibu;
+      background-color: @malibu;
+      line-height: 40px;
+      vertical-align: middle;
+      text-align: center;
+      color: white;
+      text-shadow: 1px 1px 1px rgba(0,0,0,.25);
+      font-weight: bold;
+
+      &.active {
+        border: 1px solid @jaffa;
+        background-color: @jaffa;
+      }
+
+      &:not(:last-child) {
+        margin-right: 1em;
+      }
+    }
+  }
+}
+.referral-controls {
+  text-align: center;
+  width: 100%;
+  margin: 1em 0;
+
+  button, input {
+    display: inline-block;
+    margin-right: 1em;
+  }
+}
+/*--------------------------------------------------------------
+14.2 Contact Form
+--------------------------------------------------------------*/

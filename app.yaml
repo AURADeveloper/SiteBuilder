@@ -1,12 +1,12 @@
 application: romac-website
-version: 1
+version: 2
 runtime: php
 api_version: 1
 
 handlers:
-- url: /(.*\.(htm|html|css|js))$
+- url: /(.*\.(htm|html|css|js|less))$
   static_files: wordpress/\1
-  upload: wordpress/.*\.(htm|html|css|js)$
+  upload: wordpress/.*\.(htm|html|css|js|less)$
   application_readable: true
 
 - url: /wp-content/(.*\.(ico|jpg|png|gif|eot|woff|ttf|svg))$
