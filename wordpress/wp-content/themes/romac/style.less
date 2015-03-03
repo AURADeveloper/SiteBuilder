@@ -261,14 +261,18 @@ input[type="search"]::-webkit-search-decoration {
 }
 
 fieldset {
-  border: 1px solid #ccc;
-  margin: 0 2px;
-  padding: 1em 1em 0;
+//  border: 1px solid #ccc;
+//  margin: 0 2px;
+//  padding: 1em 1em 0;
+  border: 0;
+  margin: 0;
+  padding: 0;
 }
 
 legend {
   border: 0;
   padding: 0;
+  display: none;
 }
 
 textarea {
@@ -315,7 +319,7 @@ h6 {
 }
 
 p {
-  margin-bottom: 1em;
+  margin: 0 0 1em;
 }
 
 dfn,
@@ -459,7 +463,8 @@ table {
 button,
 input[type="button"],
 input[type="reset"],
-input[type="submit"] {
+input[type="submit"],
+input[type="file"] {
   border: 1px solid;
   border-color: #ccc #ccc #bbb;
   border-radius: 3px;
@@ -499,6 +504,7 @@ input[type="email"],
 input[type="url"],
 input[type="password"],
 input[type="search"],
+//input[type="file"],
 textarea,
 select {
   color: #666;
@@ -1394,10 +1400,10 @@ a:active {
 }
 
 h1 {
-  border-bottom: 1px solid #ccc;
-  padding-bottom: .25em;
-
   &.page-title {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: .25em;
+
     span {
       font-size: 0.75em;
       font-weight: normal;
@@ -1560,10 +1566,30 @@ object {
     }
   }
 
+  .col {
+    width: 100%;
+  }
+
   .col-1-2 {
     width: 100%;
     flex: 1;
   }
+}
+.heading {
+  h2 {
+    margin: 0 0 .125em;
+  }
+  &.padded {
+    padding: 0 1em;
+  }
+}
+.shaded {
+  background-color: rgba(189,189,174,0.125);//#bdbdae;
+  border-radius: 3px;
+  border-top: 1px solid rgba(189,189,174,0.25);
+}
+.padded {
+  padding: 1em;
 }
 /*--------------------------------------------------------------
 13.1 Forms
@@ -1588,7 +1614,7 @@ form {
 
     &.checkbox {
       input[type="checkbox"] {
-
+        margin: 0.5em 0 1em;
       }
     }
   }
@@ -1655,6 +1681,10 @@ form {
     display: inline-block;
     margin-right: 1em;
   }
+}
+img[id^='patient-photo-'] {
+  max-width: 320px;
+  display: none;
 }
 /*--------------------------------------------------------------
 14.2 Contact Form

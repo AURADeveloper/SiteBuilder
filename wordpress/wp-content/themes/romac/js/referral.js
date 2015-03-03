@@ -27,8 +27,10 @@
             // defaults for began referral form
             preamable.hide();
             begin_btn.hide();
-            submit_btn.hide();
             progress.show();
+
+            submit_btn.show();
+            submit_btn.attr( 'disabled', '' );
 
             // reset next button
             next_btn.show();
@@ -51,7 +53,7 @@
             // if the last panel
             if (cur_fieldset == fieldsets.size()-1) {
                 next_btn.attr( 'disabled', '' );
-                submit_btn.show();
+                submit_btn.removeAttr( 'disabled' );
             }
 
             // if the first panel
@@ -88,6 +90,25 @@
                 cur_fieldset--;
                 ping();
             }
+        });
+
+        /**
+         * Reads a file typed input and assigns the encoded image src to the #patient-photo element.
+         *
+         * @param input The source input[type=file]
+         */
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#patient-photo').attr('src', e.target.result);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $( "#photo-photo-input" ).change(function() {
+            readURL(this);
         });
     });
 })( jQuery );

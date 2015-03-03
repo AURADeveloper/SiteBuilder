@@ -16,6 +16,10 @@ get_header(); ?>
                 <form id="referral-form" class="flex-form">
                     <fieldset data-title="Patient">
                         <legend>Please provide the referred patients details</legend>
+                        <div class="heading padded">
+                            <h2>Details of Referred Patient</h2>
+                        </div>
+                        <div class="shaded padded">
 <!--                        <div class="row spacing">-->
 <!--                            <div class="col col-1-2">-->
                                 <div class="row">
@@ -524,7 +528,7 @@ get_header(); ?>
                                 </div>
                                 <div class="row">
                                     <div class="form-control checkbox">
-                                        <label for="patient-understand-english">
+                                        <label for="patient-understand-english" class="alignright">
                                             <input type="checkbox" id="patient-understand-english" name="patient-understand-english">
                                             Does patient understand English?
                                         </label>
@@ -532,40 +536,46 @@ get_header(); ?>
                                 </div>
 <!--                            </div>-->
 <!--                            <div class="col col-1-2">-->
-                                <div class="row">
-                                    <div class="form-control">
-                                        <label for="patient-dob-day">DOB: Day</label>
-                                        <select id="patient-dob-day" name="patient-dob-day">
-                                        <?php for( $i = 1; $i <= 31; $i++): ?>
-                                            <option><?php echo $i; ?></option>
-                                        <?php endfor; ?>
-                                        </select>
+                                <div class="row spacing">
+                                    <div class="col col-1-2">
+                                        <div class="row">
+                                            <div class="form-control">
+                                                <label for="patient-dob-day">Birth Day</label>
+                                                <select id="patient-dob-day" name="patient-dob-day">
+                                                <?php for( $i = 1; $i <= 31; $i++): ?>
+                                                    <option><?php echo $i; ?></option>
+                                                <?php endfor; ?>
+                                                </select>
+                                            </div>
+                                            <div class="form-control">
+                                                <label for="patient-dob-month">Birth Month</label>
+                                                <select id="patient-dob-month" name="patient-dob-month">
+                                                <?php for( $i = 1; $i <= 12; $i++): ?>
+                                                    <option><?php echo $i; ?></option>
+                                                <?php endfor; ?>
+                                                </select>
+                                            </div>
+                                            <div class="form-control">
+                                                <label for="patient-dob-year">Birth Year</label>
+                                                <select id="patient-dob-year" name="patient-dob-year">
+                                                <?php for( $i = date("Y"); $i >= date("Y") - 30; $i--): ?>
+                                                    <option><?php echo $i; ?></option>
+                                                <?php endfor; ?>
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="form-control">
-                                        <label for="patient-dob-month">Month</label>
-                                        <select id="patient-dob-month" name="patient-dob-month">
-                                        <?php for( $i = 1; $i <= 12; $i++): ?>
-                                            <option><?php echo $i; ?></option>
-                                        <?php endfor; ?>
-                                        </select>
-                                    </div>
-                                    <div class="form-control">
-                                        <label for="patient-dob-year">Year</label>
-                                        <select id="patient-dob-year" name="patient-dob-year">
-                                        <?php for( $i = date("Y"); $i >= date("Y") - 30; $i--): ?>
-                                            <option><?php echo $i; ?></option>
-                                        <?php endfor; ?>
-                                        </select>
+                                    <div class="col col-1-2">
+                                        <div class="form-control">
+                                            <label for="patient-sex">Sex</label>
+                                            <select id="patient-sex" name="patient-sex">
+                                                <option>Male</option>
+                                                <option>Female</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="form-control">
-                                        <label for="patient-sex">Sex</label>
-                                        <select id="patient-sex" name="patient-sex">
-                                            <option>Male</option>
-                                            <option>Female</option>
-                                        </select>
-                                    </div>
                                     <div class="form-control">
                                         <label for="patient-height">Height (cm)</label>
                                         <input id="patient-height" name="patient-height" type="number" min="1" max="300" required>
@@ -581,52 +591,107 @@ get_header(); ?>
                                         <textarea id="patient-address" name="patient-address" rows="5"></textarea>
                                     </div>
                                 </div>
+                            </div>
 <!--                            </div>-->
 <!--                        </div>-->
                     </fieldset>
-                    <fieldset data-title="Next of Kin">
-                        <legend>Please enter the patients next of kin details</legend>
-                        <div class="row">
-                            <div class="form-control">
-                                <label for="patient-next-of-kin-name">Name</label>
-                                <input id="patient-next-of-kin-name" name="patient-next-of-kin-name" type="text" required>
-                            </div>
-                            <div class="form-control">
-                                <label for="patient-next-of-kin-relationship">Relationship</label>
-                                <input id="patient-next-of-kin-relationship" name="patient-next-of-kin-relationship" type="text" required>
+                    <fieldset data-title="Next of Kin / Family">
+                        <legend>Next of Kin / Family</legend>
+                        <div class="row spacing">
+                            <div class="col">
+                                <div class="heading padded">
+                                    <h2>Next of Kin</h2>
+                                </div>
+                                <div class="shaded padded">
+                                    <div class="row">
+                                        <div class="form-control">
+                                            <label for="patient-next-of-kin-name">Name</label>
+                                            <input id="patient-next-of-kin-name" name="patient-next-of-kin-name" type="text" required>
+                                        </div>
+                                        <div class="form-control">
+                                            <label for="patient-next-of-kin-relationship">Relationship</label>
+                                            <input id="patient-next-of-kin-relationship" name="patient-next-of-kin-relationship" type="text" required>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-control">
+                                            <label for="patient-address">Address and contact details:</label>
+                                            <textarea id="patient-address" name="patient-address" rows="5"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="form-control">
-                                <label for="patient-address">Address and contact details:</label>
-                                <textarea id="patient-address" name="patient-address" rows="5"></textarea>
-                            </div>
-                        </div>
-                    </fieldset>
-                    <fieldset data-title="Family">
-                        <legend>Please enter the patients family details</legend>
+
                         <div class="row spacing">
                             <div class="col col-1-2">
-                                <div class="row">
-<!--                                    <div class="form-control">-->
-<!--                                        <label for="patient-next-of-kin-name">Next of Kin</label>-->
-<!--                                        <input id="patient-next-of-kin-name" name="patient-next-of-kin-name" type="text" required>-->
-<!--                                    </div>-->
-<!--                                    <div class="form-control">-->
-<!--                                        <label for="patient-next-of-kin-relationship">Relationship</label>-->
-<!--                                        <input id="patient-next-of-kin-relationship" name="patient-next-of-kin-relationship" type="text" required>-->
-<!--                                    </div>-->
+                                <div class="heading padded">
+                                    <h2>Mother</h2>
+                                </div>
+                                <div class="row shaded padded">
+                                    <div class="form-control">
+                                        <label for="patient-mother-fname">First Name</label>
+                                        <input id="patient-mother-fname" name="patient-mother-fname" type="text" required>
+                                    </div>
+                                    <div class="form-control">
+                                        <label for="patient-mother-lname">Family Name</label>
+                                        <input id="patient-mother-lname" name="patient-mother-lname" type="text" required>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col col-1-2">
-                                <div class="row">
-
+                                <div class="heading padded">
+                                    <h2>Father</h2>
+                                </div>
+                                <div class="row shaded padded">
+                                    <div class="form-control">
+                                        <label for="patient-father-fname">First Name</label>
+                                        <input id="patient-father-fname" name="patient-father-fname" type="text" required>
+                                    </div>
+                                    <div class="form-control">
+                                        <label for="patient-father-lname">Family Name</label>
+                                        <input id="patient-father-lname" name="patient-father-lname" type="text" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset data-title="Supporting Documentation">
+                        <legend>Supporting Documentation</legend>
+                        <div class="heading padded">
+                            <h2>Supporting Documentation</h2>
+                        </div>
+<!--                        <p>Please attached detailed photos of the patient and their medical condition.</p>-->
+                        <div class="row spacing shaded padded">
+                            <div class="col col-1-3">
+                                <div class="form-control">
+                                    <label for="patient-photo-1-input">Patient Photo #1</label>
+                                    <img id="patient-photo-1" src="#" alt="Patient Photo Preview" class="aligncenter">
+                                    <input type='file' id="photo-photo-1-input">
+                                </div>
+                            </div>
+                            <div class="col col-1-3">
+                                <div class="form-control">
+                                    <label for="patient-photo-2-input">Patient Photo #2</label>
+                                    <img id="patient-photo-2" src="#" alt="Patient Photo Preview" class="aligncenter">
+                                    <input type='file' id="patient-photo-2-input">
+                                </div>
+                            </div>
+                            <div class="col col-1-3">
+                                <div class="form-control">
+                                    <label for="patient-photo-3-input">Patient Photo #3</label>
+                                    <img id="patient-photo-3-preview" src="#" alt="Patient Photo Preview" class="aligncenter">
+                                    <input type='file' id="patient-photo-3-input">
                                 </div>
                             </div>
                         </div>
                     </fieldset>
                     <div class="referral-controls">
-                        <button type="button" id="referral-begin">Begin</button><button type="button" id="referral-prev">Previous</button><button type="button" id="referral-next">Next</button><input type="submit" value="Submit">
+                        <button type="button" id="referral-begin">Begin</button>
+                        <button type="button" id="referral-prev">Back</button>
+                        <input type="submit" value="Submit">
+                        <button type="button" id="referral-next">Next</button>
                     </div>
                 </form>
 
