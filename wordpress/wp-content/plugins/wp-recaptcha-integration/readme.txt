@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: security, captcha, recaptcha, no captcha, login, signup, contact form 7, ninja forms
 Requires at least: 3.8
 Tested up to: 4.1
-Stable tag: 1.0.5
+Stable tag: 1.0.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,6 +27,7 @@ form 7 as well as a plugin API for your own integrations.
 
 = Localizations =
 - Brazilian Portuguese (thanks to [Vinícius Ferraz](http://www.viniciusferraz.com))
+- Spanish (thanks to [Ivan Yivoff](https://github.com/yivi))
 - German
 
 Latest Files on GitHub: [https://github.com/mcguffin/wp-recaptcha-integration](https://github.com/mcguffin/wp-recaptcha-integration)
@@ -58,6 +59,9 @@ if necessary.
   overcome this restriction I requested a little change in the official WC repository, so there 
   is hope for a future version. See: (https://github.com/woothemes/woocommerce/pull/7029)
 
+- There is no (and as far as one can see, there will never be) support for the **MailPoet**
+  subscription form.
+
 == Installation ==
 
 First follow the standard [WordPress plugin installation procedere](http://codex.wordpress.org/Managing_Plugins).
@@ -65,6 +69,11 @@ First follow the standard [WordPress plugin installation procedere](http://codex
 Then go to the [Google Recaptcha Site](http://www.google.com/recaptcha), sign up your site and enter your API-Keys on the configuration page.
 
 == Frequently asked questions ==
+
+= Will you support plugin XYZ? =
+
+If XYZ stands for a widely used free and OpenSource plugin in active development with some 
+100k+ downloads I will give it a try. Just ask. 
 
 = The captcha does not show up. What’s wrong? =
 
@@ -135,7 +144,6 @@ or removed some strings in the meantime.
 As soon as there is a [public centralized repository for WordPress plugin translations](https://translate.wordpress.org/projects/wp-plugins) 
 I will migrate all the translation stuff there.
 
-
 == Screenshots ==
 
 1. Plugin Settings
@@ -143,6 +151,28 @@ I will migrate all the translation stuff there.
 3. Contact Form 7 Integration
 
 == Changelog ==
+
+= 1.0.9 =
+- Fix: Preserve PHP 5.2 compatibility
+
+= 1.0.8 =
+- Feature: Individually set captcha theme in CF7 and Ninja forms (NoCaptcha only, old recaptcha not supported)
+- Fix: PHP Warning in settings.
+- Fix: PHP Fatal when check a old reCaptcha.
+- Fix: js error with jQuery not present
+- Fix: woocommerce checkout
+- L10n: add Spanish
+
+= 1.0.7 =
+- Fix: Fatal error in settings
+- Fix: messed up HTML comments
+- Code: Put NinjaForms + CF7 handling into singletons
+
+= 1.0.6 =
+- Code: separate classes for recaptcha / nocaptcha
+- Code: Class autoloader
+- Fix: avoid double verification
+- Fix: CF7 4.1 validation
 
 = 1.0.5 =
 - Add Language option
