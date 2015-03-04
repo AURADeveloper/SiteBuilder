@@ -110,5 +110,30 @@
         $( "#photo-photo-input" ).change(function() {
             readURL(this);
         });
+
+        var select2options = { maximumSelectionLength: 2 };
+        $( "#patient-languages-spoken" ).select2( select2options );
+        $( "#patient-mother-languages-spoken" ).select2( select2options );
+        $( "#patient-father-languages-spoken" ).select2( select2options );
+
+        function showOptionalGroup(input, groupId) {
+            if ( $(input).val() == 'Yes' ) {
+                $( groupId ).show( 'slow' );
+            } else {
+                $( groupId ).hide( 'slow' );
+            }
+        }
+        $( "#patient-mother-has-yes" ).change(function() {
+            showOptionalGroup( this, '#patient-mother-optional-group' );
+        });
+        $( "#patient-mother-has-no" ).change(function() {
+            showOptionalGroup( this, '#patient-mother-optional-group' );
+        });
+        $( "#patient-father-has-yes" ).change(function() {
+            showOptionalGroup( this, '#patient-father-optional-group' );
+        });
+        $( "#patient-father-has-no" ).change(function() {
+            showOptionalGroup( this, '#patient-father-optional-group' );
+        });
     });
 })( jQuery );

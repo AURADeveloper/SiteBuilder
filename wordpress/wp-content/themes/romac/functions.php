@@ -101,9 +101,7 @@ add_action( 'widgets_init', 'romac_widgets_init' );
  */
 function romac_scripts() {
     wp_enqueue_style(  'font-awesome', get_bloginfo( 'template_directory' ) . '/css/font-awesome.min.css' );
-
 	wp_enqueue_script( 'romac-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20120206', true );
-
 	wp_enqueue_script( 'romac-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20130115', true );
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
@@ -112,7 +110,9 @@ function romac_scripts() {
 
     // enqueue a special form wizard helper for the referral template
     if ( is_page_template( 'referral.php' ) ) {
-        wp_enqueue_script( 'romac-referral-js', get_template_directory_uri() . '/js/referral.js', array( 'jquery' ), '0.1', true );
+        wp_enqueue_style(  'select2-css', get_bloginfo( 'template_directory' ) . '/js/select2/select2.css' );
+        wp_enqueue_script( 'select2', get_template_directory_uri() . '/js/select2/select2.min.js', array( 'jquery' ), '3.5.2', true );
+        wp_enqueue_script( 'romac-referral-js', get_template_directory_uri() . '/js/referral.js', array( 'jquery', 'select2' ), '0.1', true );
     }
 
     // for localhost / testing environment, include the less css pre-processor
@@ -511,7 +511,6 @@ function write_breadcrumbs() {
         }
     }
 
-    if(is_home()) { echo '<li>'.$smof_data['blog_title'].'</li>'; }
     if(is_page() && !is_front_page()) {
         $parents = array();
         $parent_id = $post->post_parent;

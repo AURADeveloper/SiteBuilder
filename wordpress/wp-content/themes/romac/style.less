@@ -272,7 +272,6 @@ fieldset {
 legend {
   border: 0;
   padding: 0;
-  display: none;
 }
 
 textarea {
@@ -463,8 +462,7 @@ table {
 button,
 input[type="button"],
 input[type="reset"],
-input[type="submit"],
-input[type="file"] {
+input[type="submit"] {
   border: 1px solid;
   border-color: #ccc #ccc #bbb;
   border-radius: 3px;
@@ -504,7 +502,7 @@ input[type="email"],
 input[type="url"],
 input[type="password"],
 input[type="search"],
-//input[type="file"],
+input[type="file"],
 textarea,
 select {
   color: #666;
@@ -539,7 +537,7 @@ textarea {
 }
 
 
-select {
+select, input[type="file"] {
   /* Normalizes the height; padding is not sufficient. */
   height: 2em;
   border: 1px solid #ccc;
@@ -1555,7 +1553,7 @@ object {
 
   &.spacing {
     .col {
-      margin: .5em;
+      margin: 0 .5em;
 
       &:first-child {
         margin-left: 0;
@@ -1577,7 +1575,7 @@ object {
 }
 .heading {
   h2 {
-    margin: 0 0 .125em;
+    margin: 0 0 .25em;
   }
   &.padded {
     padding: 0 1em;
@@ -1589,7 +1587,7 @@ object {
   border-top: 1px solid rgba(189,189,174,0.25);
 }
 .padded {
-  padding: 1em;
+  padding: 1em 1em 0;
 }
 /*--------------------------------------------------------------
 13.1 Forms
@@ -1617,6 +1615,20 @@ form {
         margin: 0.5em 0 1em;
       }
     }
+
+    &.radio-group {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1em;
+
+      label {
+        &:not(:last-child) {
+          margin-right: .5em;
+        }
+      }
+      .input-group {
+      }
+    }
   }
 
   &.flex-form {
@@ -1637,6 +1649,25 @@ form {
 /*--------------------------------------------------------------
 14.1 Patient Referral Form
 --------------------------------------------------------------*/
+#referral-form {
+  legend {
+    text-align: center;
+    font-size: 0.75em;
+    margin-bottom: 1em;
+  }
+}
+.select2-container {
+  display: block;
+  margin: .25em 0 .5em;
+}
+.select2-container-multi .select2-choices {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background-image: none;
+}
+.select2-container-multi .select2-choices .select2-search-choice {
+  margin: 5px 0 5px 5px;
+}
 #referral-progress {
   margin-bottom: 1em;
 
