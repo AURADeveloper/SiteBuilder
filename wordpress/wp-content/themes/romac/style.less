@@ -502,7 +502,9 @@ input[type="email"],
 input[type="url"],
 input[type="password"],
 input[type="search"],
+input[type="tel"],
 input[type="file"],
+input[type="date"],
 textarea,
 select {
   color: #666;
@@ -519,6 +521,8 @@ input[type="email"]:focus,
 input[type="url"]:focus,
 input[type="password"]:focus,
 input[type="search"]:focus,
+input[type="tel"],
+input[type="date"],
 textarea:focus,
 select:focus {
   color: #111;
@@ -1547,9 +1551,29 @@ object {
   }
 }
 
+/*--------------------------------------------------------------
+13.1 General Responsive Layout System - based on media queries and flex
+--------------------------------------------------------------*/
+@mobile-view: ~"only screen and (max-width: 800px)";
+
 .row {
   width: 100%;
   display: flex;
+  margin-bottom: 1em;
+
+  // for mobile, switch the direction rows are laid out
+  @media @mobile-view {
+    flex-direction: column;
+  }
+
+  .row {
+    margin-bottom: 0;
+
+    // for all nested rows, do not collapse on mobiles
+    @media @mobile-view {
+      flex-direction: row;
+    }
+  }
 
   &.spacing {
     .col {
@@ -1560,6 +1584,16 @@ object {
       }
       &:last-child {
         margin-right: 0;
+      }
+
+      @media @mobile-view {
+        margin: 0;
+      }
+
+      .col {
+        @media @mobile-view {
+          margin: 0 .5em;
+        }
       }
     }
   }
@@ -1573,19 +1607,23 @@ object {
     flex: 1;
   }
 }
+
 .heading {
   h2 {
     margin: 0 0 .25em;
   }
+
   &.padded {
     padding: 0 1em;
   }
 }
+
 .shaded {
   background-color: rgba(189,189,174,0.125);//#bdbdae;
   border-radius: 3px;
   border-top: 1px solid rgba(189,189,174,0.25);
 }
+
 .padded {
   padding: 1em 1em 0;
 }
@@ -1598,6 +1636,32 @@ form {
   .form-control {
     margin: 0 .5em .5em;
     width: 100%;
+
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    input[type="url"],
+    input[type="password"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="file"],
+    input[type="date"],
+    textarea,
+    select {
+      &.error {
+        border: 1px solid rgba(137,0,24,0.5);
+      }
+    }
+
+    label {
+      &.error {
+//        font-size: 14px;
+//        font-size: 0.875rem;
+//        background-color: rgba(137,0,24,1);
+//        color: white;
+        display: none !important;
+      }
+    }
 
     .form-control {
       margin: 0 .5em;
@@ -1653,7 +1717,10 @@ form {
   legend {
     text-align: center;
     font-size: 0.75em;
-    margin-bottom: 1em;
+    margin-bottom: 2em;
+  }
+  fieldset {
+    min-height: 360px;
   }
 }
 .select2-container {
@@ -1670,6 +1737,7 @@ form {
 }
 #referral-progress {
   margin-bottom: 1em;
+  margin-top: 2em;
 
   ul {
     display: flex;
@@ -1706,16 +1774,21 @@ form {
 .referral-controls {
   text-align: center;
   width: 100%;
-  margin: 1em 0;
+  margin: 1em 0 2em;
 
   button, input {
     display: inline-block;
-    margin-right: 1em;
+    margin: 0 0.5em;
+    width: 6em;
   }
 }
 img[id^='patient-photo-'] {
-  max-width: 320px;
-  display: none;
+//  max-width: 320px;
+//  display: none;
+  border: 1px solid #ccc;
+  padding: .5em;
+  background-color: white;
+  border-radius: 3px;
 }
 /*--------------------------------------------------------------
 14.2 Contact Form

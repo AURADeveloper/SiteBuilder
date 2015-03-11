@@ -1,6 +1,6 @@
 application: romac-website
 version: 2
-runtime: php55
+runtime: php
 api_version: 1
 
 handlers:

@@ -411,7 +411,9 @@ input[type="email"],
 input[type="url"],
 input[type="password"],
 input[type="search"],
+input[type="tel"],
 input[type="file"],
+input[type="date"],
 textarea,
 select {
   color: #666;
@@ -427,6 +429,8 @@ input[type="email"]:focus,
 input[type="url"]:focus,
 input[type="password"]:focus,
 input[type="search"]:focus,
+input[type="tel"],
+input[type="date"],
 textarea:focus,
 select:focus {
   color: #111;
@@ -1312,6 +1316,15 @@ object {
 .row {
   width: 100%;
   display: flex;
+  margin-bottom: 1em;
+}
+@media screen and (max-width: 800px) {
+  .row {
+    flex-direction: row;
+  }
+}
+.row .row {
+  margin-bottom: 0;
 }
 .row.spacing .col {
   margin: 0 .5em;
@@ -1353,6 +1366,22 @@ form .form-control {
   margin: 0 .5em .5em;
   width: 100%;
 }
+form .form-control input[type="text"].error,
+form .form-control input[type="number"].error,
+form .form-control input[type="email"].error,
+form .form-control input[type="url"].error,
+form .form-control input[type="password"].error,
+form .form-control input[type="search"].error,
+form .form-control input[type="tel"].error,
+form .form-control input[type="file"].error,
+form .form-control input[type="date"].error,
+form .form-control textarea.error,
+form .form-control select.error {
+  border: 1px solid rgba(137, 0, 24, 0.5);
+}
+form .form-control label.error {
+  display: none !important;
+}
 form .form-control .form-control {
   margin: 0 .5em;
 }
@@ -1364,6 +1393,14 @@ form .form-control:last-child {
 }
 form .form-control.checkbox input[type="checkbox"] {
   margin: 0.5em 0 1em;
+}
+form .form-control.radio-group {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1em;
+}
+form .form-control.radio-group label:not(:last-child) {
+  margin-right: .5em;
 }
 form.flex-form .row {
   align-content: space-around;
@@ -1380,7 +1417,10 @@ form.flex-form .row .form-control {
 #referral-form legend {
   text-align: center;
   font-size: 0.75em;
-  margin-bottom: 1em;
+  margin-bottom: 2em;
+}
+#referral-form fieldset {
+  min-height: 360px;
 }
 .select2-container {
   display: block;
@@ -1396,6 +1436,7 @@ form.flex-form .row .form-control {
 }
 #referral-progress {
   margin-bottom: 1em;
+  margin-top: 2em;
 }
 #referral-progress ul {
   display: flex;
@@ -1428,16 +1469,19 @@ form.flex-form .row .form-control {
 .referral-controls {
   text-align: center;
   width: 100%;
-  margin: 1em 0;
+  margin: 1em 0 2em;
 }
 .referral-controls button,
 .referral-controls input {
   display: inline-block;
-  margin-right: 1em;
+  margin: 0 0.5em;
+  width: 6em;
 }
 img[id^='patient-photo-'] {
-  max-width: 320px;
-  display: none;
+  border: 1px solid #ccc;
+  padding: .5em;
+  background-color: white;
+  border-radius: 3px;
 }
 /*--------------------------------------------------------------
 14.2 Contact Form

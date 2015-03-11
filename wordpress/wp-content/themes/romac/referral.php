@@ -7,17 +7,37 @@
  * @param $id
  * @param $label
  * @param $type
+ * @param $args array an array of additional attributes to assign to the element
  * @return string
  */
-function form_control( $id, $label, $type ) {
+function form_control( $id, $label, $type, $args = array() ) {
     ob_start(); ?>
     <div class="form-control">
         <label for="<?php echo $id; ?>"><?php echo $label; ?></label>
-        <input type="<?php echo $type; ?>" id="<?php echo $id; ?>" name="<?php echo $id; ?>">
+        <input type="<?php echo $type; ?>" id="<?php echo $id; ?>" name="<?php echo $id; ?>"<?php
+        foreach ($args as $k => $v) {
+            echo " ";
+            echo $k;
+            if ($v != null) {
+                echo '=';
+                echo '"';
+                echo $v;
+                echo '"';
+            }
+        }
+        ?>>
     </div>
     <?php return ob_get_clean();
 }
 
+/**
+ * Returns a checkbox form control.
+ *
+ * @param $id
+ * @param $label
+ * @param null $class
+ * @return string
+ */
 function checkbox( $id, $label, $class = null ) {
     ob_start(); ?>
     <div class="form-control checkbox">
@@ -37,47 +57,9 @@ function checkbox( $id, $label, $class = null ) {
  */
 function form_control_first_last_name( $id_prefix ) {
     ob_start();
-    echo form_control( $id_prefix . '-fname', 'First Name', 'text' );
-    echo form_control( $id_prefix . '-lname', 'Family Name', 'text' );
+    echo form_control( $id_prefix . '-fname', 'First Name', 'text', array( "required" => null ) );
+    echo form_control( $id_prefix . '-lname', 'Family Name', 'text', array( "required" => null ) );
     return ob_get_clean();
-}
-
-/**
- * Returns a form snippet for capturing the date of birth.
- *
- * @param $id_prefix
- * @return string
- */
-function form_control_dob( $id_prefix ) {
-    ob_start(); ?>
-    <div class="form-control">
-        <?php $day = $id_prefix . "-dob-day"; ?>
-        <label for="<?php echo $day; ?>">Birth Day</label>
-        <select id="<?php echo $day; ?>" name="<?php echo $day; ?>">
-            <?php for( $i = 1; $i <= 31; $i++): ?>
-            <option><?php echo $i; ?></option>
-            <?php endfor; ?>
-        </select>
-    </div>
-    <div class="form-control">
-        <?php $month = $id_prefix . "-dob-month"; ?>
-        <label for="<?php echo $month; ?>">Birth Month</label>
-        <select id="<?php echo $month; ?>" name="<?php echo $month; ?>">
-            <?php for( $i = 1; $i <= 12; $i++): ?>
-            <option><?php echo $i; ?></option>
-            <?php endfor; ?>
-        </select>
-    </div>
-    <div class="form-control">
-        <?php $year = $id_prefix . "-dob-year"; ?>
-        <label for="<?php echo $year; ?>">Birth Year</label>
-        <select id="<?php echo $year; ?>" name="<?php echo $year; ?>">
-            <?php for( $i = date("Y"); $i >= date("Y") - 30; $i--): ?>
-                <option><?php echo $i; ?></option>
-            <?php endfor; ?>
-        </select>
-    </div>
-    <?php return ob_get_clean();
 }
 
 /**
@@ -171,6 +153,82 @@ function form_control_languages( $id_prefix ) {
     <?php return ob_get_clean();
 }
 
+/**
+ * Returns a radio control with yes no options only.
+ *
+ * @param $id_prefix
+ * @param $label
+ * @param null $default
+ * @return string
+ */
+function form_control_yes_no( $id_prefix, $label, $default = null ) {
+    ob_start(); ?>
+    <div class="form-control radio-group">
+        <label><?php echo $label; ?></label>
+        <div class="input-group">
+            <?php $yes_id = $id_prefix . '-yes'; ?>
+            <input id="<?php echo $yes_id; ?>" type="radio" name="<?php echo $id_prefix; ?>" value="Yes"<? if ($default == "Yes"): ?> checked<?php endif; ?>> <label for="<?php echo $yes_id; ?>"> Yes</label>
+            <?php $no_id = $id_prefix . '-no'; ?>
+            <input id="<?php echo $no_id; ?>" type="radio" name="<?php echo $id_prefix; ?>" value="No"<? if ($default == "No"): ?> checked<?php endif; ?> <label for="<?php echo $no_id; ?>"> No</label>
+        </div>
+    </div>
+    <?php return ob_get_clean();
+}
+
+/**
+ * Returns a address field.
+ *
+ * @param $id_prefix
+ * @return string
+ */
+function form_control_address( $id_prefix ) {
+    ob_start(); ?>
+    <div class="form-control">
+        <?php $id = $id_prefix . '-address'; ?>
+        <label for="<?php echo $id ?>">Address:</label>
+        <textarea id="<?php echo $id ?>" name="<?php echo $id ?>" rows="5" required></textarea>
+    </div>
+    <?php return ob_get_clean();
+}
+
+/**
+ * Returns a field collection for a person type.
+ *
+ * @param $id_prefix
+ * @param $singular
+ * @return string
+ */
+function form_person( $id_prefix, $singular ) {
+    ob_start(); ?>
+    <div class="row">
+        <?php echo form_control_first_last_name( $id_prefix ); ?>
+    </div>
+    <div class="row">
+        <?php echo form_control( $id_prefix . '-dob', 'Date of Birth', 'date', array( 'required' => null ) ); ?>
+    </div>
+    <div class="row">
+        <?php echo form_control_address( $id_prefix ); ?>
+    </div>
+    <div class="row">
+        <?php echo form_control( $id_prefix . '-email-address', 'Email Address', 'email' ) ?>
+    </div>
+    <div class="row">
+        <?php echo form_control( $id_prefix . '-home-phone', 'Home Phone', 'tel' ) ?>
+        <?php echo form_control( $id_prefix . '-mobile-phone', 'Mobile Phone', 'tel' ) ?>
+    </div>
+    <div class="row">
+        <?php echo form_control_religion( $id_prefix ); ?>
+        <?php echo form_control( $id_prefix . '-occupation', 'Occupation', 'text' ); ?>
+    </div>
+    <div class="row">
+        <?php echo form_control_languages( $id_prefix ); ?>
+    </div>
+    <div class="row">
+        <?php echo form_control_yes_no( $id_prefix . '-understand-english', 'Does the ' . $singular . ' understand English?' ); ?>
+    </div>
+    <?php return ob_get_clean();
+}
+
 get_header(); ?>
 
 	<div id="primary" class="content-area">
@@ -186,7 +244,7 @@ get_header(); ?>
                 <div id="referral-progress">
                     <ul></ul>
                 </div>
-                <form id="referral-form" class="flex-form">
+                <form id="referral-form" class="flex-form" onsubmit="setFormSubmitting()">
 
                     <fieldset>
                         <legend>Step 1: Patients Details</legend>
@@ -200,30 +258,28 @@ get_header(); ?>
                                         <?php echo form_control_first_last_name( 'patient' ); ?>
                                     </div>
                                     <div class="row">
-                                        <?php echo form_control_dob( 'patient' ); ?>
-                                    </div>
-                                    <div class="row">
                                         <div class="form-control">
                                             <label for="patient-sex">Sex</label>
-                                            <select id="patient-sex" name="patient-sex">
+                                            <select id="patient-sex" name="patient-sex" required>
+                                                <option></option>
                                                 <option>Male</option>
                                                 <option>Female</option>
                                             </select>
                                         </div>
-                                        <div class="form-control">
-                                            <label for="patient-height">Height (cm)</label>
-                                            <input id="patient-height" name="patient-height" type="number" min="1" max="300" required>
-                                        </div>
-                                        <div class="form-control">
-                                            <label for="patient-weight">Weight (kg)</label>
-                                            <input id="patient-weight" name="patient-weight" type="number" min="1" max="1000" required>
-                                        </div>
+                                        <?php echo form_control( 'patient-dob', 'Date of Birth', 'date', array( 'required' => null )); ?>
                                     </div>
                                     <div class="row">
                                         <div class="form-control">
-                                            <label for="patient-address">Address of Patient:</label>
-                                            <textarea id="patient-address" name="patient-address" rows="5"></textarea>
+                                            <label for="patient-height">Height (cm)</label>
+                                            <input id="patient-height" name="patient-height" type="number" min="10" max="250" required>
                                         </div>
+                                        <div class="form-control">
+                                            <label for="patient-weight">Weight (kg)</label>
+                                            <input id="patient-weight" name="patient-weight" type="number" min="1" max="300" required>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <?php echo form_control_address( 'patient' ); ?>
                                     </div>
                                 </div>
                                 <div class="col col-1-2">
@@ -240,7 +296,7 @@ get_header(); ?>
                                         <?php echo form_control_languages( 'patient' ); ?>
                                     </div>
                                     <div class="row">
-                                        <?php echo checkbox( 'patient-understand-english', 'Does the patient understand English?', 'alignright' ); ?>
+                                        <?php echo form_control_yes_no( 'patient-understand-english', 'Does the patient understand English?' ); ?>
                                     </div>
                                 </div>
                             </div>
@@ -256,31 +312,10 @@ get_header(); ?>
                                 </div>
                                 <div class="shaded padded">
                                     <div class="row">
-                                        <div class="form-control radio-group">
-                                            <label>Does the patient have a mother?</label>
-                                            <div class="input-group">
-                                                <input id="patient-mother-has-yes" type="radio" name="has-mother" value="Yes" checked> <label for="patient-mother-has-yes">Yes</label>
-                                                <input id="patient-mother-has-no" type="radio" name="has-mother" value="No"> <label for="patient-mother-has-no">No</label>
-                                            </div>
-                                        </div>
+                                        <?php echo form_control_yes_no( 'patient-has-mother', 'Does the patient have a mother?', 'Yes' ); ?>
                                     </div>
-                                    <div id="#patient-mother-optional-group">
-                                        <div class="row">
-                                            <?php echo form_control_first_last_name( 'patient-mother' ); ?>
-                                        </div>
-                                        <div class="row">
-                                            <?php echo form_control_dob( 'patient-mother' ); ?>
-                                        </div>
-                                        <div class="row">
-                                            <?php echo form_control_religion( 'patient-mother' ); ?>
-                                            <?php echo form_control( 'patient-mother-occupation', 'Occupation', 'text' ); ?>
-                                        </div>
-                                        <div class="row">
-                                            <?php echo form_control_languages( 'patient-mother' ); ?>
-                                        </div>
-                                        <div class="row">
-                                            <?php echo checkbox( 'patient-mother-understand-english', 'Does the mother understand English?', 'alignright' ) ?>
-                                        </div>
+                                    <div id="patient-mother-optional-group">
+                                        <?php echo form_person( 'patient-mother', 'mother' ); ?>
                                     </div>
                                 </div>
                             </div>
@@ -290,31 +325,10 @@ get_header(); ?>
                                 </div>
                                 <div class="shaded padded">
                                     <div class="row">
-                                        <div class="form-control radio-group">
-                                            <label>Does the patient have a father?</label>
-                                            <div class="input-group">
-                                                <input id="patient-father-has-yes" type="radio" name="has-father" value="Yes" checked> <label for="patient-father-has-yes">Yes</label>
-                                                <input id="patient-father-has-no" type="radio" name="has-father" value="No"> <label for="patient-father-has-no">No</label>
-                                            </div>
-                                        </div>
+                                        <?php echo form_control_yes_no( 'patient-has-father', 'Does the patient have a father?', 'Yes' ); ?>
                                     </div>
-                                    <div id="#patient-father-optional-group">
-                                        <div class="row">
-                                            <?php echo form_control_first_last_name( 'patient-father' ); ?>
-                                        </div>
-                                        <div class="row">
-                                            <?php echo form_control_dob( 'patient-father' ); ?>
-                                        </div>
-                                        <div class="row">
-                                            <?php echo form_control_religion( 'patient-father' ); ?>
-                                            <?php echo form_control( 'patient-father-occupation', 'Occupation', 'text' ); ?>
-                                        </div>
-                                        <div class="row">
-                                            <?php echo form_control_languages( 'patient-father' ); ?>
-                                        </div>
-                                        <div class="row">
-                                            <?php echo checkbox( 'patient-father-understand-english', 'Does the father understand English?', 'alignright' ) ?>
-                                        </div>
+                                    <div id="patient-father-optional-group">
+                                        <?php echo form_person( 'patient-father', 'father' ); ?>
                                     </div>
                                 </div>
                             </div>
@@ -322,7 +336,76 @@ get_header(); ?>
                     </fieldset>
 
                     <fieldset>
-                        <legend>Step 3: Supporting Documentation</legend>
+                        <legend>Step 3: Person to Accompany Patient</legend>
+                        <div class="row spacing">
+                            <div class="col col-1-2">
+                                <div class="heading padded">
+                                    <h2>Accompaniment</h2>
+                                </div>
+                                <div class="shaded padded">
+                                    <div class="row">
+                                        <div class="form-control">
+                                            <label for="patient-accompaniment">Who is accompanying the patient?</label>
+                                            <select id="patient-accompaniment">
+                                                <option value="other">Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="patient-accompaniment-optional-group" class="col col-1-2">
+                                <div class="heading padded">
+                                    <h2>Details</h2>
+                                </div>
+                                <div class="shaded padded">
+                                    <div class="row">
+                                        <div class="form-control">
+                                            <label for="patient-accompaniment-connection">Relationship to patient</label>
+                                            <select id="patient-accompaniment-connection">
+                                                <option>Brother</option>
+                                                <option>Sister</option>
+                                                <option>Auntie</option>
+                                                <option>Uncle</option>
+                                                <option>Friend</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <?php echo form_person( 'patient-accompaniment', 'accompaniment' ); ?>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Step 4: Source of Referral</legend>
+                        <div class="heading padded">
+                            <h2>Referrer</h2>
+                        </div>
+                        <div class="row spacing shaded padded">
+                            <div class="col col-1-2">
+                                <div class="row">
+                                    <?php echo form_control( 'patient-referrer-name', 'Name of Person/Club/Organisation', 'text' ); ?>
+                                </div>
+                                <div class="row">
+                                    <?php echo form_control_address( 'patient-referrer' ); ?>
+                                </div>
+                            </div>
+                            <div class="col col-1-2">
+                                <div class="row">
+                                    <?php echo form_control( 'patient-referrer-home-phone', 'Office/Home Phone', 'tel' ); ?>
+                                </div>
+                                <div class="row">
+                                    <?php echo form_control( 'patient-referrer-mobile-phone', 'Mobile Phone', 'tel' ); ?>
+                                </div>
+                                <div class="row">
+                                    <?php echo form_control( 'patient-referrer-email', 'E-Mail Address', 'email' ); ?>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Step 5: Supporting Documentation</legend>
                         <div class="heading padded">
                             <h2>Patient Photographs</h2>
                         </div>
@@ -330,24 +413,34 @@ get_header(); ?>
                             <div class="col col-1-3">
                                 <div class="form-control">
                                     <label for="patient-photo-1-input">Patient Photo #1</label>
-                                    <img id="patient-photo-1" src="#" alt="Patient Photo Preview" class="aligncenter">
-                                    <input type='file' id="photo-photo-1-input">
+                                    <input type='file' id="patient-photo-1-input">
+                                    <img id="patient-photo-1" src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/blank.gif" alt="Patient Photo Preview" class="aligncenter">
                                 </div>
                             </div>
                             <div class="col col-1-3">
                                 <div class="form-control">
                                     <label for="patient-photo-2-input">Patient Photo #2</label>
-                                    <img id="patient-photo-2" src="#" alt="Patient Photo Preview" class="aligncenter">
                                     <input type='file' id="patient-photo-2-input">
+                                    <img id="patient-photo-2" src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/blank.gif" alt="Patient Photo Preview" class="aligncenter">
                                 </div>
                             </div>
                             <div class="col col-1-3">
                                 <div class="form-control">
                                     <label for="patient-photo-3-input">Patient Photo #3</label>
-                                    <img id="patient-photo-3-preview" src="#" alt="Patient Photo Preview" class="aligncenter">
                                     <input type='file' id="patient-photo-3-input">
+                                    <img id="patient-photo-3-preview" src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/blank.gif" alt="Patient Photo Preview" class="aligncenter">
                                 </div>
                             </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Step 6: Confirmation</legend>
+                        <div class="heading padded">
+                            <h2>Confirm your Submission</h2>
+                        </div>
+                        <div class="row spacing shaded padded">
+
                         </div>
                     </fieldset>
 

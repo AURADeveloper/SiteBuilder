@@ -112,6 +112,7 @@ function romac_scripts() {
     if ( is_page_template( 'referral.php' ) ) {
         wp_enqueue_style(  'select2-css', get_bloginfo( 'template_directory' ) . '/js/select2/select2.css' );
         wp_enqueue_script( 'select2', get_template_directory_uri() . '/js/select2/select2.min.js', array( 'jquery' ), '3.5.2', true );
+        wp_enqueue_script( 'validate', get_template_directory_uri() . '/js/jquery.validate.min.js', array( 'jquery' ), '1.13.1', true );
         wp_enqueue_script( 'romac-referral-js', get_template_directory_uri() . '/js/referral.js', array( 'jquery', 'select2' ), '0.1', true );
     }
 

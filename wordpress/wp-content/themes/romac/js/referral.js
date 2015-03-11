@@ -1,7 +1,26 @@
+var formSubmitting = false;
+var has_began = false;
+var setFormSubmitting = function() { formSubmitting = true; };
+
+//window.onload = function() {
+//    window.addEventListener("beforeunload", function (e) {
+//        var confirmationMessage = 'You have started a referral form submission. ';
+//        confirmationMessage += 'If you leave before saving, your changes will be lost.';
+//
+//        if (formSubmitting || !has_began) {
+//            return undefined;
+//        }
+//
+//        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+//        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+//    });
+//};
+
 // be safe - map $ to jQuery in a anonymous function
 (function($) {
     // bootstrap on document ready
     $( document ).ready(function() {
+        var refer_panel =    2;
         var preamable =      $( '#referral-preamble' );
         var progress =       $( '#referral-progress ul' );
         var progress_items = null; // instantiated by init_steps()
@@ -10,8 +29,7 @@
         var begin_btn  =     $( '#referral-begin' );
         var prev_btn =       $( '#referral-prev' );
         var next_btn =       $( '#referral-next' );
-
-        var has_began = false;
+        var accompany =      $( '#patient-accompaniment' );
         var cur_fieldset = 0;
 
         function ping() {
@@ -60,6 +78,36 @@
             if (cur_fieldset == 0) {
                 prev_btn.attr( 'disabled', '' );
             }
+
+            if (cur_fieldset == refer_panel) {
+                var hasMother =    $( 'input[name="patient-has-mother"]:checked').val();
+                var hasMotherOpt = $( '#patient-accompaniment option[value="mother"]' );
+                var hasFather =    $( 'input[name="patient-has-father"]:checked').val();
+                var hasFatherOpt = $( '#patient-accompaniment option[value="father"]' );
+
+                if ( hasMother == "Yes" && !hasMotherOpt.length ) {
+                    accompany.append( $('<option>', {
+                        'value': 'mother',
+                        'text': 'Mother',
+                        'selected': ''
+                    }));
+                }
+                if ( hasMother == "No" && hasMotherOpt.length) {
+                    hasMotherOpt.remove();
+                }
+
+                if ( hasFather == "Yes" && !hasFatherOpt.length ) {
+                    accompany.append( $('<option>', {
+                        'value': 'father',
+                        'text': 'Father'
+                    }));
+                }
+                if ( hasFather == "No" && hasFatherOpt.length ) {
+                    hasFatherOpt.remove();
+                }
+
+                accompanyChange();
+            }
         }
 
         function init_steps() {
@@ -70,15 +118,14 @@
             progress_items = $( '#referral-progress ul li' );
         }
 
-        ping();
-        init_steps();
-
         begin_btn.click(function() {
             has_began = true;
             ping();
         });
 
         next_btn.click(function() {
+            if ( !validateFieldset( cur_fieldset ) ) return;
+
             if (cur_fieldset < fieldsets.size()-1) {
                 cur_fieldset++;
                 ping();
@@ -92,29 +139,52 @@
             }
         });
 
+        function accompanyChange() {
+            var val = accompany.val();
+            if ( val == "other" ) {
+                $( "#patient-accompaniment-optional-group" ).show( 'slow' );
+            } else {
+                $( "#patient-accompaniment-optional-group" ).hide( 'slow' );
+            }
+        }
+        accompany.change( accompanyChange );
+
         /**
          * Reads a file typed input and assigns the encoded image src to the #patient-photo element.
          *
          * @param input The source input[type=file]
          */
-        function readURL(input) {
+        function readURL(input, imgElem) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
                 reader.onload = function (e) {
-                    $('#patient-photo').attr('src', e.target.result);
+                    $( imgElem ).attr('src', e.target.result);
                 };
                 reader.readAsDataURL(input.files[0]);
             }
         }
 
-        $( "#photo-photo-input" ).change(function() {
-            readURL(this);
+        $( "#patient-photo-1-input" ).change(function() {
+            readURL(this, '#patient-photo-1');
+        });
+        $( "#patient-photo-2-input" ).change(function() {
+            readURL(this, '#patient-photo-2');
+        });
+        $( "#patient-photo-3-input" ).change(function() {
+            readURL(this, '#patient-photo-3');
         });
 
+        //
+        // Instantiate special form controls - select2, datepicker etc
+        //
         var select2options = { maximumSelectionLength: 2 };
         $( "#patient-languages-spoken" ).select2( select2options );
         $( "#patient-mother-languages-spoken" ).select2( select2options );
         $( "#patient-father-languages-spoken" ).select2( select2options );
+        $( "#patient-accompaniment-languages-spoken" ).select2( select2options );
+
+        //var datepickerOptions = { };
+       // $( "#patient-dob" ).datepicker( datepickerOptions );
 
         function showOptionalGroup(input, groupId) {
             if ( $(input).val() == 'Yes' ) {
@@ -123,17 +193,50 @@
                 $( groupId ).hide( 'slow' );
             }
         }
-        $( "#patient-mother-has-yes" ).change(function() {
+        $( "#patient-has-mother-yes" ).change(function() {
             showOptionalGroup( this, '#patient-mother-optional-group' );
         });
-        $( "#patient-mother-has-no" ).change(function() {
+        $( "#patient-has-mother-no" ).change(function() {
             showOptionalGroup( this, '#patient-mother-optional-group' );
         });
-        $( "#patient-father-has-yes" ).change(function() {
+        $( "#patient-has-father-yes" ).change(function() {
             showOptionalGroup( this, '#patient-father-optional-group' );
         });
-        $( "#patient-father-has-no" ).change(function() {
+        $( "#patient-has-father-no" ).change(function() {
             showOptionalGroup( this, '#patient-father-optional-group' );
         });
+
+        function validateFieldset( groupId ) {
+            function validateField(fieldId) {
+                if ( !referralForm.element( fieldId ) ) {
+                    isValid = false;
+                }
+            }
+
+            var referralForm = $( '#referral-form' ).validate();
+            var isValid = true;
+
+            switch ( groupId ) {
+                case 0: // patient details
+                    validateField( '#patient-fname' );
+                    validateField( '#patient-lname' );
+                    validateField( '#patient-dob' );
+                    validateField( '#patient-sex' );
+                    validateField( '#patient-height' );
+                    validateField( '#patient-weight' );
+                    validateField( '#patient-address' );
+                    validateField( '#patient-country-of-origin' );
+                    validateField( '#patient-nationality' );
+                    validateField( '#patient-religion' );
+                    validateField( '#patient-languages-spoken' );
+                    validateField( 'input[name="patient-understand-english"]' );
+                    break;
+            }
+
+            return isValid;
+        }
+
+        ping();
+        init_steps();
     });
 })( jQuery );
