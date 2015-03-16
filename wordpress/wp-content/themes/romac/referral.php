@@ -382,7 +382,7 @@ get_header(); ?>
                                         <div class="form-control">
                                             <label for="patient-accompaniment">Who is accompanying the patient?</label>
                                             <p class="help-text">ROMACs preference is the mother.</p>
-                                            <select id="patient-accompaniment">
+                                            <select id="patient-accompaniment" name="patient-accompaniment">
                                                 <option value="other">Other</option>
                                             </select>
                                         </div>

@@ -1,13 +1,40 @@
-var formSubmitting = false;
-var has_began = false;
-var setFormSubmitting = function() { formSubmitting = true; };
+/**
+ * A guard that prevents the leave page confirmation been shown if the form is being posted.
+ * This variable is assigned to true on form submission.
+ *
+ * @type {boolean}
+ */
+var form_submitting = false;
 
+/**
+ * A flag that indicates the form has been started.
+ * If it assigned true when the user clicks the begin referral button.
+ *
+ * @type {boolean}
+ */
+var form_started = false;
+
+/**
+ * A function that sets the form_submitting variable to true.
+ * This is designed to be attached to the form element on the onsubmit attribute.
+ * <code>
+ *     <form onsubmit="setFormSubmitting"></form>
+ * </code>
+ */
+var setFormSubmitting = function() {
+    form_submitting = true;
+};
+
+/**
+ * Attaches a leave page confirmation.<br/>
+ * The user will be prompted if they wish to leave the page or not if the referral form has been started.
+ */
 window.onload = function() {
-    window.addEventListener("beforeunload", function (e) {
+    window.addEventListener('beforeunload', function (e) {
         var confirmationMessage = 'You have started a referral form submission. ';
         confirmationMessage += 'If you leave before saving, your changes will be lost.';
 
-        if (formSubmitting || !has_began) {
+        if (form_submitting || !form_started) {
             return undefined;
         }
 
@@ -18,154 +45,258 @@ window.onload = function() {
 
 // be safe - map $ to jQuery in a anonymous function
 (function($) {
-    // bootstrap on document ready
-    $( document ).ready(function() {
-        var refer_panel =    2;
-        var preamable =      $( '#referral-preamble' );
-        var progress =       $( '#referral-progress ul' );
-        var progress_items = null; // instantiated by init_steps()
-        var fieldsets =      $( '#referral-form fieldset' );
-        var submit_btn =     $( '#referral-form input[type="submit"]' );
-        var begin_btn  =     $( '#referral-begin' );
-        var prev_btn =       $( '#referral-prev' );
-        var next_btn =       $( '#referral-next' );
-        var accompany =      $( '#patient-accompaniment' );
-        var cur_fieldset = 0;
 
-        function ping() {
-            if ( !has_began ) {
+    /**
+     * Bootstrap document ready.
+     */
+    $(document).ready(function() {
+        /**
+         * The index of the fieldset that contains the accompaniment fields.
+         *
+         * @type {number}
+         */
+        var accompaniment_fieldset = 2;
+
+        /**
+         * Reference to the preamble element. This is hidden when the form is started.
+         *
+         * @type {*|HTMLElement}
+         */
+        var preamable_panel = $('#referral-preamble');
+
+        /**
+         * Reference to the list that holds the numbered progress list.
+         *
+         * @type {*|HTMLElement}
+         */
+        var progress_list = $('#referral-progress ul');
+
+        /**
+         * The collection of <li> elements that populate the progress list.
+         * Each number in the list presents a fieldset/panel in the wizard. 1,2,3,4...
+         *
+         * @type {*|HTMLElement}
+         */
+        var progress_items = null; // instantiated by init_steps()
+
+        /**
+         * The collection of all fieldsets in the referral form.
+         *
+         * @type {*|HTMLElement}
+         */
+        var fieldsets = $('#referral-form fieldset');
+
+        /**
+         * The form submit button.
+         * Pressing the button will cause the form to post.
+         *
+         * @type {*|HTMLElement}
+         */
+        var submit_button = $('#referral-form input[type="submit"]');
+
+        /**
+         * The form begin button.
+         * Pressing the button will skip the preamble to the first fieldset.
+         *
+         * @type {*|HTMLElement}
+         */
+        var begin_button = $('#referral-begin');
+
+        /**
+         * The form previous button.
+         * Pressing the button will step back to the previous fieldset.
+         *
+         * @type {*|HTMLElement}
+         */
+        var previous_button = $('#referral-prev');
+
+        /**
+         * The form next button.
+         * Pressing the button will processed to the next fieldset.
+         *
+         * @type {*|HTMLElement}
+         */
+        var next_button = $('#referral-next');
+
+        /**
+         * The accompaniment select element.
+         * Options (mother, father) are added and removed dynamically depending if they are present.
+         *
+         * @type {*|HTMLElement}
+         */
+        var accompaniment_select = $('#patient-accompaniment');
+
+        /**
+         * The index of the current, visible fieldset.
+         *
+         * @type {number}
+         */
+        var current_fieldset = 0;
+
+        /**
+         * Checks if form has been started, applying the default state.
+         * The form_started flag is returned, false meaning there should be no further states to evaluate.
+         *
+         * @returns {boolean} True if the form been started
+         */
+        function setFormDefaultState(form_started) {
+            if (form_started) {
+                preamable_panel.hide();
+                begin_button.hide();
+                submit_button.show();
+                submit_button.attr('disabled', '');
+                next_button.show();
+                next_button.removeAttr('disabled');
+                previous_button.show();
+                previous_button.removeAttr('disabled');
                 fieldsets.hide();
-                progress.hide();
-                submit_btn.hide();
-                next_btn.hide();
-                prev_btn.hide();
+                fieldsets.eq(current_fieldset).show();
+                progress_list.show();
+                progress_items.each(function() {
+                    $(this).removeClass();
+                });
+                progress_items.eq(current_fieldset).addClass('active');
+            } else {
+                // hide all none preamble elements
+                fieldsets.hide();
+                progress_list.hide();
+                submit_button.hide();
+                next_button.hide();
+                previous_button.hide();
+            }
+
+            return form_started;
+        }
+
+        /**
+         * Populates the confirmation page, copying the fieldset values into the confirmation page.
+         */
+        function populateConfirmationFielset() {
+            // populate the confirmation screen
+            $("#referral-form input, #referral-form select, #referral-form textarea").each(function(index, element) {
+                var name = $(element).attr('name');
+                var confirmId = '#' + name + '-c';
+                var confirmElem = $(confirmId);
+                // add guard in-case input does not have a preview
+                if (confirmElem.length) {
+                    // its a <select> option
+                    if ($(element).is('select')) {
+                        confirmElem.text($('select[name="' + name + '"] option:selected').text());
+                    }
+                    // everything else
+                    else {
+                        confirmElem.text($(element).val());
+                    }
+                }
+            });
+        }
+
+        /**
+         * Evaluates the form state, populating the accompaniment select list with the mother and father depending if
+         * they have been provided.
+         */
+        function populateAccompanimentSelect() {
+            var hasMother = $('input[name="patient-has-mother"]:checked').val();
+            var hasMotherOpt = $('#patient-accompaniment option[value="mother"]');
+            var hasFather = $('input[name="patient-has-father"]:checked').val();
+            var hasFatherOpt = $('#patient-accompaniment option[value="father"]');
+
+            if (hasMother == "Yes" && !hasMotherOpt.length) {
+                accompaniment_select.append($('<option>', {
+                    'value': 'mother',
+                    'text': 'Mother',
+                    'selected': ''
+                }));
+            }
+            if (hasMother == "No" && hasMotherOpt.length) {
+                hasMotherOpt.remove();
+            }
+
+            if (hasFather == "Yes" && !hasFatherOpt.length) {
+                accompaniment_select.append($('<option>', {
+                    'value': 'father',
+                    'text': 'Father'
+                }));
+            }
+            if (hasFather == "No" && hasFatherOpt.length) {
+                hasFatherOpt.remove();
+            }
+
+            onAccompanySelectChange();
+        }
+
+        /**
+         * Returns if the first fieldset is active.
+         * @returns {boolean}
+         */
+        function isFirstFielsetActive() {
+            return current_fieldset == 0;
+        }
+
+        /**
+         * Returns if the confirmation (last) fieldset is active.
+         * @returns {boolean}
+         */
+        function isConfirmationFieldsetActive() {
+            return current_fieldset == fieldsets.size()-1;
+        }
+
+        /**
+         * Returns if the accompaniment is active.
+         * @returns {boolean}
+         */
+        function isAccompanimentFieldsetActive() {
+            return current_fieldset == accompaniment_fieldset;
+        }
+
+        /**
+         * The ping function evaluates the form state and modifies it accordingly.
+         * This function is generally called when the user cycles through the form using the previous and next buttons.
+         */
+        function ping() {
+            if (!setFormDefaultState(form_started)) {
                 return;
             }
 
-            // defaults for began referral form
-            preamable.hide();
-            begin_btn.hide();
-            progress.show();
-
-            submit_btn.show();
-            submit_btn.attr( 'disabled', '' );
-
-            // reset next button
-            next_btn.show();
-            next_btn.removeAttr( 'disabled' );
-
-            // reset previous button
-            prev_btn.show();
-            prev_btn.removeAttr( 'disabled' );
-
-            // reset fieldsets - show active
-            fieldsets.hide();
-            fieldsets.eq( cur_fieldset ).show();
-
-            // reset progress - append active class
-            progress_items.each(function() {
-                $( this ).removeClass();
-            });
-            progress_items.eq( cur_fieldset ).addClass( 'active' );
-
-            // if the last panel
-            if (cur_fieldset == fieldsets.size()-1) {
-                next_btn.attr( 'disabled', '' );
-                submit_btn.removeAttr( 'disabled' );
-
-                // populate the confirmation screen
-                $("#referral-form input, #referral-form select, #referral-form textarea").each(function(index, element) {
-                    var name = $(element).attr('name');
-                    var confirmId = '#' + name + '-c';
-                    var confirmElem = $(confirmId);
-                    // add guard in-case input does not have a preview
-                    if (confirmElem.length) {
-                        // its a <select> option
-                        if ($(element).is('select')) {
-                            confirmElem.text($('select[name="' + name + '"] option:selected').text());
-                        }
-                        // everything else
-                        else {
-                            confirmElem.text($(element).val());
-                        }
-                    }
-                });
+            if (isConfirmationFieldsetActive()) {
+                populateConfirmationFielset();
+                next_button.attr('disabled', '');
+                submit_button.removeAttr('disabled');
             }
 
-            // if the first panel
-            if (cur_fieldset == 0) {
-                prev_btn.attr( 'disabled', '' );
+            if (isFirstFielsetActive()) {
+                previous_button.attr('disabled', '');
             }
 
-            if (cur_fieldset == refer_panel) {
-                var hasMother =    $( 'input[name="patient-has-mother"]:checked').val();
-                var hasMotherOpt = $( '#patient-accompaniment option[value="mother"]' );
-                var hasFather =    $( 'input[name="patient-has-father"]:checked').val();
-                var hasFatherOpt = $( '#patient-accompaniment option[value="father"]' );
-
-                if ( hasMother == "Yes" && !hasMotherOpt.length ) {
-                    accompany.append( $('<option>', {
-                        'value': 'mother',
-                        'text': 'Mother',
-                        'selected': ''
-                    }));
-                }
-                if ( hasMother == "No" && hasMotherOpt.length) {
-                    hasMotherOpt.remove();
-                }
-
-                if ( hasFather == "Yes" && !hasFatherOpt.length ) {
-                    accompany.append( $('<option>', {
-                        'value': 'father',
-                        'text': 'Father'
-                    }));
-                }
-                if ( hasFather == "No" && hasFatherOpt.length ) {
-                    hasFatherOpt.remove();
-                }
-
-                accompanyChange();
+            if (isAccompanimentFieldsetActive()) {
+                populateAccompanimentSelect();
             }
         }
 
-        function init_steps() {
+        /**
+         * Populates the wizard progress list with numbers corresponding to each fieldset.
+         */
+        function initialiseProgressList() {
             var i = 1;
             fieldsets.each(function() {
-                progress.append( '<li>' + i++ + '</li>');
+                progress_list.append('<li>' + i++ + '</li>');
             });
-            progress_items = $( '#referral-progress ul li' );
+            progress_items = $('#referral-progress ul li');
         }
 
-        begin_btn.click(function() {
-            has_began = true;
-            ping();
-        });
-
-        next_btn.click(function() {
-            if ( !validateFieldset( cur_fieldset ) ) return;
-
-            if (cur_fieldset < fieldsets.size()-1) {
-                cur_fieldset++;
-                ping();
-            }
-        });
-
-        prev_btn.click(function() {
-            if (cur_fieldset > 0) {
-                cur_fieldset--;
-                ping();
-            }
-        });
-
-        function accompanyChange() {
-            var val = accompany.val();
-            if ( val == "other" ) {
-                $( "#patient-accompaniment-optional-group" ).show();
+        /**
+         * A change handler for the accompaniment select list.
+         * If the other choice is selected, a fieldset to enter the accompaniments details is shown.
+         * Otherwise, this is hidden because the mothers, fathers details have already been recorded.
+         */
+        function onAccompanySelectChange() {
+            var val = accompaniment_select.val();
+            if (val == "other") {
+                $('#patient-accompaniment-optional-group').show();
             } else {
-                $( "#patient-accompaniment-optional-group" ).hide();
+                $('#patient-accompaniment-optional-group').hide();
             }
         }
-        accompany.change( accompanyChange );
 
         /**
          * Reads a file typed input and assigns the encoded image src to the #patient-photo element.
@@ -182,82 +313,26 @@ window.onload = function() {
             }
         }
 
-        $( "#patient-photo-1-input" ).change(function() {
-            readURL(this, '#patient-photo-1');
-        });
-        $( "#patient-photo-2-input" ).change(function() {
-            readURL(this, '#patient-photo-2');
-        });
-        $( "#patient-photo-3-input" ).change(function() {
-            readURL(this, '#patient-photo-3');
-        });
-
         /**
-         * Adds a clicks handlers to the add photo button.
+         * Shows or hides a group of inputs that is toggled by a paired radio input.
          *
-         * It will add a new line for a photo as long as there are no other empty inputs.
+         * @param input The radio input that shows/hides the group
+         * @param groupId The corresponding group to toggle the visibility of
          */
-        $( "#add-photo" ).click(function() {
-            // count the number of photos
-            var currentInputs = $( "#patient-photos input" );
-            if (currentInputs.last().val() != '') {
-                var i = currentInputs.length;
-                $( "#patient-photos" ).append(
-                    '<div class="form-control"><input type="file" name="patient-photo-' + i + '-input"></div>');
-            }
-        });
-
-        /**
-         * Adds a clicks handlers to the add document button.
-         *
-         * It will add a new line for a document as long as there are no other empty inputs.
-         */
-        $( "#add-document" ).click(function() {
-            // count the number of photos
-            var currentInputs = $( "#patient-documents input" );
-            if ( currentInputs.last().val() != '' ) {
-                var i = currentInputs.length;
-                $( "#patient-documents" ).append(
-                    '<div class="form-control"><input type="file" name="patient-document-' + i + '-input"></div>');
-            }
-        });
-
-        //
-        // Instantiate special form controls - select2, datepicker etc
-        //
-        var select2options = { maximumSelectionLength: 2 };
-        $( "#patient-languages-spoken" ).select2( select2options );
-        $( "#patient-mother-languages-spoken" ).select2( select2options );
-        $( "#patient-father-languages-spoken" ).select2( select2options );
-        $( "#patient-accompaniment-languages-spoken" ).select2( select2options );
-
-        //$( "#patient-country-of-origin" ).select2();
-        //$( "#patient-nationality" ).select2();
-        //$( "#patient-religion" ).select2();
-
-        //var datepickerOptions = { };
-       // $( "#patient-dob" ).datepicker( datepickerOptions );
-
         function showOptionalGroup(input, groupId) {
-            if ( $(input).val() == 'Yes' ) {
-                $( groupId ).show( 'slow' );
+            if ($(input).val() == 'Yes') {
+                $(groupId).show('slow');
             } else {
-                $( groupId ).hide( 'slow' );
+                $(groupId).hide('slow');
             }
         }
-        $( "#patient-has-mother-yes" ).change(function() {
-            showOptionalGroup( this, '#patient-mother-optional-group' );
-        });
-        $( "#patient-has-mother-no" ).change(function() {
-            showOptionalGroup( this, '#patient-mother-optional-group' );
-        });
-        $( "#patient-has-father-yes" ).change(function() {
-            showOptionalGroup( this, '#patient-father-optional-group' );
-        });
-        $( "#patient-has-father-no" ).change(function() {
-            showOptionalGroup( this, '#patient-father-optional-group' );
-        });
 
+        /**
+         * Validates a fieldset for invalid input.
+         *
+         * @param groupId {number} The index of the corresponding fielset
+         * @returns {boolean} True if there are no validation errors
+         */
         function validateFieldset( groupId ) {
             function validateField(fieldId) {
                 if ( !referralForm.element( fieldId ) ) {
@@ -294,7 +369,96 @@ window.onload = function() {
             return isValid;
         }
 
+        /**
+         * Adds a clicks handlers to the add photo button.
+         * It will add a new line for a photo as long as there are no other empty inputs.
+         */
+        function onAddPhotoClick() {
+            var currentInputs = $( "#patient-photos input" );
+            if (currentInputs.last().val() != '') {
+                var i = currentInputs.length;
+                $( "#patient-photos" ).append(
+                    '<div class="form-control"><input type="file" name="patient-photo-' + i + '-input"></div>');
+            }
+        }
+
+        /**
+         * Adds a clicks handlers to the add document button.
+         * It will add a new line for a document as long as there are no other empty inputs.
+         */
+        function onAddDocumentClick() {
+            var currentInputs = $( "#patient-documents input" );
+            if ( currentInputs.last().val() != '' ) {
+                var i = currentInputs.length;
+                $( "#patient-documents" ).append(
+                    '<div class="form-control"><input type="file" name="patient-document-' + i + '-input"></div>');
+            }
+        }
+
+        // attach a click handler to the begin button
+        begin_button.click(function() {
+            form_started = true;
+            ping();
+        });
+
+        // attach a click handler to the next button
+        next_button.click(function() {
+            if (!validateFieldset(current_fieldset)) {
+                return;
+            }
+            if (current_fieldset < fieldsets.size()-1) {
+                current_fieldset++;
+                ping();
+            }
+        });
+
+        // attach a click handler to the previous button
+        previous_button.click(function() {
+            if (current_fieldset > 0) {
+                current_fieldset--;
+                ping();
+            }
+        });
+
+        // attach a change handler to the accompaniment select list
+        accompaniment_select.change( onAccompanySelectChange );
+
+        // attach handlers to the if has mother/father inputs
+        $( "#patient-has-mother-yes" ).change(function() {
+            showOptionalGroup( this, '#patient-mother-optional-group' );
+        });
+        $( "#patient-has-mother-no" ).change(function() {
+            showOptionalGroup( this, '#patient-mother-optional-group' );
+        });
+        $( "#patient-has-father-yes" ).change(function() {
+            showOptionalGroup( this, '#patient-father-optional-group' );
+        });
+        $( "#patient-has-father-no" ).change(function() {
+            showOptionalGroup( this, '#patient-father-optional-group' );
+        });
+
+        // Instantiate special form controls - select2, datepicker etc
+        var select2options = { maximumSelectionLength: 2 };
+        $( "#patient-languages-spoken" ).select2( select2options );
+        $( "#patient-mother-languages-spoken" ).select2( select2options );
+        $( "#patient-father-languages-spoken" ).select2( select2options );
+        $( "#patient-accompaniment-languages-spoken" ).select2( select2options );
+
+
+        $( "#add-photo" ).click(onAddPhotoClick);
+        $( "#add-document" ).click(onAddDocumentClick);
+
+        //$( "#patient-photo-1-input" ).change(function() {
+        //    readURL(this, '#patient-photo-1');
+        //});
+        //$( "#patient-photo-2-input" ).change(function() {
+        //    readURL(this, '#patient-photo-2');
+        //});
+        //$( "#patient-photo-3-input" ).change(function() {
+        //    readURL(this, '#patient-photo-3');
+        //});
+
+        initialiseProgressList();
         ping();
-        init_steps();
     });
 })( jQuery );
