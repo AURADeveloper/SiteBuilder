@@ -14,19 +14,31 @@ function form_control( $id, $label, $type, $args = array() ) {
     ob_start(); ?>
     <div class="form-control">
         <label for="<?php echo $id; ?>"><?php echo $label; ?></label>
-        <input type="<?php echo $type; ?>" id="<?php echo $id; ?>" name="<?php echo $id; ?>"<?php
-        foreach ($args as $k => $v) {
-            echo " ";
-            echo $k;
-            if ($v != null) {
-                echo '=';
-                echo '"';
-                echo $v;
-                echo '"';
-            }
-        }
-        ?>>
+        <input type="<?php echo $type; ?>" id="<?php echo $id; ?>" name="<?php echo $id; ?>"<?php echo element_attributes( $args ); ?>>
     </div>
+    <?php return ob_get_clean();
+}
+
+/**
+ * Returns a PHP array as a XML attribute list.
+ *
+ * @param $args
+ * @return string
+ */
+function element_attributes( $args ) {
+    ob_start(); ?>
+    <?php
+    foreach ($args as $k => $v) {
+        echo " ";
+        echo $k;
+        if ($v != null) {
+            echo '=';
+            echo '"';
+            echo $v;
+            echo '"';
+        }
+    }
+    ?>
     <?php return ob_get_clean();
 }
 
@@ -68,15 +80,15 @@ function form_control_first_last_name( $id_prefix ) {
  * @param $id_prefix
  * @return string
  */
-function form_control_nationality( $id_prefix ) {
+function form_control_nationality( $id_prefix, $args = array()  ) {
     global $wpdb;
     $results = $wpdb->get_results( 'SELECT * FROM wp_nationalities' );
     ob_start(); ?>
     <div class="form-control">
         <?php $nationality = $id_prefix . '-nationality'; ?>
         <label for="<?php echo $nationality; ?>">Nationality</label>
-        <select type="text" id="<?php echo $nationality; ?>" name="<?php echo $nationality; ?>">
-            <option value="">-- select one --</option>
+        <select type="text" id="<?php echo $nationality; ?>" name="<?php echo $nationality; ?>"<?php echo element_attributes( $args ); ?>>
+            <option value=""></option>
             <?php foreach($results as $row): ?>
                 <option value="<?php echo $row->name; ?>"><?php echo $row->name; ?></option>
             <?php endforeach; ?>
@@ -91,15 +103,38 @@ function form_control_nationality( $id_prefix ) {
  * @param $id_prefix
  * @return string
  */
-function form_control_country( $id_prefix ) {
+function form_control_country( $id_prefix, $args = array() ) {
     global $wpdb;
     $results = $wpdb->get_results( 'SELECT * FROM wp_countries' );
     ob_start(); ?>
     <div class="form-control">
         <?php $country = $id_prefix . '-country-of-origin'; ?>
         <label for="<?php echo $country; ?>">Country of Origin</label>
-        <select type="text" id="<?php echo $country; ?>" name="<?php echo $country; ?>">
-            <option value="">-- select one --</option>
+        <select type="text" id="<?php echo $country; ?>" name="<?php echo $country; ?>"<?php echo element_attributes( $args ); ?>>
+            <option value=""></option>
+            <?php foreach($results as $row): ?>
+                <option value="<?php echo $row->iso; ?>"><?php echo $row->name; ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    <?php return ob_get_clean();
+}
+
+/**
+ * Returns a form snippet for capturing a persons industry.
+ *
+ * @param $id_prefix
+ * @return string
+ */
+function form_control_industry( $id_prefix, $args = array() ) {
+    global $wpdb;
+    $results = $wpdb->get_results( 'SELECT * FROM wp_industry' );
+    ob_start(); ?>
+    <div class="form-control">
+        <?php $name = $id_prefix . '-industry'; ?>
+        <label for="<?php echo $name; ?>">Occupation</label>
+        <select type="text" id="<?php echo $name; ?>" name="<?php echo $name; ?>"<?php echo element_attributes( $args ); ?>>
+            <option value=""></option>
             <?php foreach($results as $row): ?>
                 <option value="<?php echo $row->iso; ?>"><?php echo $row->name; ?></option>
             <?php endforeach; ?>
@@ -114,15 +149,15 @@ function form_control_country( $id_prefix ) {
  * @param $id_prefix
  * @return string
  */
-function form_control_religion( $id_prefix ) {
+function form_control_religion( $id_prefix, $args = array()  ) {
     global $wpdb;
     $results = $wpdb->get_results( 'SELECT * FROM wp_religions' );
     ob_start(); ?>
     <div class="form-control">
         <?php $religion = $id_prefix . '-religion'; ?>
         <label for="<?php echo $religion; ?>">Religion</label>
-        <select type="text" id="<?php echo $religion; ?>" name="<?php echo $religion; ?>">
-            <option value="">-- select one --</option>
+        <select type="text" id="<?php echo $religion; ?>" name="<?php echo $religion; ?>"<?php echo element_attributes( $args ); ?>>
+            <option value=""></option>
             <?php foreach($results as $row): ?>
                 <option value="<?php echo $row->name; ?>"><?php echo $row->name; ?></option>
             <?php endforeach; ?>
@@ -137,14 +172,14 @@ function form_control_religion( $id_prefix ) {
  * @param $id_prefix
  * @return string
  */
-function form_control_languages( $id_prefix ) {
+function form_control_languages( $id_prefix, $args = array() ) {
     global $wpdb;
     $results = $wpdb->get_results( 'SELECT * FROM wp_languages' );
     ob_start(); ?>
     <div class="form-control">
         <?php $language = $id_prefix . '-languages-spoken'; ?>
-        <label for="<?php echo $language; ?>">Language/s Spoken</label>
-        <select type="text" id="<?php echo $language; ?>" name="<?php echo $language; ?>" multiple>
+        <label for="<?php echo $language; ?>">Language/s Spoken</label> <p class="help-text">Choose one or more</p>
+        <select type="text" id="<?php echo $language; ?>" name="<?php echo $language; ?>"<?php echo element_attributes( $args ); ?>>
             <?php foreach($results as $row): ?>
                 <option value="<?php echo $row->name; ?>"><?php echo $row->name; ?></option>
             <?php endforeach; ?>
@@ -218,10 +253,10 @@ function form_person( $id_prefix, $singular ) {
     </div>
     <div class="row">
         <?php echo form_control_religion( $id_prefix ); ?>
-        <?php echo form_control( $id_prefix . '-occupation', 'Occupation', 'text' ); ?>
+        <?php echo form_control_industry( $id_prefix ); ?>
     </div>
     <div class="row">
-        <?php echo form_control_languages( $id_prefix ); ?>
+        <?php echo form_control_languages( $id_prefix, array( 'multiple' => null, 'required' => null ) ); ?>
     </div>
     <div class="row">
         <?php echo form_control_yes_no( $id_prefix . '-understand-english', 'Does the ' . $singular . ' understand English?' ); ?>
@@ -284,16 +319,16 @@ get_header(); ?>
                                 </div>
                                 <div class="col col-1-2">
                                     <div class="row">
-                                        <?php echo form_control_country( 'patient' ); ?>
+                                        <?php echo form_control_country( 'patient', array( 'required' => null ) ); ?>
                                     </div>
                                     <div class="row">
-                                        <?php echo form_control_nationality( 'patient' ); ?>
+                                        <?php echo form_control_nationality( 'patient', array( 'required' => null ) ); ?>
                                     </div>
                                     <div class="row">
-                                        <?php echo form_control_religion( 'patient' ); ?>
+                                        <?php echo form_control_religion( 'patient', array( 'required' => null ) ); ?>
                                     </div>
                                     <div class="row">
-                                        <?php echo form_control_languages( 'patient' ); ?>
+                                        <?php echo form_control_languages( 'patient', array( 'multiple' => null, 'required' => null ) ); ?>
                                     </div>
                                     <div class="row">
                                         <?php echo form_control_yes_no( 'patient-understand-english', 'Does the patient understand English?' ); ?>
@@ -308,7 +343,7 @@ get_header(); ?>
                         <div class="row spacing">
                             <div class="col col-1-2">
                                 <div class="heading padded">
-                                    <h2>Mother</h2>
+                                    <h2>Mothers Details</h2>
                                 </div>
                                 <div class="shaded padded">
                                     <div class="row">
@@ -321,7 +356,7 @@ get_header(); ?>
                             </div>
                             <div class="col col-1-2">
                                 <div class="heading padded">
-                                    <h2>Father</h2>
+                                    <h2>Fathers Details</h2>
                                 </div>
                                 <div class="shaded padded">
                                     <div class="row">
@@ -346,6 +381,7 @@ get_header(); ?>
                                     <div class="row">
                                         <div class="form-control">
                                             <label for="patient-accompaniment">Who is accompanying the patient?</label>
+                                            <p class="help-text">ROMACs preference is the mother.</p>
                                             <select id="patient-accompaniment">
                                                 <option value="other">Other</option>
                                             </select>
@@ -409,38 +445,322 @@ get_header(); ?>
                         <div class="heading padded">
                             <h2>Patient Photographs</h2>
                         </div>
-                        <div class="row spacing shaded padded">
-                            <div class="col col-1-3">
-                                <div class="form-control">
-                                    <label for="patient-photo-1-input">Patient Photo #1</label>
-                                    <input type='file' id="patient-photo-1-input">
-                                    <img id="patient-photo-1" src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/blank.gif" alt="Patient Photo Preview" class="aligncenter">
-                                </div>
+                        <div id="patient-photos" class="row spacing shaded padded">
+                            <div class="form-control">
+<!--                                <label for="patient-photo-1-input">Photo #1</label>-->
+                                <input type='file' id="patient-photo-1-input">
                             </div>
-                            <div class="col col-1-3">
-                                <div class="form-control">
-                                    <label for="patient-photo-2-input">Patient Photo #2</label>
-                                    <input type='file' id="patient-photo-2-input">
-                                    <img id="patient-photo-2" src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/blank.gif" alt="Patient Photo Preview" class="aligncenter">
-                                </div>
+                        </div>
+                        <div class="row section-buttons">
+                            <button type="button" id="add-photo">Add Photo</button>
+                        </div>
+
+                        <div class="heading padded">
+                            <h2>Medical Documentation</h2>
+                        </div>
+                        <div id="patient-documents" class="row spacing shaded padded">
+                            <div class="form-control">
+<!--                                <label for="patient-document-1-input">Document #1</label>-->
+                                <input type='file' id="patient-photo-1-input">
                             </div>
-                            <div class="col col-1-3">
-                                <div class="form-control">
-                                    <label for="patient-photo-3-input">Patient Photo #3</label>
-                                    <input type='file' id="patient-photo-3-input">
-                                    <img id="patient-photo-3-preview" src="<?php echo get_bloginfo('stylesheet_directory'); ?>/images/blank.gif" alt="Patient Photo Preview" class="aligncenter">
-                                </div>
-                            </div>
+                        </div>
+                        <div class="row section-buttons">
+                            <button type="button" id="add-document">Add Document</button>
                         </div>
                     </fieldset>
 
                     <fieldset>
-                        <legend>Step 6: Confirmation</legend>
-                        <div class="heading padded">
-                            <h2>Confirm your Submission</h2>
+                        <legend>Step 6: Confirmation Submission</legend>
+                        <div class="row spacing">
+                            <div class="col col-1-2">
+                                <div class="heading padded">
+                                    <h2>Patient Details</h2>
+                                </div>
+                                <div class="row spacing shaded padded">
+                                    <div class="col confirm-labels">
+                                        <div>
+                                            <label>First Name:</label>
+                                            <span id="patient-fname-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Last Name:</label>
+                                            <span id="patient-lname-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Date of Birth:</label>
+                                            <span id="patient-dob-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Sex:</label>
+                                            <span id="patient-sex-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Height (cm):</label>
+                                            <span id="patient-height-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Weight (kg):</label>
+                                            <span id="patient-weight-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Address:</label>
+                                            <span id="patient-address-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Country of Origin:</label>
+                                            <span id="patient-country-of-origin-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Nationality:</label>
+                                            <span id="patient-nationality-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Religion:</label>
+                                            <span id="patient-religion-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Languages Spoken:</label>
+                                            <span id="patient-languages-spoken-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Understands English:</label>
+                                            <span id="patient-understand-english-c"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-1-2">
+                                <div class="heading padded">
+                                    <h2>Source of Referral</h2>
+                                </div>
+                                <div class="row spacing shaded padded">
+                                    <div class="col confirm-labels">
+                                        <div>
+                                            <label>Name:</label>
+                                            <span id="patient-referrer-name-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Address:</label>
+                                            <span id="patient-referrer-address-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Home Phone:</label>
+                                            <span id="patient-referrer-home-phone-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Mobile Phone:</label>
+                                            <span id="patient-referrer-mobile-phone-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Email:</label>
+                                            <span id="patient-referrer-email-c"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="heading padded">
+                                    <h2>Supporting Files</h2>
+                                </div>
+                                <div class="row spacing shaded padded">
+                                    <div class="col confirm-labels">
+                                        <div>
+                                            <label>Photos:</label>
+                                            <span id=""></span>
+                                        </div>
+                                        <div>
+                                            <label>Documents:</label>
+                                            <span id=""></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="row spacing shaded padded">
-
+                        <div class="row spacing">
+                            <div class="col col-1-2">
+                                <div class="heading padded">
+                                    <h2>Mothers Details</h2>
+                                </div>
+                                <div class="row spacing shaded padded">
+                                    <div class="col confirm-labels">
+                                        <div>
+                                            <label>Has Mother:</label>
+                                            <span id="patient-has-mother-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>First Name:</label>
+                                            <span id="patient-mother-fname-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Last Name:</label>
+                                            <span id="patient-mother-lname-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Date of Birth:</label>
+                                            <span id="patient-mother-dob-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Address:</label>
+                                            <span id="patient-mother-address-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Email:</label>
+                                            <span id="patient-mother-email-address-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Home Phone:</label>
+                                            <span id="patient-mother-home-phone-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Mobile Phone:</label>
+                                            <span id="patient-mother-mobile-phone-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Religion:</label>
+                                            <span id="patient-mother-religion-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Occupation Industry:</label>
+                                            <span id="patient-mother-industry-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Language/s Spoken:</label>
+                                            <span id="patient-mother-languages-spoken-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Understands English:</label>
+                                            <span id="patient-mother-understand-english-c"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-1-2">
+                                <div class="heading padded">
+                                    <h2>Fathers Details</h2>
+                                </div>
+                                <div class="row spacing shaded padded">
+                                    <div class="col confirm-labels">
+                                        <div>
+                                            <label>Has Father:</label>
+                                            <span id="patient-has-father-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>First Name:</label>
+                                            <span id="patient-father-fname-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Last Name:</label>
+                                            <span id="patient-father-lname-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Date of Birth:</label>
+                                            <span id="patient-father-dob-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Address:</label>
+                                            <span id="patient-father-address-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Email:</label>
+                                            <span id="patient-father-email-address-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Home Phone:</label>
+                                            <span id="patient-father-home-phone-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Mobile Phone:</label>
+                                            <span id="patient-father-mobile-phone-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Religion:</label>
+                                            <span id="patient-father-religion-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Occupation Industry:</label>
+                                            <span id="patient-father-industry-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Language/s Spoken:</label>
+                                            <span id="patient-father-languages-spoken-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Understands English:</label>
+                                            <span id="patient-father-understand-english-c"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row spacing">
+                            <div class="col col-1-2">
+                                <div class="heading padded">
+                                    <h2>Accompaniment</h2>
+                                </div>
+                                <div class="row spacing shaded padded">
+                                    <div class="col confirm-labels">
+                                        <div>
+                                            <label>Who is accompanying the patient?</label>
+                                            <span id="patient-accompaniment-c"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-1-2">
+                                <div class="heading padded">
+                                    <h2>Accompaniment Details</h2>
+                                </div>
+                                <div class="row spacing shaded padded">
+                                    <div class="col confirm-labels">
+                                        <div>
+                                            <label>Relationship:</label>
+                                            <span id="patient-accompaniment-connection-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>First Name:</label>
+                                            <span id="patient-accompaniment-fname-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Last Name:</label>
+                                            <span id="patient-accompaniment-lname-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Date of Birth:</label>
+                                            <span id="patient-accompaniment-dob-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Address:</label>
+                                            <span id="patient-accompaniment-address-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Email:</label>
+                                            <span id="patient-accompaniment-email-address-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Home Phone:</label>
+                                            <span id="patient-accompaniment-home-phone-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Mobile Phone:</label>
+                                            <span id="patient-accompaniment-mobile-phone-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Religion:</label>
+                                            <span id="patient-accompaniment-religion-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Occupation Industry:</label>
+                                            <span id="patient-accompaniment-industry-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Language/s Spoken:</label>
+                                            <span id="patient-accompaniment-languages-spoken-c"></span>
+                                        </div>
+                                        <div>
+                                            <label>Understands English:</label>
+                                            <span id="patient-accompaniment-understand-english-c"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </fieldset>
 

@@ -2,19 +2,19 @@ var formSubmitting = false;
 var has_began = false;
 var setFormSubmitting = function() { formSubmitting = true; };
 
-//window.onload = function() {
-//    window.addEventListener("beforeunload", function (e) {
-//        var confirmationMessage = 'You have started a referral form submission. ';
-//        confirmationMessage += 'If you leave before saving, your changes will be lost.';
-//
-//        if (formSubmitting || !has_began) {
-//            return undefined;
-//        }
-//
-//        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-//        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
-//    });
-//};
+window.onload = function() {
+    window.addEventListener("beforeunload", function (e) {
+        var confirmationMessage = 'You have started a referral form submission. ';
+        confirmationMessage += 'If you leave before saving, your changes will be lost.';
+
+        if (formSubmitting || !has_began) {
+            return undefined;
+        }
+
+        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+    });
+};
 
 // be safe - map $ to jQuery in a anonymous function
 (function($) {
@@ -72,6 +72,24 @@ var setFormSubmitting = function() { formSubmitting = true; };
             if (cur_fieldset == fieldsets.size()-1) {
                 next_btn.attr( 'disabled', '' );
                 submit_btn.removeAttr( 'disabled' );
+
+                // populate the confirmation screen
+                $("#referral-form input, #referral-form select, #referral-form textarea").each(function(index, element) {
+                    var name = $(element).attr('name');
+                    var confirmId = '#' + name + '-c';
+                    var confirmElem = $(confirmId);
+                    // add guard in-case input does not have a preview
+                    if (confirmElem.length) {
+                        // its a <select> option
+                        if ($(element).is('select')) {
+                            confirmElem.text($('select[name="' + name + '"] option:selected').text());
+                        }
+                        // everything else
+                        else {
+                            confirmElem.text($(element).val());
+                        }
+                    }
+                });
             }
 
             // if the first panel
@@ -142,9 +160,9 @@ var setFormSubmitting = function() { formSubmitting = true; };
         function accompanyChange() {
             var val = accompany.val();
             if ( val == "other" ) {
-                $( "#patient-accompaniment-optional-group" ).show( 'slow' );
+                $( "#patient-accompaniment-optional-group" ).show();
             } else {
-                $( "#patient-accompaniment-optional-group" ).hide( 'slow' );
+                $( "#patient-accompaniment-optional-group" ).hide();
             }
         }
         accompany.change( accompanyChange );
@@ -174,6 +192,36 @@ var setFormSubmitting = function() { formSubmitting = true; };
             readURL(this, '#patient-photo-3');
         });
 
+        /**
+         * Adds a clicks handlers to the add photo button.
+         *
+         * It will add a new line for a photo as long as there are no other empty inputs.
+         */
+        $( "#add-photo" ).click(function() {
+            // count the number of photos
+            var currentInputs = $( "#patient-photos input" );
+            if (currentInputs.last().val() != '') {
+                var i = currentInputs.length;
+                $( "#patient-photos" ).append(
+                    '<div class="form-control"><input type="file" name="patient-photo-' + i + '-input"></div>');
+            }
+        });
+
+        /**
+         * Adds a clicks handlers to the add document button.
+         *
+         * It will add a new line for a document as long as there are no other empty inputs.
+         */
+        $( "#add-document" ).click(function() {
+            // count the number of photos
+            var currentInputs = $( "#patient-documents input" );
+            if ( currentInputs.last().val() != '' ) {
+                var i = currentInputs.length;
+                $( "#patient-documents" ).append(
+                    '<div class="form-control"><input type="file" name="patient-document-' + i + '-input"></div>');
+            }
+        });
+
         //
         // Instantiate special form controls - select2, datepicker etc
         //
@@ -182,6 +230,10 @@ var setFormSubmitting = function() { formSubmitting = true; };
         $( "#patient-mother-languages-spoken" ).select2( select2options );
         $( "#patient-father-languages-spoken" ).select2( select2options );
         $( "#patient-accompaniment-languages-spoken" ).select2( select2options );
+
+        //$( "#patient-country-of-origin" ).select2();
+        //$( "#patient-nationality" ).select2();
+        //$( "#patient-religion" ).select2();
 
         //var datepickerOptions = { };
        // $( "#patient-dob" ).datepicker( datepickerOptions );
@@ -213,7 +265,13 @@ var setFormSubmitting = function() { formSubmitting = true; };
                 }
             }
 
-            var referralForm = $( '#referral-form' ).validate();
+            var referralForm = $( '#referral-form' ).validate({
+                //messages: {
+                //    'patient-fname': 'The patients first name is required.',
+                //    'patient-lname': 'The patients last name is required.',
+                //    'patient-sex': 'The patients gender is required.'
+                //}
+            });
             var isValid = true;
 
             switch ( groupId ) {

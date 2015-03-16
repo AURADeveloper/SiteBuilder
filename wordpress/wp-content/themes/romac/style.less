@@ -61,6 +61,11 @@ Nicolas Gallagher and Jonathan Neal http://necolas.github.com/normalize.css/
 // dimensions
 @site-max-width: 1100px;
 
+@mobiles:  ~"only screen and (max-width: 768px)";
+@tablets:  ~"only screen and (min-width: 768px) and (max-width: 992px)";
+//@laptops:  ~"only screen and (min-width: 992px)";
+//@desktops: ~"only screen and (min-width: 1200px)";
+
 /*--------------------------------------------------------------
 0.1 Mix-ins
 --------------------------------------------------------------*/
@@ -376,6 +381,12 @@ big {
 .text-justify {
   text-align: justify;
 }
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
 /*--------------------------------------------------------------
 3.0 Elements
 --------------------------------------------------------------*/
@@ -555,7 +566,12 @@ input[type="checkbox"] {
   display: inline;
 }
 
-
+button {
+  &.btn-small {
+    font-size: 14px;
+    font-size: 0.875em;
+  }
+}
 /*--------------------------------------------------------------
 5.0 Navigation
 --------------------------------------------------------------*/
@@ -1554,7 +1570,7 @@ object {
 /*--------------------------------------------------------------
 13.1 General Responsive Layout System - based on media queries and flex
 --------------------------------------------------------------*/
-@mobile-view: ~"only screen and (max-width: 800px)";
+
 
 .row {
   width: 100%;
@@ -1562,15 +1578,15 @@ object {
   margin-bottom: 1em;
 
   // for mobile, switch the direction rows are laid out
-  @media @mobile-view {
+  @media @mobiles, @tablets {
     flex-direction: column;
   }
 
   .row {
     margin-bottom: 0;
 
-    // for all nested rows, do not collapse on mobiles
-    @media @mobile-view {
+    // for all nested rows, do not collapse on tablets
+    @media @tablets {
       flex-direction: row;
     }
   }
@@ -1584,14 +1600,18 @@ object {
       }
       &:last-child {
         margin-right: 0;
+
+        @media @tablets {
+          margin-left: 0;
+        }
       }
 
-      @media @mobile-view {
+      @media @mobiles {
         margin: 0;
       }
 
       .col {
-        @media @mobile-view {
+        @media @mobiles {
           margin: 0 .5em;
         }
       }
@@ -1610,7 +1630,7 @@ object {
 
 .heading {
   h2 {
-    margin: 0 0 .25em;
+    margin: .5em 0 .25em;
   }
 
   &.padded {
@@ -1634,7 +1654,7 @@ form {
   width: 100%;
 
   .form-control {
-    margin: 0 .5em .5em;
+    margin: 0 0.5em 0.75em;
     width: 100%;
 
     input[type="text"],
@@ -1648,30 +1668,55 @@ form {
     input[type="date"],
     textarea,
     select {
+      margin: 0;
+
       &.error {
-        border: 1px solid rgba(137,0,24,0.5);
+        border: 1px solid rgba(137, 0, 24, 0.5);
+        background-color: rgba(199, 0, 0, 0.125);
+      }
+    }
+
+    p {
+      &.help-text {
+        display: inline;
+        font-size: 12px;
+        font-size: 0.75rem;
+        color: #666;
       }
     }
 
     label {
+      display: inline-block;
+      margin-bottom: 0.25em;
+
       &.error {
-//        font-size: 14px;
-//        font-size: 0.875rem;
+        font-size: 12px;
+        font-size: 0.75rem;
 //        background-color: rgba(137,0,24,1);
 //        color: white;
-        display: none !important;
+//        display: none !important;
+
       }
     }
 
     .form-control {
-      margin: 0 .5em;
+//      margin: 0 .5em;
     }
 
     &:first-child {
       margin-left: 0;
+
+      @media @mobiles {
+        margin-right: 0;
+      }
     }
+
     &:last-child {
       margin-right: 0;
+
+      @media @mobiles {
+        margin-left: 0;
+      }
     }
 
     &.checkbox {
@@ -1707,6 +1752,32 @@ form {
 
 }
 
+.select2-container {
+  display: block;
+  margin: 0;
+}
+.select2-container-multi .select2-choices {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background-image: none;
+}
+.select2-container-multi .select2-choices .select2-search-choice {
+  margin: 5px 0 5px 5px;
+}
+.select2-container .select2-choice {
+  height: 32px;
+  background-image: none;
+  border: 1px solid #ccc;
+  line-height: 32px;
+  border-radius: 3px
+}
+.select2-container .select2-choice .select2-arrow {
+  border-left: 1px solid #ccc;
+  border-radius: 0 3px 3px 0;
+}
+.select2-container .select2-choice .select2-arrow b {
+//  background-position: 0 4px;
+}
 /*--------------------------------------------------------------
 14.0 Templates
 --------------------------------------------------------------*/
@@ -1717,23 +1788,43 @@ form {
   legend {
     text-align: center;
     font-size: 0.75em;
-    margin-bottom: 2em;
   }
   fieldset {
     min-height: 360px;
   }
-}
-.select2-container {
-  display: block;
-  margin: .25em 0 .5em;
-}
-.select2-container-multi .select2-choices {
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  background-image: none;
-}
-.select2-container-multi .select2-choices .select2-search-choice {
-  margin: 5px 0 5px 5px;
+  .section-buttons {
+    justify-content: flex-end;
+    button {
+      font-size: 14px;
+      font-size: 0.875rem;
+    }
+  }
+  #patient-photos, #patient-documents {
+    flex-direction: column;
+    .form-control {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+  .confirm-labels {
+    margin-bottom: 1em;
+    font-size: 14px;
+    font-size: 0.875rem;
+
+    label {
+      font-weight: bold;
+    }
+
+    div {
+      display: flex;
+      justify-content: space-between;
+      margin: .25em 0;
+
+      &:nth-child(even) {
+        background-color: rgba(255, 255, 255, 0.5);
+      }
+    }
+  }
 }
 #referral-progress {
   margin-bottom: 1em;
