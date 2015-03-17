@@ -172,23 +172,113 @@ window.onload = function() {
          * Populates the confirmation page, copying the fieldset values into the confirmation page.
          */
         function populateConfirmationFielset() {
-            // populate the confirmation screen
-            $("#referral-form input, #referral-form select, #referral-form textarea").each(function(index, element) {
+            // iterate through all form inputs
+            $('form input, form select, form textarea').each(function(index, element) {
+                // get the name attribute of the context input element
                 var name = $(element).attr('name');
-                var confirmId = '#' + name + '-c';
-                var confirmElem = $(confirmId);
+                // corresponding confirm label
+                var confirm_label = $('#' + name + '-c');
+
                 // add guard in-case input does not have a preview
-                if (confirmElem.length) {
-                    // its a <select> option
-                    if ($(element).is('select')) {
-                        confirmElem.text($('select[name="' + name + '"] option:selected').text());
+                if (!confirm_label.length) return;
+
+                // its a <select> element
+                if ($(element).is('select')) {
+                    // if its a multiple value select list, concat a comma seperated list
+                    if ($(element).attr('multiple')) {
+                        var foo = [];
+                        $('select[name="' + name + '"] option:selected').each(function(i, selected) {
+                            foo[i] = $(selected).text();
+                        });
+                        confirm_label.text(foo.join(', '));
                     }
-                    // everything else
+                    // its just a single value
                     else {
-                        confirmElem.text($(element).val());
+                        confirm_label.text($('select[name="' + name + '"] option:selected').text());
                     }
                 }
+                // its a <textarea> element
+                else if ($(element).is('textarea')) {
+                    // replace cartridge returns with <br>
+                    confirm_label.html($(element).val().replace(/\r\n|\r|\n/g, '<br/>'));
+
+                }
+                // it's a <input type="file"> element
+                else if ($(element).attr('type') == 'file') {
+                    // this is handled below
+                }
+                // it's a <input type="radio"> element
+                else if ($(element).attr('type') == 'radio') {
+                    // get the value of the checked radio only
+                    if ($(element).attr('checked')) {
+                        confirm_label.text($(element).val());
+                    }
+                }
+                // it's all other inputs that require no special filtering
+                else {
+                    confirm_label.text($(element).val());
+                }
             });
+
+            // get the photo input
+            var photo_label_c = $('#patient-photos-c');
+            // clear photos label
+            photo_label_c.empty();
+            // iterate through the photo inputs
+            $('input[type="file"][name^="patient-photo-"]').each(function(index, element) {
+                // add guard, file could be blank
+                if (element.files[0]) {
+                    var filename = $(this).val().split('\\').pop();
+                    var filesize = Math.ceil(element.files[0].size / 1024);
+                    photo_label_c.append('<div>' + filename + ' (' + filesize + 'KB) </div>');
+                }
+            });
+            if (photo_label_c.text() == '') {
+                photo_label_c.text('There are no photos attached.');
+            }
+
+            // get the document input
+            var document_label_c = $('#patient-documents-c');
+            // clear documents label
+            document_label_c.empty();
+            // iterate through the photo inputs
+            $('input[type="file"][name^="patient-document-"]').each(function(index, element) {
+                // add guard, file could be blank
+                if (element.files[0]) {
+                    var filename = $(this).val().split('\\').pop();
+                    var filesize = Math.ceil(element.files[0].size / 1024);
+                    document_label_c.append('<div>' + filename + ' (' + filesize + 'KB) </div>');
+                }
+            });
+            if (document_label_c.text() == '') {
+                document_label_c.text('There are no documents attached.');
+            }
+
+            // hide or show the accompaniment depending if other is selected
+            // if mother or father selected, hide this group because there is no new information
+            if ($('#patient-accompaniment option:selected').text() == 'Other') {
+                $('#patient-accompaniment-group-none-c').hide();
+                $('#patient-accompaniment-group-c').show();
+            } else {
+                $('#patient-accompaniment-group-none-c').show();
+                $('#patient-accompaniment-group-c').hide();
+            }
+
+            if ($('#patient-has-mother-yes').attr('checked')) {
+                $('#patient-mother-group-none-c').hide();
+                $('#patient-mother-group-c').show();
+            } else {
+                $('#patient-mother-group-none-c').show();
+                $('#patient-mother-group-c').hide();
+            }
+
+            if ($('#patient-has-father-yes').attr('checked')) {
+                $('#patient-father-group-none-c').hide();
+                $('#patient-father-group-c').show();
+            } else {
+                $('#patient-father-group-none-c').show();
+                $('#patient-father-group-c').hide();
+            }
         }
 
         /**
@@ -366,6 +456,7 @@ window.onload = function() {
                     break;
             }
 
+            return true;
             return isValid;
         }
 
@@ -377,8 +468,10 @@ window.onload = function() {
             var currentInputs = $( "#patient-photos input" );
             if (currentInputs.last().val() != '') {
                 var i = currentInputs.length;
-                $( "#patient-photos" ).append(
-                    '<div class="form-control"><input type="file" name="patient-photo-' + i + '-input"></div>');
+                $("#patient-photos .inputs").append(
+                    '<div class="form-control">' +
+                        '<input type="file" name="patient-photo-input-' + i + '">' +
+                    '</div>');
             }
         }
 
@@ -390,8 +483,10 @@ window.onload = function() {
             var currentInputs = $( "#patient-documents input" );
             if ( currentInputs.last().val() != '' ) {
                 var i = currentInputs.length;
-                $( "#patient-documents" ).append(
-                    '<div class="form-control"><input type="file" name="patient-document-' + i + '-input"></div>');
+                $("#patient-documents .inputs").append(
+                    '<div class="form-control">' +
+                        '<input type="file" name="patient-document-input-' + i + '">' +
+                    '</div>');
             }
         }
 
@@ -400,7 +495,6 @@ window.onload = function() {
             form_started = true;
             ping();
         });
-
         // attach a click handler to the next button
         next_button.click(function() {
             if (!validateFieldset(current_fieldset)) {
@@ -411,7 +505,6 @@ window.onload = function() {
                 ping();
             }
         });
-
         // attach a click handler to the previous button
         previous_button.click(function() {
             if (current_fieldset > 0) {
@@ -443,7 +536,6 @@ window.onload = function() {
         $( "#patient-mother-languages-spoken" ).select2( select2options );
         $( "#patient-father-languages-spoken" ).select2( select2options );
         $( "#patient-accompaniment-languages-spoken" ).select2( select2options );
-
 
         $( "#add-photo" ).click(onAddPhotoClick);
         $( "#add-document" ).click(onAddDocumentClick);

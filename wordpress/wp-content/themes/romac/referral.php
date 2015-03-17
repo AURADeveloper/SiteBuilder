@@ -336,6 +336,34 @@ get_header(); ?>
                                 </div>
                             </div>
                         </div>
+
+                        <div class="heading padded">
+                            <h2>Patient Photographs</h2>
+                        </div>
+                        <div id="patient-photos" class="row spacing shaded padded">
+                            <div class="inputs">
+                                <div class="form-control">
+                                    <input type='file' name="patient-photo-input-1">
+                                </div>
+                            </div>
+                            <div class="row section-buttons">
+                                <button type="button" id="add-photo">Add Photo</button>
+                            </div>
+                        </div>
+
+                        <div class="heading padded">
+                            <h2>Medical Documentation</h2>
+                        </div>
+                        <div id="patient-documents" class="row spacing shaded padded">
+                            <div class="inputs">
+                                <div class="form-control">
+                                    <input type='file' name="patient-document-input-1">
+                                </div>
+                            </div>
+                            <div class="row section-buttons">
+                                <button type="button" id="add-document">Add Document</button>
+                            </div>
+                        </div>
                     </fieldset>
 
                     <fieldset>
@@ -391,13 +419,13 @@ get_header(); ?>
                             </div>
                             <div id="patient-accompaniment-optional-group" class="col col-1-2">
                                 <div class="heading padded">
-                                    <h2>Details</h2>
+                                    <h2>Accompaniment Details</h2>
                                 </div>
                                 <div class="shaded padded">
                                     <div class="row">
                                         <div class="form-control">
                                             <label for="patient-accompaniment-connection">Relationship to patient</label>
-                                            <select id="patient-accompaniment-connection">
+                                            <select id="patient-accompaniment-connection" name="patient-accompaniment-connection">
                                                 <option>Brother</option>
                                                 <option>Sister</option>
                                                 <option>Auntie</option>
@@ -441,36 +469,7 @@ get_header(); ?>
                     </fieldset>
 
                     <fieldset>
-                        <legend>Step 5: Supporting Documentation</legend>
-                        <div class="heading padded">
-                            <h2>Patient Photographs</h2>
-                        </div>
-                        <div id="patient-photos" class="row spacing shaded padded">
-                            <div class="form-control">
-<!--                                <label for="patient-photo-1-input">Photo #1</label>-->
-                                <input type='file' id="patient-photo-1-input">
-                            </div>
-                        </div>
-                        <div class="row section-buttons">
-                            <button type="button" id="add-photo">Add Photo</button>
-                        </div>
-
-                        <div class="heading padded">
-                            <h2>Medical Documentation</h2>
-                        </div>
-                        <div id="patient-documents" class="row spacing shaded padded">
-                            <div class="form-control">
-<!--                                <label for="patient-document-1-input">Document #1</label>-->
-                                <input type='file' id="patient-photo-1-input">
-                            </div>
-                        </div>
-                        <div class="row section-buttons">
-                            <button type="button" id="add-document">Add Document</button>
-                        </div>
-                    </fieldset>
-
-                    <fieldset>
-                        <legend>Step 6: Confirmation Submission</legend>
+                        <legend>Step 5: Confirmation Submission</legend>
                         <div class="row spacing">
                             <div class="col col-1-2">
                                 <div class="heading padded">
@@ -564,11 +563,11 @@ get_header(); ?>
                                     <div class="col confirm-labels">
                                         <div>
                                             <label>Photos:</label>
-                                            <span id=""></span>
+                                            <span id="patient-photos-c" class="text-right"></span>
                                         </div>
                                         <div>
                                             <label>Documents:</label>
-                                            <span id=""></span>
+                                            <span id="patient-documents-c" class="text-right"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -580,7 +579,12 @@ get_header(); ?>
                                     <h2>Mothers Details</h2>
                                 </div>
                                 <div class="row spacing shaded padded">
-                                    <div class="col confirm-labels">
+                                    <div id="patient-mother-group-none-c" class="col confirm-labels">
+                                        <div>
+                                            The patient has no mother.
+                                        </div>
+                                    </div>
+                                    <div id="patient-mother-group-c" class="col confirm-labels">
                                         <div>
                                             <label>Has Mother:</label>
                                             <span id="patient-has-mother-c"></span>
@@ -637,7 +641,12 @@ get_header(); ?>
                                     <h2>Fathers Details</h2>
                                 </div>
                                 <div class="row spacing shaded padded">
-                                    <div class="col confirm-labels">
+                                    <div id="patient-father-group-none-c" class="col confirm-labels">
+                                        <div>
+                                            The patient has no father.
+                                        </div>
+                                    </div>
+                                    <div id="patient-father-group-c" class="col confirm-labels">
                                         <div>
                                             <label>Has Father:</label>
                                             <span id="patient-has-father-c"></span>
@@ -709,7 +718,12 @@ get_header(); ?>
                                     <h2>Accompaniment Details</h2>
                                 </div>
                                 <div class="row spacing shaded padded">
-                                    <div class="col confirm-labels">
+                                    <div id="patient-accompaniment-group-none-c" class="col confirm-labels">
+                                        <div>
+                                            As above.
+                                        </div>
+                                    </div>
+                                    <div id="patient-accompaniment-group-c" class="col confirm-labels">
                                         <div>
                                             <label>Relationship:</label>
                                             <span id="patient-accompaniment-connection-c"></span>
