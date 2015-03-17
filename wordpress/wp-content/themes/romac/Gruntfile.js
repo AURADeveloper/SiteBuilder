@@ -6,9 +6,8 @@ module.exports = function(grunt) {
         less: {
             theme: {
                 files: {
-                    "style.css": "style.less",
-                    "admin.css": "admin.less",
-                    "layouts/layout.css": "layouts/layout.less"
+                    "style.css": "less/style.less",
+                    "admin.css": "admin.less"
                 }
             }
         }

@@ -122,7 +122,7 @@ function romac_scripts() {
         wp_enqueue_style( 'romac-style',        get_stylesheet_uri() );
         wp_enqueue_style( 'romac-layout-style', get_template_directory_uri() . '/layouts/layout.css' );
     } else {
-        wp_enqueue_style(  'romac-style-less',        get_bloginfo( 'template_directory' ) . '/style.less' );
+        wp_enqueue_style(  'romac-style-less',        get_bloginfo( 'template_directory' ) . '/less/style.less' );
         wp_enqueue_style(  'romac-layout-style-less', get_bloginfo( 'template_directory' ) . '/layouts/layout.less' );
         wp_enqueue_script( 'less-processor',        get_template_directory_uri() . '/js/less.min.js', array(), '2.4.0', true );
     }

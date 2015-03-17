@@ -1,0 +1,140 @@
+@import "variables.less";
+@import "mixins.less";
+@import "animate.css";
+
+.menu-item-color(@color) {
+  border: 1px solid darken(@color, 12.5);
+  background-color: @color;
+  .gradient(@color, darken(@color, 7.5));
+
+  li:hover {
+    background-color: darken(@color, 0.25);
+    .gradient(@color, darken(@color, 0.25));
+  }
+  .sub-menu li:hover {
+    background-color: lighten(@color, 10);
+  }
+}
+
+.main-navigation {
+  li {
+    font-family: 'Short Stack', cursive;
+    width: 100%;
+    position: relative;
+    background-color: #F2EFEF;
+    margin: 0 1px;
+    border-radius: 3px;
+
+    // mix in color variations
+    &.malibu {
+      .menu-item-color(@malibu);
+    }
+    &.apple {
+      .menu-item-color(@apple);
+    }
+    &.cerise {
+      .menu-item-color(@cerise);
+    }
+    &.puce {
+      .menu-item-color(@puce);
+    }
+    &.jaffa {
+      .menu-item-color(@jaffa);
+    }
+
+    &:hover {
+      > ul {
+        // brings sub-menu into view
+        left: auto;
+
+        li {
+          // for transition in
+          max-height: 1024px;
+        }
+      }
+    }
+
+    &:first-child {
+      margin-left: 0;
+    }
+    &:last-child {
+      margin-right: 0;
+    }
+
+    a {
+      height: 44px;
+      line-height: 44px;
+      vertical-align: middle;
+      display: block;
+      text-decoration: none;
+      text-align: center;
+      font-weight: bold;
+      text-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
+      text-transform: uppercase;
+      color: #eee;
+      font-size: 18px;
+      font-size: 1.125rem;
+    }
+
+    li {
+      font-family: 'Open Sans', sans-serif;
+
+      // used to a fade in transition
+      max-height: 0;
+      overflow: hidden;
+      -webkit-transition: max-height 1.42s;
+      transition: background-color .22s;
+      border-bottom: 1px solid #ccc;
+      margin: 0;
+      border-radius: inherit;
+
+
+
+      &:hover {
+        > ul {
+          left: 100%;
+        }
+      }
+
+      a {
+        margin-left: 1em;
+        color: #404040;
+        text-align: left;
+        font-size: 13px;
+        font-size: 0.8125rem;
+        height: 32px;
+        line-height: 32px;
+        text-shadow: none;
+        font-weight: normal;
+        text-transform: none;
+
+        &:hover {
+          font-weight: bold;
+        }
+      }
+
+    }
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+
+    ul {
+      display: block;
+      width: 100%;
+      box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+
+      // offset to the side, hover selector will reset
+      position: absolute;
+      left: -999em;
+      z-index: 99999;
+
+      ul {
+        left: -999em;
+      }
+    }
+  }
+}
