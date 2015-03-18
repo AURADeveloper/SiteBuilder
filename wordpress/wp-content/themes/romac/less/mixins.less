@@ -1,4 +1,5 @@
 .gradient(@color1, @color2) {
+  background-color: @color; // fallback
   background-image: -webkit-linear-gradient(top, @color1, @color2);
   background-image: -moz-linear-gradient(top, @color1, @color2);
   background-image: -ms-linear-gradient(top, @color1, @color2);
@@ -6,9 +7,33 @@
   background-image: linear-gradient(to bottom, @color1, @color2);
 }
 
+.animation-delay(@time) {
+  -webkit-animation-delay: @time;
+  -moz-animation-delay: @time;
+  //-ms-animation-delay: @seconds; // no microsoft
+  -o-animation-delay: @time;
+  animation-delay: @time;
+}
+
+.flex {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
 .font-size(@sizeValue) {
   @remValue: @sizeValue;
   @pxValue: (@sizeValue * 10);
   font-size: ~"@{pxValue}px";
   font-size: ~"@{remValue}rem";
+}
+
+.font-heading {
+  font-family: 'Short Stack', cursive;
+}
+
+.font-body {
+  font-family: 'Open Sans', sans-serif;
 }

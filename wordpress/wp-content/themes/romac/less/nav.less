@@ -1,64 +1,104 @@
 @import "variables.less";
 @import "mixins.less";
-@import "animate.css";
+@import "animate.less";
 
 .menu-item-color(@color) {
   border: 1px solid darken(@color, 12.5);
-  background-color: @color;
   .gradient(@color, darken(@color, 7.5));
 
-  li:hover {
-    background-color: darken(@color, 0.25);
-    .gradient(@color, darken(@color, 0.25));
+  &:hover {
+    .gradient(darken(@color, 7.5), @color);
   }
-  .sub-menu li:hover {
-    background-color: lighten(@color, 10);
+
+  .sub-menu li {
+    &:hover {
+      background-color: lighten(@color, 7.5);
+    }
   }
 }
 
+.delay-child-animation(@n, @t, @i : 0) when (@i <= @n) {
+  &:nth-child(@{i}) {
+    .animation-delay(@i * @t);
+  }
+  .delay-child-animation(@n, @t, (@i + 1));
+}
+
 .main-navigation {
-  li {
-    font-family: 'Short Stack', cursive;
-    width: 100%;
-    position: relative;
-    background-color: #F2EFEF;
-    margin: 0 1px;
-    border-radius: 3px;
+  // first level navigation - runs horizontally across the screen
+  ul {
+    .flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 
-    // mix in color variations
-    &.malibu {
-      .menu-item-color(@malibu);
-    }
-    &.apple {
-      .menu-item-color(@apple);
-    }
-    &.cerise {
-      .menu-item-color(@cerise);
-    }
-    &.puce {
-      .menu-item-color(@puce);
-    }
-    &.jaffa {
-      .menu-item-color(@jaffa);
-    }
+    // second level navigation - hidden until the parent <li> is hovered over
+    ul {
+      display: block;
+      width: 100%;
+      z-index: 99999; // bring to top always
 
-    &:hover {
-      > ul {
-        // brings sub-menu into view
-        left: auto;
+      // offset to the side, hover selector will reset
+      left: -999em;
+      position: absolute;
 
-        li {
-          // for transition in
-          max-height: 1024px;
+      @media @mobiles {
+        &.toggled {
+          position: inherit;
+          left: inherit;
         }
       }
-    }
 
-    &:first-child {
-      margin-left: 0;
+      ul {
+        left: -999em;
+      }
     }
-    &:last-child {
-      margin-right: 0;
+  }
+
+  li {
+    .font-heading;
+    width: 100%;
+    position: relative;
+    margin: 0 0 1px;
+
+    border-radius: 3px;
+    background-color: #F2EFEF;
+
+    // mix in color variations
+    &.malibu { .menu-item-color(@malibu); }
+    &.apple  { .menu-item-color(@apple); }
+    &.cerise { .menu-item-color(@cerise); }
+    &.puce   { .menu-item-color(@puce); }
+    &.jaffa  { .menu-item-color(@jaffa); }
+
+    @media @tablets, @laptops, @desktops {
+      margin: 0 1px; // add space between the main navigation elements
+
+      &:first-child {
+        margin-left: 0;
+      }
+      &:last-child {
+        margin-right: 0;
+      }
+      &:hover {
+        > ul {
+          left: auto; // brings sub-menu into view
+
+          li {
+            .animated;
+            .fadeInDown;
+            .delay-child-animation(5, 0.125s);
+          }
+        }
+      }
+
+      li {
+        &:hover {
+          > ul {
+            left: 100%;
+          }
+        }
+      }
     }
 
     a {
@@ -77,23 +117,25 @@
     }
 
     li {
+
       font-family: 'Open Sans', sans-serif;
 
-      // used to a fade in transition
-      max-height: 0;
       overflow: hidden;
-      -webkit-transition: max-height 1.42s;
+
       transition: background-color .22s;
       border-bottom: 1px solid #ccc;
       margin: 0;
       border-radius: inherit;
 
-
-
-      &:hover {
-        > ul {
-          left: 100%;
-        }
+      &:first-child {
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+      }
+      &:last-child {
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        border-bottom: none;
+        box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
       }
 
       a {
@@ -115,26 +157,27 @@
 
     }
   }
+}
 
-  ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
 
-    ul {
-      display: block;
-      width: 100%;
-      box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+.main-navigation .current_page_item > a,
+.main-navigation .current-menu-item > a,
+.main-navigation .current_page_ancestor > a {
+}
 
-      // offset to the side, hover selector will reset
-      position: absolute;
-      left: -999em;
-      z-index: 99999;
+/* Small menu. */
+.menu-toggle {
+  display: none;
+  margin-bottom: 1em;
+}
 
-      ul {
-        left: -999em;
-      }
-    }
+@media @mobiles {
+  .menu-toggle,
+  .main-navigation.toggled .nav-menu {
+    display: block;
+  }
+
+  .main-navigation ul {
+    display: none;
   }
 }
