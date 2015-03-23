@@ -1,0 +1,57 @@
+@import "mixins";
+
+.row {
+  .flex-display;
+  width: 100%;
+  margin-bottom: 1em;
+
+  // for mobile, switch the direction rows are laid out
+  @media @mobiles, @tablets {
+    .flex-column;
+  }
+
+  .row {
+    margin-bottom: 0;
+
+    // for all nested rows, do not collapse on tablets
+    @media @tablets {
+      .flex-row;
+    }
+  }
+
+  &.spacing {
+    .col {
+      margin: 0 .5em;
+
+      &:first-child {
+        margin-left: 0;
+      }
+      &:last-child {
+        margin-right: 0;
+
+        @media @tablets {
+          margin-left: 0;
+        }
+      }
+
+      @media @mobiles {
+        margin: 0;
+      }
+
+      .col {
+        @media @mobiles {
+          margin: 0 .5em;
+        }
+      }
+    }
+  }
+
+  .col {
+    width: 100%;
+  }
+
+  .col-1-2 {
+    .flex-display;
+    width: 100%;
+  }
+}

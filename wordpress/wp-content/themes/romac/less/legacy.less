@@ -82,6 +82,14 @@ body {
 //  background-attachment: fixed;
 //  background-repeat: no-repeat;
 //  background-position: top center;
+//
+//  background-image: url('http://www.freepptbackground.com/wp-content/uploads/2014/06/colored-lines-with-white-background.jpg');
+//  background-attachment: fixed;
+//  background-repeat: no-repeat;
+//  background-position: top center;
+//  background-size: cover;
+//
+//  background-image: url('http://www.pptback.com/uploads/abstract-white-cool-backgrounds-powerpoint.jpg');
 }
 
 blockquote:before,
@@ -150,108 +158,7 @@ table {
 /*--------------------------------------------------------------
 4.0 Forms
 --------------------------------------------------------------*/
-button,
-input[type="button"],
-input[type="reset"],
-input[type="submit"] {
-  border: 1px solid;
-  border-color: #ccc #ccc #bbb;
-  border-radius: 3px;
-  background: #e6e6e6;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 15px 17px rgba(255, 255, 255, 0.5), inset 0 -5px 12px rgba(0, 0, 0, 0.05);
-  color: rgba(0, 0, 0, .8);
-  font-size: 16px;
-  font-size: 1rem;
-  line-height: 1;
-  padding: .5em 1em;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
-}
 
-button:hover,
-input[type="button"]:hover,
-input[type="reset"]:hover,
-input[type="submit"]:hover {
-  border-color: #ccc #bbb #aaa;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), inset 0 15px 17px rgba(255, 255, 255, 0.8), inset 0 -5px 12px rgba(0, 0, 0, 0.02);
-}
-
-button:focus,
-input[type="button"]:focus,
-input[type="reset"]:focus,
-input[type="submit"]:focus,
-button:active,
-input[type="button"]:active,
-input[type="reset"]:active,
-input[type="submit"]:active {
-  border-color: #aaa #bbb #bbb;
-  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.5), inset 0 2px 5px rgba(0, 0, 0, 0.15);
-}
-
-input[type="text"],
-input[type="number"],
-input[type="email"],
-input[type="url"],
-input[type="password"],
-input[type="search"],
-input[type="tel"],
-input[type="file"],
-input[type="date"],
-textarea,
-select {
-  color: #666;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  padding: 0.25em;
-  width: 100%;
-  margin: .25em 0 .5em;
-}
-
-input[type="text"]:focus,
-input[type="number"],
-input[type="email"]:focus,
-input[type="url"]:focus,
-input[type="password"]:focus,
-input[type="search"]:focus,
-input[type="tel"],
-input[type="date"],
-textarea:focus,
-select:focus {
-  color: #111;
-}
-
-button:disabled,
-input:disabled,
-select:disabled,
-textarea:disabled, {
-  opacity: 0.5;
-}
-
-textarea {
-  padding-left: 3px;
-  width: 100%;
-}
-
-
-select, input[type="file"] {
-  /* Normalizes the height; padding is not sufficient. */
-  height: 2em;
-  border: 1px solid #ccc;
-  background-color: white;
-}
-select[multiple] {
-  height: auto;
-}
-
-input[type="checkbox"] {
-  display: inline;
-}
-
-button {
-  &.btn-small {
-    font-size: 14px;
-    font-size: 0.875em;
-  }
-}
 /*--------------------------------------------------------------
 5.0 Navigation
 --------------------------------------------------------------*/
@@ -431,31 +338,6 @@ a:active {
       display: none;
     }
   }
-}
-
-
-.aura-info-box {
-  margin-bottom: 20px;
-}
-.aura-info-box h3 {
-  background-color: #f0f0f0;
-  color: #52a8fc;
-  padding: 5px 10px;
-  margin: 0;
-}
-.aura-info-box h4 {
-  margin: 10px 0 0;
-  font-size: 15px;
-  text-decoration: underline;
-}
-.aura-info-box p {
-  margin: 0 0 10px;
-}
-.aura-info-box .aura-info-box-body {
-  padding: 10px 10px 5px;
-  background-color: #fafafa;
-  font-size: 14px;
-  font-size: 0.875rem;
 }
 /*--------------------------------------------------------------
 10.0 Content
@@ -700,105 +582,6 @@ a:active {
   }
 }
 
-.aura-contact-form {
-  .control-group {
-    display: flex;
-    flex-wrap: wrap;
-
-    label {
-      margin-top: .5em;
-      width: 120px;
-    }
-
-    input, select, textarea {
-      flex: 1;
-      flex-basis: 220px;
-    }
-
-    .checkbox {
-      margin: 1em 0;
-    }
-  }
-
-  .control-group.offset {
-    display: block;
-    margin-left: 120px;
-
-    input {
-      margin: .5em 0;
-    }
-  }
-
-  #g-recaptcha {
-    margin: .5em 0;
-  }
-}
-
-.aura-contact-form label {
-  margin-bottom: .25em;
-}
-.aura-contact-form {
-  margin-bottom: 1em;
-}
-.aura-contact-form input[type="text"],
-.aura-contact-form input[type="password"],
-.aura-contact-form input[type="email"],
-.aura-contact-form input[type="url"],
-.aura-contact-form input[type="date"],
-.aura-contact-form input[type="month"],
-.aura-contact-form input[type="time"],
-.aura-contact-form input[type="datetime"],
-.aura-contact-form input[type="datetime-local"],
-.aura-contact-form input[type="week"],
-.aura-contact-form input[type="number"],
-.aura-contact-form input[type="search"],
-.aura-contact-form input[type="tel"],
-.aura-contact-form input[type="color"],
-.aura-contact-form select,
-.aura-contact-form textarea {
-  padding: 0.5em 0.6em;
-  /*display: inline-block;*/
-  border: 1px solid #ccc;
-  box-shadow: inset 0 1px 3px #ddd;
-  border-radius: 4px;
-  vertical-align: middle;
-  color: #333;
-  width: 100%;
-  margin-bottom: .5em;
-}
-.aura-contact-form select {
-  /* Normalizes the height; padding is not sufficient. */
-  height: 2.25em;
-  border: 1px solid #ccc;
-  background-color: white;
-}
-.aura-contact-form hr {
-  border-color: #eee;
-  border-bottom-width: 0;
-  clear: both;
-}
-.aura-contact-form input[type="submit"] {
-  background-color: #f0f0f0;
-  color: #52a8fc;
-  padding: 5px 10px;
-  border: 1px solid #ddd;
-  font-size: 17px;
-  border-radius: 2px;
-}
-.aura-contact-form input[type="submit"]:hover {
-  background-color: #52a8fc;
-  color: #f0f0f0;
-  border-color: #0073fc;;
-}
-.aura-contact-form input[type="submit"]:disabled {
-  opacity: .5;
-}
-.aura-contact-form input[type="submit"]:disabled:hover {
-  background-color: #f0f0f0;
-  color: #52a8fc;
-  border: 1px solid #ddd;
-}
-
 /*--------------------------------------------------------------
 10.8 Site Info
 --------------------------------------------------------------*/
@@ -953,62 +736,6 @@ object {
 --------------------------------------------------------------*/
 
 
-.row {
-  width: 100%;
-  display: flex;
-  margin-bottom: 1em;
-
-  // for mobile, switch the direction rows are laid out
-  @media @mobiles, @tablets {
-    flex-direction: column;
-  }
-
-  .row {
-    margin-bottom: 0;
-
-    // for all nested rows, do not collapse on tablets
-    @media @tablets {
-      flex-direction: row;
-    }
-  }
-
-  &.spacing {
-    .col {
-      margin: 0 .5em;
-
-      &:first-child {
-        margin-left: 0;
-      }
-      &:last-child {
-        margin-right: 0;
-
-        @media @tablets {
-          margin-left: 0;
-        }
-      }
-
-      @media @mobiles {
-        margin: 0;
-      }
-
-      .col {
-        @media @mobiles {
-          margin: 0 .5em;
-        }
-      }
-    }
-  }
-
-  .col {
-    width: 100%;
-  }
-
-  .col-1-2 {
-    width: 100%;
-    flex: 1;
-  }
-}
-
 .heading {
   h2 {
     margin: .5em 0 .25em;
@@ -1031,107 +758,7 @@ object {
 /*--------------------------------------------------------------
 13.1 Forms
 --------------------------------------------------------------*/
-form {
-  width: 100%;
 
-  .form-control {
-    margin: 0 0.5em 0.75em;
-    width: 100%;
-
-    input[type="text"],
-    input[type="number"],
-    input[type="email"],
-    input[type="url"],
-    input[type="password"],
-    input[type="search"],
-    input[type="tel"],
-    input[type="file"],
-    input[type="date"],
-    textarea,
-    select {
-      margin: 0;
-
-      &.error {
-        border: 1px solid rgba(137, 0, 24, 0.5);
-        background-color: rgba(199, 0, 0, 0.125);
-      }
-    }
-
-    p {
-      &.help-text {
-        display: inline;
-        font-size: 12px;
-        font-size: 0.75rem;
-        color: #666;
-      }
-    }
-
-    label {
-      display: inline-block;
-      margin-bottom: 0.25em;
-
-      &.error {
-        font-size: 12px;
-        font-size: 0.75rem;
-//        background-color: rgba(137,0,24,1);
-//        color: white;
-//        display: none !important;
-
-      }
-    }
-
-    .form-control {
-//      margin: 0 .5em;
-    }
-
-    &:first-child {
-      margin-left: 0;
-
-      @media @mobiles {
-        margin-right: 0;
-      }
-    }
-
-    &:last-child {
-      margin-right: 0;
-
-      @media @mobiles {
-        margin-left: 0;
-      }
-    }
-
-    &.checkbox {
-      input[type="checkbox"] {
-        margin: 0.5em 0 1em;
-      }
-    }
-
-    &.radio-group {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 1em;
-
-      label {
-        &:not(:last-child) {
-          margin-right: .5em;
-        }
-      }
-      .input-group {
-      }
-    }
-  }
-
-  &.flex-form {
-    .row {
-      align-content: space-around;
-
-      .form-control {
-        flex: 1;
-      }
-    }
-  }
-
-}
 
 .select2-container {
   display: block;

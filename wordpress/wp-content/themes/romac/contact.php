@@ -110,46 +110,46 @@ if ( $submitted && $recaptcha_success ) {
 get_header();
 ?>
 <div id="content" role="main" class="contact-page">
-    <div class="contact-form">
-        <div class="aura-msg">
-            <?php
-            switch ( $contact_state ) :
-                case constant( 'DEFAULT_STATE' ):
-                    echo 'Thank you for your interest in contacting us.';
-                    break;
-                case constant( 'SEND_MAIL_SUCCESS' ):
-                    echo '<div class="aura-msg-success">Thank you, your message has been sent.</div>';
-                    break;
-                case constant( 'SEND_MAIL_FAIL' ):
-                case constant( 'SERVER_ERROR' ):
-                    echo '<div class="aura-msg-failure">There was an error sending the email. If the issue persists, please contact support@romac.org.au</div>';
-                    break;
-                case constant( 'RECAPTCHA_FAIL' ):
-                    echo '<div class="aura-msg-failure">reCAPTCHA challenge failed, please try again.</div>';
-                    break;
-            endswitch; ?>
-        </div>
-        <form class="aura-contact-form" method="post"
+
+<!--        <div class="aura-msg">-->
+<!--            --><?php
+//            switch ( $contact_state ) :
+//                case constant( 'DEFAULT_STATE' ):
+//                    echo 'Thank you for your interest in contacting us.';
+//                    break;
+//                case constant( 'SEND_MAIL_SUCCESS' ):
+//                    echo '<div class="aura-msg-success">Thank you, your message has been sent.</div>';
+//                    break;
+//                case constant( 'SEND_MAIL_FAIL' ):
+//                case constant( 'SERVER_ERROR' ):
+//                    echo '<div class="aura-msg-failure">There was an error sending the email. If the issue persists, please contact support@romac.org.au</div>';
+//                    break;
+//                case constant( 'RECAPTCHA_FAIL' ):
+//                    echo '<div class="aura-msg-failure">reCAPTCHA challenge failed, please try again.</div>';
+//                    break;
+//            endswitch; ?>
+<!--        </div>-->
+        <form class="contact-form inline" method="post"
               action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"] . '?' . $_SERVER['QUERY_STRING']); ?>">
-            <h3>Your Contact Details</h3>
-            <div class="control-group">
+            <h2>Your Contact Details</h2>
+            <div class="form-control">
                 <label for="fname">First Name:</label>
                 <input id="fname" type="text" name="fname" value="<?php echo $fname; ?>" required>
             </div>
-            <div class="control-group">
+            <div class="form-control">
                 <label for="lname">Last Name:</label>
                 <input id="lname" type="text" name="lname" value="<?php echo $lname; ?>" required>
             </div>
-            <div class="control-group">
+            <div class="form-control">
                 <label for="email">Email:</label>
-                <input id="email" type="email" name="email" value="<?php echo $email; ?>" placeholder="Please provide an email where we can reply to you" required>
+                <input id="email" type="email" name="email" value="<?php echo $email; ?>" required>
             </div>
-            <div class="control-group">
+            <div class="form-control">
                 <label for="phone">Telephone:</label>
-                <input id="phone" type="tel" name="phone" value="<?php echo $phone; ?>" placeholder="You may optionally provide us your phone number for correspondence">
+                <input id="phone" type="tel" name="phone" value="<?php echo $phone; ?>">
             </div>
-            <h3>Enquiry</h3>
-            <div class="control-group">
+            <h2>Enquiry</h2>
+            <div class="form-control">
                 <label for="recipient">Recipient:</label>
                 <select id="recipient" name="recipient" required>
                     <?php if ( $addressed ): ?>
@@ -171,22 +171,20 @@ get_header();
 //                    endif; ?>
                 </select>
             </div>
-            <div class="control-group">
-                <label for="message">Message:</label>
-                <textarea rows="8" id="message" name="message" required><?php echo $message; ?></textarea>
+            <div class="form-control">
+<!--                <label for="message">Message:</label>-->
+                <textarea rows="8" id="message" name="message" required placeholder="Enter your message here"><?php echo $message; ?></textarea>
             </div>
 
-            <div class="control-group offset">
+            <div class="form-control block-center">
                 <div id="g-recaptcha"></div>
             </div>
-
-            <div class="control-group offset">
+            <div class="form-control checkbox text-center">
                 <label for="subscribe" class="checkbox">
                     <input type="checkbox" id="subscribe" name="subscribe" <?php echo $subscribe ? 'checked' : ''; ?>> Yes, I would like to receive emails from ROMAC.
                 </label>
             </div>
-
-            <div class="control-group offset">
+            <div class="form-control block-center">
                 <input id="contact-form-submit" type="submit" value="Send" disabled>
             </div>
         </form>
@@ -204,7 +202,7 @@ get_header();
                 });
             };
         </script>
-    </div>
+
 </div>
 <?php get_sidebar() ?>
 <?php get_footer(); ?>
