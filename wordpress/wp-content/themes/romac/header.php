@@ -25,7 +25,8 @@
 	<header id="masthead" class="site-header" role="banner">
 		<div class="site-branding">
             <a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
-                <img src="<?php echo get_bloginfo( 'template_directory' ); ?>/images/logo.png" class="logo" alt="ROMAC Logo" width="335" height="78" />
+                <h1><span class="r">R</span><span class="o">O</span><span class="m">M</span><span class="a">A</span><span class="c">C</span></h1>
+<!--                <img src="--><?php //echo get_bloginfo( 'template_directory' ); ?><!--/images/logo.png" class="logo" alt="ROMAC Logo" width="335" height="78" />-->
             </a>
 		</div><!-- .site-branding -->
 
