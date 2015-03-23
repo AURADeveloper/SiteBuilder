@@ -1,32 +1,31 @@
 <?php get_header(); ?>
 
     <div id="primary" class="content-area">
-        <main id="main" class="site-main aura-people" role="main">
-            <div class="aura-people-list">
-                <?php
-                $roles = get_terms( 'ou', 'orderby=count&hide_empty=0&order=DESC' );
+        <main id="main" class="site-main our-team" role="main">
+            <div class="team-list">
+                <?php $roles = get_terms( 'ou', 'orderby=count&hide_empty=0&order=DESC' );
                 foreach( $roles as $role) : ?>
-                    <h3><?php echo $role->name ?></h3>
-                    <?php
-                    //
-                    $args = array(
-                        'post_type' => 'our_team',
-                        'tax_query' => array(
-                            array(
-                                'taxonomy' => 'ou',
-                                'field' => 'slug',
-                                'terms' => $role->slug
+                    <div class="panel blue alternate">
+                        <div class="panel-heading text-center">
+                            <h3><?php echo $role->name ?></h3>
+                        </div>
+                        <?php $args = array(
+                            'post_type' => 'our_team',
+                            'tax_query' => array(
+                                array(
+                                    'taxonomy' => 'ou',
+                                    'field' => 'slug',
+                                    'terms' => $role->slug
+                                )
                             )
-                        ),
-                    );
-
-                    //
-                    $query = new WP_Query( $args ); ?>
-                    <ul>
-                    <?php while ( $query->have_posts() ) : $query->the_post(); ?>
-                        <li><a href="<?php the_permalink(); ?>"><?php echo the_title(); ?></a></li>
-                    <?php endwhile; ?>
-                    </ul>
+                        );
+                        $query = new WP_Query( $args ); ?>
+                        <ul class="panel-body text-small">
+                            <?php while ( $query->have_posts() ) : $query->the_post(); ?>
+                                <li><a href="<?php the_permalink(); ?>"><?php echo the_title(); ?></a></li>
+                            <?php endwhile; ?>
+                        </ul>
+                    </div>
                 <?php endforeach; ?>
             </div>
             <div class="aura-person-singular">

@@ -1,18 +1,63 @@
 @import "variables";
+@import "mixins";
 
-
-
+//
 // the romac contact form
-.contact-form {
-  h1, h2, h3, h4, h5, h6 {
-    border-bottom: 1px dashed #ddd;
-    padding-bottom: 0.25em;
-    margin-bottom: 0.5em;
+//
+.contact-page {
+  @media @tablets, @laptops, @desktops {
+    .flex-display;
+
+    .widgets {
+      max-width: 220px;
+      .flex-order(2);
+    }
+//    .widget-2 {
+//      .flex(1);
+//      .flex-order(1);
+//    }
+    .form {
+      .flex(1);
+      .flex-order(1);
+    }
   }
 
-  @media @tablets, @laptops, @desktops {
-    width: 100%;
-    max-width: 480px;
+  .feedback-message {
+    text-align: center;
+    font-size: 18px;
+    font-size: 1.125rem;
+    font-style: italic;
+
+    margin-bottom: 1em;
+
+    div {
+      border-radius: 3px;
+      padding: 1.5em;
+      color: white;
+    }
+
+    .success {
+      background-color: #63a43c;
+    }
+    .failure {
+      background-color: #7B0000;
+    }
+  }
+
+
+  form {
+    .block-center;
+
+    @media @tablets, @laptops, @desktops {
+      width: 100%;
+      max-width: 480px;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      border-bottom: 1px dashed #ddd;
+      padding-bottom: 0.25em;
+      margin-bottom: 0.5em;
+    }
   }
 
   #g-recaptcha {
@@ -20,3 +65,99 @@
   }
 }
 
+//
+// the our team page
+//
+.our-team {
+  .flex-display;
+  margin: 0 @site-margin;
+
+  .team-list {
+    margin-right: @site-margin;
+  }
+
+  .aura-people-snaps {
+    flex: 4;
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    flex-wrap: wrap;
+
+    .aura-person {
+      display: block;
+      padding: 0.5em;
+      flex-basis: 280px;
+
+      .aura-person-group {
+        display: flex;
+
+        .aura-person-links {
+          flex: 1;
+        }
+      }
+
+      .aura-person-photo {
+        width: 150px;
+        height: auto;
+        margin-right: 5px;
+      }
+    }
+  }
+
+  .aura-person-singular {
+    flex: 4;
+  }
+
+  .aura-person {
+    h1 {
+      font-size: 23px;
+      line-height: 23px;
+      margin-bottom: 0;
+      margin-top: 0;
+
+      span {
+        font-weight: normal;
+        text-underline: none;
+        font-size: 17px;
+        margin-left: 15px;
+      }
+    }
+
+    img {
+      //      border-radius: 3px;
+      //      border: 1px solid rgba(0,0,0,.125);
+      //      padding: 5px;
+      //      box-shadow: 1px 1px 1px rgba(0,0,0,.125);
+    }
+
+    h2 {
+      font-size: 15px;
+      line-height: 16px;
+      margin: 0 0 10px;
+      font-weight: normal;
+    }
+
+    .aura-person-links {
+      a {
+        width: 100%;
+        background-color: #f0f0f0;
+        padding: 10px;
+        display: inline-block;
+        margin-bottom: 5px;
+        transition: all .42s ease;
+        border-left: 0 solid #52a8fc;
+
+        &:hover {
+          background-color: #52a8fc;
+          color: #f0f0f0;
+          border-left: 5px solid #f0f0f0;
+        }
+      }
+    }
+
+    .fa {
+      width: 16px;
+      text-align: center;
+    }
+  }
+}

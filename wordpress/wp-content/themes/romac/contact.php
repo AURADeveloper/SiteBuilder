@@ -1,6 +1,9 @@
 <?php
 // Template Name: Contact Form
 
+// cache post id, since we will iterate outside the post scope
+$contact_post_id = get_the_ID();
+
 // state - tracks what action result of any action taken
 define( 'DEFAULT_STATE', 0 );
 define( 'SERVER_ERROR', 1 );
@@ -107,29 +110,30 @@ if ( $submitted && $recaptcha_success ) {
     }
 }
 
-get_header();
-?>
+get_header(); ?>
 <div id="content" role="main" class="contact-page">
-
-<!--        <div class="aura-msg">-->
-<!--            --><?php
-//            switch ( $contact_state ) :
-//                case constant( 'DEFAULT_STATE' ):
-//                    echo 'Thank you for your interest in contacting us.';
-//                    break;
-//                case constant( 'SEND_MAIL_SUCCESS' ):
-//                    echo '<div class="aura-msg-success">Thank you, your message has been sent.</div>';
-//                    break;
-//                case constant( 'SEND_MAIL_FAIL' ):
-//                case constant( 'SERVER_ERROR' ):
-//                    echo '<div class="aura-msg-failure">There was an error sending the email. If the issue persists, please contact support@romac.org.au</div>';
-//                    break;
-//                case constant( 'RECAPTCHA_FAIL' ):
-//                    echo '<div class="aura-msg-failure">reCAPTCHA challenge failed, please try again.</div>';
-//                    break;
-//            endswitch; ?>
-<!--        </div>-->
-        <form class="contact-form inline" method="post"
+    <div class="form">
+        <?php if ( $contact_state > 0): ?>
+            <div class="feedback-message">
+                <?php
+                switch ( $contact_state ) :
+                    case constant( 'DEFAULT_STATE' ):
+                        echo 'Thank you for your interest in contacting us.';
+                        break;
+                    case constant( 'SEND_MAIL_SUCCESS' ):
+                        echo '<div class="success">Thank you, your message has been sent.</div>';
+                        break;
+                    case constant( 'SEND_MAIL_FAIL' ):
+                    case constant( 'SERVER_ERROR' ):
+                        echo '<div class="failure">There was an error sending the email. If the issue persists, please contact support@romac.org.au</div>';
+                        break;
+                    case constant( 'RECAPTCHA_FAIL' ):
+                        echo '<div class="failure">reCAPTCHA challenge failed, please try again.</div>';
+                        break;
+                endswitch; ?>
+            </div>
+        <?php endif; ?>
+        <form class="inline" method="post"
               action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"] . '?' . $_SERVER['QUERY_STRING']); ?>">
             <h2>Your Contact Details</h2>
             <div class="form-control">
@@ -153,26 +157,27 @@ get_header();
                 <label for="recipient">Recipient:</label>
                 <select id="recipient" name="recipient" required>
                     <?php if ( $addressed ): ?>
-                    <option selected value="<?php echo $id; ?>"><?php echo $recipient_name; ?> (<?php echo $recipient_role; ?>)</option>
+                        <option selected value="<?php echo $id; ?>"><?php echo $recipient_name; ?> (<?php echo $recipient_role; ?>)</option>
                     <?php endif; ?>
-<!--                    --><?php //if ( ! $addressed ):
-//                        $args = array( 'post_type' => array( 'our_team' ), 'nopaging' => true );
-//                        $query = new WP_Query( $args );
-//                        while ( $query->have_posts() ):
-//                            $post = $query->next_post();
-//                            //$query->the_post();
-//                            $selected = '';
-//                            if ( $post->ID == $default_recipient) $selected = ' selected';
-//                            echo '<option value="' . $post->ID . '"' . $selected . '>' .
-//                                    get_post_meta( $post->ID, '_rot_name', true ) .
-//                                    ' (' . get_post_meta( $post->ID, '_rot_role', true ) . ')' .
-//                                    '</option>';
-//                        endwhile;
-//                    endif; ?>
+                    <?php if ( ! $addressed ):
+                        $args = array( 'post_type' => array( 'our_team' ), 'nopaging' => true );
+                        $query = new WP_Query( $args );
+                        while ( $query->have_posts() ):
+                            $post = $query->next_post();
+                            //$query->the_post();
+                            $selected = '';
+                            if ( $post->ID == $default_recipient) $selected = ' selected';
+                            echo '<option value="' . $post->ID . '"' . $selected . '>' .
+                                get_post_meta( $post->ID, '_rot_name', true ) .
+                                ' (' . get_post_meta( $post->ID, '_rot_role', true ) . ')' .
+                                '</option>';
+                        endwhile;
+                        wp_reset_postdata();
+                    endif; ?>
                 </select>
             </div>
             <div class="form-control">
-<!--                <label for="message">Message:</label>-->
+                <!--                <label for="message">Message:</label>-->
                 <textarea rows="8" id="message" name="message" required placeholder="Enter your message here"><?php echo $message; ?></textarea>
             </div>
 
@@ -184,8 +189,10 @@ get_header();
                     <input type="checkbox" id="subscribe" name="subscribe" <?php echo $subscribe ? 'checked' : ''; ?>> Yes, I would like to receive emails from ROMAC.
                 </label>
             </div>
-            <div class="form-control block-center">
-                <input id="contact-form-submit" type="submit" value="Send" disabled>
+            <div class="form-control">
+                <div class="block-center">
+                    <input id="contact-form-submit" type="submit" value="Send" disabled>
+                </div>
             </div>
         </form>
         <!-- The Google reCAPTCHA form control -->
@@ -202,7 +209,60 @@ get_header();
                 });
             };
         </script>
+    </div>
+    <div class="widgets">
+        <div class="widget-1">
+            <div class="panel blue">
+                <div class="panel-heading text-center">
+                    <h3>Direct Contact</h3>
+                </div>
+                <div class="panel-body text-small">
+                    <p>Rotary Oceania Medical Aid for Children Ltd (ROMAC)</p>
+                    <p><abbr title="Australian Business Number">ABN</abbr>: 17 101 370 003</p>
 
+                    <h4>Phone</h4>
+                    <p>
+                        <a href="/about-romac/our-team/brendan-porter/">Brendan Porter</a> - BOARD CHAIRMAN<br/>
+                        0488 768 279
+                    </p>
+
+                    <h4>Address</h4>
+                    <p>
+                        ROMAC<br/>
+                        PO Box 779<br/>
+                        Parramatta, NSW<br/>
+                        Australia 2124
+                    </p>
+
+                    <h4>Email Contacts</h4>
+                    <p>
+                        operations@romac.org.au
+                    </p>
+
+                    <h4>ROMAC Personnel</h4>
+                    <p>
+                        Board members and regional contacts are listed on the <a href="/about-romac/our-team">Our Team</a> page.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="widget-2">
+            <div class="panel blue">
+                <div class="panel-heading text-center">
+                    <h3>ROMAC in NZ</h3>
+                </div>
+                <div class="panel-body text-small">
+                    <p>
+                        <img src="/wp-content/themes/romac/images/nz-flag.png" alt="New Zealand Flag" class="pull-right" />
+                        Visit the Children's Charity in New Zealand website to contact ROMAC in NZ.
+                    </p>
+                    <p>
+                        <a href="http://www.charityforchildren.org.nz">www.charityforchildren.org.nz</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <?php get_sidebar() ?>
 <?php get_footer(); ?>
