@@ -216,34 +216,18 @@ get_header(); ?>
                 <div class="panel-heading text-center">
                     <h3>Direct Contact</h3>
                 </div>
-                <div class="panel-body text-small">
-                    <p>Rotary Oceania Medical Aid for Children Ltd (ROMAC)</p>
-                    <p><abbr title="Australian Business Number">ABN</abbr>: 17 101 370 003</p>
-
-                    <h4>Phone</h4>
-                    <p>
-                        <a href="/about-romac/our-team/brendan-porter/">Brendan Porter</a> - BOARD CHAIRMAN<br/>
-                        0488 768 279
-                    </p>
-
-                    <h4>Address</h4>
-                    <p>
-                        ROMAC<br/>
-                        PO Box 779<br/>
-                        Parramatta, NSW<br/>
-                        Australia 2124
-                    </p>
-
-                    <h4>Email Contacts</h4>
-                    <p>
-                        operations@romac.org.au
-                    </p>
-
-                    <h4>ROMAC Personnel</h4>
-                    <p>
-                        Board members and regional contacts are listed on the <a href="/about-romac/our-team">Our Team</a> page.
-                    </p>
-                </div>
+                <dl class="panel-body text-small">
+                    <dt>Rotary Oceania Medical Aid for Children Ltd (ROMAC)</dt>
+                    <dd><abbr title="Australian Business Number">ABN</abbr>: 17 101 370 003</dd>
+                    <dt>Phone</dt>
+                    <dd><a href="/about-romac/our-team/brendan-porter/">Brendan Porter</a><br/>BOARD CHAIRMAN<br/>0488 768 279</dd>
+                    <dt>Address</dt>
+                    <dd>ROMAC<br/>PO Box 779<br/>Parramatta, NSW<br/>Australia 2124</dd>
+                    <dt>Email Contacts</dt>
+                    <dd>operations@romac.org.au</dd>
+                    <dt>ROMAC Personnel</dt>
+                    <dd>Board members and regional contacts are listed on the <a href="/about-romac/our-team">Our Team</a> page.</dd>
+                </dl>
             </div>
         </div>
         <div class="widget-2">
@@ -252,13 +236,9 @@ get_header(); ?>
                     <h3>ROMAC in NZ</h3>
                 </div>
                 <div class="panel-body text-small">
-                    <p>
-                        <img src="/wp-content/themes/romac/images/nz-flag.png" alt="New Zealand Flag" class="pull-right" />
-                        Visit the Children's Charity in New Zealand website to contact ROMAC in NZ.
-                    </p>
-                    <p>
-                        <a href="http://www.charityforchildren.org.nz">www.charityforchildren.org.nz</a>
-                    </p>
+                    <img src="/wp-content/themes/romac/images/nz-flag.png" alt="New Zealand Flag" class="pull-right" />
+                    Visit the Children's Charity in New Zealand website to contact ROMAC in NZ.<br/>
+                    <a href="http://www.charityforchildren.org.nz">www.charityforchildren.org.nz</a>
                 </div>
             </div>
         </div>

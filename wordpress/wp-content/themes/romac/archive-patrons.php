@@ -7,8 +7,8 @@
             </div>
             <div>
                 <?php $term_list = wp_get_post_terms( $post->ID, 'designation', array( 'fields' => 'names' ) ); ?>
-                <h1><?php the_title(); ?><span> - <?php echo count( $term_list ) ? $term_list[0] : '<!-- no term assigned! -->'; ?></span></h1>
-                <?php the_content(); ?>
+                <h1 class="title"><?php the_title(); ?><span><?php echo count( $term_list ) ? $term_list[0] : '<!-- no term assigned! -->'; ?></span></h1>
+                <div class="text-justify"><?php the_content(); ?></div>
             </div>
         </div>
     <?php endwhile; ?>

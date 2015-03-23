@@ -39,20 +39,22 @@
 }
 
 .panel {
-  margin-bottom: 0.5em;
-  .box-shadow;
+//  .box-shadow;
+  margin-bottom: 1em;
 
   &.alternate {
-    ul.panel-body {
-      margin: 0;
-      padding: 0;
-      list-style: none;
+    ul.panel-body li {
+      &:nth-child(even) {
+        background-color: darken(@panel-body-color, 2.5);
+      }
+    }
 
-      li {
-        padding: 0.25em 0.5em;
-        &:nth-child(even) {
-          background-color: darken(@panel-body-color, 2.5);
-        }
+    dl.panel-body {
+      dt:nth-child(even) {
+        background-color: darken(@panel-body-color, 2.5);
+      }
+      dd:nth-child(even) {
+        background-color: darken(@panel-body-color, 2.5);
       }
     }
   }
@@ -78,11 +80,38 @@
       margin: 0;
     }
   }
+
   .panel-body {
     border: 1px solid @panel-border-color;
     background-color: @panel-body-color;
   }
+
   div.panel-body {
-    padding: 0.25em 0.5em;
+    padding: 0.5em;
+  }
+
+  ul.panel-body {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      padding: 0.25em 0.5em;
+    }
+  }
+
+  dl.panel-body {
+    padding: 0.5em;
+    margin: 0;
+
+    dt {
+
+    }
+    dd {
+      margin: 0 0 1em 0.75em;
+      &:last-child {
+        margin: 0 0 0 0.75em;
+      }
+    }
   }
 }

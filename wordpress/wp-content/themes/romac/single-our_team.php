@@ -39,7 +39,7 @@
                                 <a href="/contact?recipient=<?php the_ID(); ?>"><i class="fa fa-envelope"></i> Email</a>
                             </div>
                         </div>
-                        <div>
+                        <div class="text-justify">
                             <?php the_content(); ?>
                         </div>
                     </div>
