@@ -536,6 +536,11 @@ window.onload = function() {
         $( "#patient-mother-languages-spoken" ).select2( select2options );
         $( "#patient-father-languages-spoken" ).select2( select2options );
         $( "#patient-accompaniment-languages-spoken" ).select2( select2options );
+        $( "#patient-country-of-origin" ).select2();
+        $( "#patient-mother-country-of-origin" ).select2();
+        $( "#patient-father-country-of-origin" ).select2();
+        $( "#patient-accompaniment-country-of-origin" ).select2();
+        $( "#patient-nationality" ).select2();
 
         $( "#add-photo" ).click(onAddPhotoClick);
         $( "#add-document" ).click(onAddDocumentClick);

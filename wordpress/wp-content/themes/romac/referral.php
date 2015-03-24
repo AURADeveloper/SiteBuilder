@@ -105,16 +105,29 @@ function form_control_nationality( $id_prefix, $args = array()  ) {
  */
 function form_control_country( $id_prefix, $args = array() ) {
     global $wpdb;
-    $results = $wpdb->get_results( 'SELECT * FROM wp_countries' );
+    $results = $wpdb->get_results( 'SELECT * FROM wp_countries ORDER BY preferred DESC' );
     ob_start(); ?>
     <div class="form-control">
         <?php $country = $id_prefix . '-country-of-origin'; ?>
         <label for="<?php echo $country; ?>">Country of Origin</label>
         <select type="text" id="<?php echo $country; ?>" name="<?php echo $country; ?>"<?php echo element_attributes( $args ); ?>>
             <option value=""></option>
-            <?php foreach($results as $row): ?>
+            <?php $last_pref = null; ?>
+            <?php foreach( $results as $row ):
+                if ( $last_pref != $row->preferred ) {
+                    if ( $last_pref != null) {
+                        echo '</optgroup>';
+                    }
+                    if ( $row->preferred == true ) {
+                        echo '<optgroup label="Preferred">';
+                    } else {
+                        echo '<optgroup label="Other">';
+                    }
+                    $last_pref = $row->preferred;
+                } ?>
                 <option value="<?php echo $row->iso; ?>"><?php echo $row->name; ?></option>
-            <?php endforeach; ?>
+            <?php endforeach;
+                echo '</optgroup>'; ?>
         </select>
     </div>
     <?php return ob_get_clean();
@@ -269,8 +282,8 @@ get_header(); ?>
 	<div id="primary" class="content-area">
 		<main id="main" class="site-main" role="main">
 			<?php while ( have_posts() ) : the_post(); ?>
-                <h1 class="page-title">
-                    <?php the_title(); ?> <span>Online Referral Form</span>
+                <h1 class="title">
+                    <?php the_title(); ?><span>Online Referral Form</span>
                 </h1>
 
                 <div id="referral-preamble">
