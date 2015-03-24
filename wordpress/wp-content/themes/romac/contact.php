@@ -13,7 +13,7 @@ define( 'SEND_MAIL_SUCCESS', 4 );
 $contact_state = constant( 'DEFAULT_STATE' );
 
 // default recipient - the contact selected when no id param used
-$default_recipient = 134;
+$default_recipient = 17;
 
 // reCAPTCHA vars
 $private_key = '6LcXHgITAAAAAF8xCFYT3YVBWwEsN8d53DS7uNSC';
@@ -223,8 +223,6 @@ get_header(); ?>
                     <dd><a href="/about-romac/our-team/brendan-porter/">Brendan Porter</a><br/>BOARD CHAIRMAN<br/>0488 768 279</dd>
                     <dt>Address</dt>
                     <dd>ROMAC<br/>PO Box 779<br/>Parramatta, NSW<br/>Australia 2124</dd>
-                    <dt>Email Contacts</dt>
-                    <dd>operations@romac.org.au</dd>
                     <dt>ROMAC Personnel</dt>
                     <dd>Board members and regional contacts are listed on the <a href="/about-romac/our-team">Our Team</a> page.</dd>
                 </dl>
@@ -238,7 +236,7 @@ get_header(); ?>
                 <div class="panel-body text-small">
                     <img src="/wp-content/themes/romac/images/nz-flag.png" alt="New Zealand Flag" class="pull-right" />
                     Visit the Children's Charity in New Zealand website to contact ROMAC in NZ.<br/>
-                    <a href="http://www.charityforchildren.org.nz">www.charityforchildren.org.nz</a>
+                    <a href="http://www.charityforchildren.org.nz" target="_blank">www.charityforchildren.org.nz</a>
                 </div>
             </div>
         </div>

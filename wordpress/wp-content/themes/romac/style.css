@@ -3304,7 +3304,7 @@ big {
   font-size: 1.125rem;
 }
 h1.title {
-  margin-bottom: 0.25em;
+  margin-bottom: 0.5em;
   font-size: 32px;
   font-size: 2rem;
   border-bottom: 1px dashed #ccc;
@@ -4439,15 +4439,14 @@ h1.page-title span {
   transition: all .42s ease;
   border: 1px solid #52a8fc;
   border-radius: 3px;
-  -webkit-box-shadow: 0 3px 3px rgba(0, 0, 0, 0.125);
-  -moz-box-shadow: 0 3px 3px rgba(0, 0, 0, 0.125);
-  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.125);
+  box-shadow: 0 0 0;
 }
 .our-team .aura-person .aura-person-links a:hover {
   background-color: #52a8fc;
   color: #f0f0f0;
-  padding-left: 15px;
-  box-shadow: 0 0 0;
+  -webkit-box-shadow: 0 3px 3px rgba(0, 0, 0, 0.125);
+  -moz-box-shadow: 0 3px 3px rgba(0, 0, 0, 0.125);
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.125);
 }
 .our-team .aura-person .fa {
   width: 16px;
@@ -5068,7 +5067,7 @@ object {
 .referral-controls {
   text-align: center;
   width: 100%;
-  margin: 1em 0 2em;
+  margin: 1em 0;
 }
 .referral-controls button,
 .referral-controls input {
