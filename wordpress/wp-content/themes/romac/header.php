@@ -7,8 +7,9 @@
  * @package romac
  */
 ?><!DOCTYPE html>
-<html <?php language_attributes(); ?>>
+<html class="no-js" <?php language_attributes(); ?>>
 <head>
+<meta http-equiv="x-ua-compatible" content="ie=edge">
 <meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="profile" href="http://gmpg.org/xfn/11">

@@ -5025,12 +5025,30 @@ object {
   font-weight: bold;
 }
 #referral-form .confirm-labels div {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
   display: flex;
   justify-content: space-between;
   margin: .5em 0;
 }
 #referral-form .confirm-labels div:nth-child(even) {
   background-color: rgba(255, 255, 255, 0.5);
+}
+#referral-form .confirm-labels div label {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
+#referral-form .confirm-labels div span {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
 }
 #referral-progress {
   margin-bottom: 1em;

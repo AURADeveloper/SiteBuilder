@@ -28,20 +28,22 @@ var setFormSubmitting = function() {
 /**
  * Attaches a leave page confirmation.<br/>
  * The user will be prompted if they wish to leave the page or not if the referral form has been started.
+ *
+ * DEPRECIATED: form state is now saved to local storage automatically
  */
-window.onload = function() {
-    window.addEventListener('beforeunload', function (e) {
-        var confirmationMessage = 'You have started a referral form submission. ';
-        confirmationMessage += 'If you leave before saving, your changes will be lost.';
-
-        if (form_submitting || !form_started) {
-            return undefined;
-        }
-
-        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
-    });
-};
+//window.onload = function() {
+//    window.addEventListener('beforeunload', function (e) {
+//        var confirmationMessage = 'You have started a referral form submission. ';
+//        confirmationMessage += 'If you leave before saving, your changes will be lost.';
+//
+//        if (form_submitting || !form_started) {
+//            return undefined;
+//        }
+//
+//        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+//        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+//    });
+//};
 
 // be safe - map $ to jQuery in a anonymous function
 (function($) {
@@ -51,22 +53,31 @@ window.onload = function() {
      */
     $(document).ready(function() {
         /**
+         * The index of the current, visible fieldset.
+         * @type {number}
+         */
+        var current_fieldset = 0;
+
+        /**
          * The index of the fieldset that contains the accompaniment fields.
-         *
          * @type {number}
          */
         var accompaniment_fieldset = 2;
 
         /**
          * Reference to the preamble element. This is hidden when the form is started.
-         *
          * @type {*|HTMLElement}
          */
         var preamable_panel = $('#referral-preamble');
 
         /**
+         * Reference to the confirmation element. This is only displayed when the referral form has been submitted.
+         * @type {*|HTMLElement}
+         */
+        var confirmation_panel = $( '#confirmation' );
+
+        /**
          * Reference to the list that holds the numbered progress list.
-         *
          * @type {*|HTMLElement}
          */
         var progress_list = $('#referral-progress ul');
@@ -74,14 +85,12 @@ window.onload = function() {
         /**
          * The collection of <li> elements that populate the progress list.
          * Each number in the list presents a fieldset/panel in the wizard. 1,2,3,4...
-         *
          * @type {*|HTMLElement}
          */
         var progress_items = null; // instantiated by init_steps()
 
         /**
          * The collection of all fieldsets in the referral form.
-         *
          * @type {*|HTMLElement}
          */
         var fieldsets = $('#referral-form fieldset');
@@ -89,15 +98,13 @@ window.onload = function() {
         /**
          * The form submit button.
          * Pressing the button will cause the form to post.
-         *
          * @type {*|HTMLElement}
          */
-        var submit_button = $('#referral-form input[type="submit"]');
+        var submit_button = $('#submit');
 
         /**
          * The form begin button.
          * Pressing the button will skip the preamble to the first fieldset.
-         *
          * @type {*|HTMLElement}
          */
         var begin_button = $('#referral-begin');
@@ -105,7 +112,6 @@ window.onload = function() {
         /**
          * The form previous button.
          * Pressing the button will step back to the previous fieldset.
-         *
          * @type {*|HTMLElement}
          */
         var previous_button = $('#referral-prev');
@@ -113,7 +119,6 @@ window.onload = function() {
         /**
          * The form next button.
          * Pressing the button will processed to the next fieldset.
-         *
          * @type {*|HTMLElement}
          */
         var next_button = $('#referral-next');
@@ -121,17 +126,11 @@ window.onload = function() {
         /**
          * The accompaniment select element.
          * Options (mother, father) are added and removed dynamically depending if they are present.
-         *
          * @type {*|HTMLElement}
          */
         var accompaniment_select = $('#patient-accompaniment');
 
-        /**
-         * The index of the current, visible fieldset.
-         *
-         * @type {number}
-         */
-        var current_fieldset = 0;
+        var working_panel = $( '#working' );
 
         /**
          * Checks if form has been started, applying the default state.
@@ -165,6 +164,9 @@ window.onload = function() {
                 previous_button.hide();
             }
 
+            working_panel.hide();
+            confirmation_panel.hide();
+
             return form_started;
         }
 
@@ -175,9 +177,18 @@ window.onload = function() {
             // iterate through all form inputs
             $('form input, form select, form textarea').each(function(index, element) {
                 // get the name attribute of the context input element
+                var id = $(element).attr('id');
                 var name = $(element).attr('name');
+
                 // corresponding confirm label
-                var confirm_label = $('#' + name + '-c');
+                var confirm_label = $('#' + id + '-c');
+
+                // workaround for radio naming convention
+                if ($(element).attr('type') == 'radio') {
+                    id = id.replace('-yes', '');
+                    id = id.replace('-no', '');
+                    confirm_label = $('#' + id + '-c');
+                }
 
                 // add guard in-case input does not have a preview
                 if (!confirm_label.length) return;
@@ -211,7 +222,7 @@ window.onload = function() {
                 else if ($(element).attr('type') == 'radio') {
                     // get the value of the checked radio only
                     if ($(element).attr('checked')) {
-                        confirm_label.text($(element).val());
+                        confirm_label.text($(element).next('label:first').html());
                     }
                 }
                 // it's all other inputs that require no special filtering
@@ -264,7 +275,7 @@ window.onload = function() {
                 $('#patient-accompaniment-group-c').hide();
             }
 
-            if ($('#patient-has-mother-yes').attr('checked')) {
+            if ($('#patient-hasMother-yes').attr('checked')) {
                 $('#patient-mother-group-none-c').hide();
                 $('#patient-mother-group-c').show();
             } else {
@@ -272,7 +283,7 @@ window.onload = function() {
                 $('#patient-mother-group-c').hide();
             }
 
-            if ($('#patient-has-father-yes').attr('checked')) {
+            if ($('#patient-hasFather-yes').attr('checked')) {
                 $('#patient-father-group-none-c').hide();
                 $('#patient-father-group-c').show();
             } else {
@@ -286,29 +297,29 @@ window.onload = function() {
          * they have been provided.
          */
         function populateAccompanimentSelect() {
-            var hasMother = $('input[name="patient-has-mother"]:checked').val();
+            var hasMother = $('input[name="patient[hasMother]"]:checked').val();
             var hasMotherOpt = $('#patient-accompaniment option[value="mother"]');
-            var hasFather = $('input[name="patient-has-father"]:checked').val();
+            var hasFather = $('input[name="patient[hasFather]"]:checked').val();
             var hasFatherOpt = $('#patient-accompaniment option[value="father"]');
 
-            if (hasMother == "Yes" && !hasMotherOpt.length) {
+            if (hasMother == "true" && !hasMotherOpt.length) {
                 accompaniment_select.append($('<option>', {
                     'value': 'mother',
                     'text': 'Mother',
                     'selected': ''
                 }));
             }
-            if (hasMother == "No" && hasMotherOpt.length) {
+            if (hasMother == "false" && hasMotherOpt.length) {
                 hasMotherOpt.remove();
             }
 
-            if (hasFather == "Yes" && !hasFatherOpt.length) {
+            if (hasFather == "true" && !hasFatherOpt.length) {
                 accompaniment_select.append($('<option>', {
                     'value': 'father',
                     'text': 'Father'
                 }));
             }
-            if (hasFather == "No" && hasFatherOpt.length) {
+            if (hasFather == "false" && hasFatherOpt.length) {
                 hasFatherOpt.remove();
             }
 
@@ -410,7 +421,7 @@ window.onload = function() {
          * @param groupId The corresponding group to toggle the visibility of
          */
         function showOptionalGroup(input, groupId) {
-            if ($(input).val() == 'Yes') {
+            if ($(input).val() == 'true') {
                 $(groupId).show('slow');
             } else {
                 $(groupId).hide('slow');
@@ -431,32 +442,38 @@ window.onload = function() {
             }
 
             var referralForm = $( '#referral-form' ).validate({
-                //messages: {
-                //    'patient-fname': 'The patients first name is required.',
-                //    'patient-lname': 'The patients last name is required.',
-                //    'patient-sex': 'The patients gender is required.'
-                //}
+                rules: {
+                    "patient[dateOfBirth]": {
+                        noOlderThan18Years: true,
+                        required: true
+                    }
+                },
+                messages: {
+                    "patient[dateOfBirth]": {
+                        noOlderThan18Years: "Patient must be < 18 years old",
+                        required: "Please specify DOB"
+                    }
+                }
             });
             var isValid = true;
 
             switch ( groupId ) {
                 case 0: // patient details
-                    validateField( '#patient-fname' );
-                    validateField( '#patient-lname' );
-                    validateField( '#patient-dob' );
-                    validateField( '#patient-sex' );
+                    validateField( '#patient-firstName' );
+                    validateField( '#patient-lastName' );
+                    validateField( '#patient-dateOfBirth' );
+                    validateField( '#patient-gender' );
                     validateField( '#patient-height' );
                     validateField( '#patient-weight' );
                     validateField( '#patient-address' );
-                    validateField( '#patient-country-of-origin' );
+                    validateField( '#patient-countryOfOrigin' );
                     validateField( '#patient-nationality' );
                     validateField( '#patient-religion' );
-                    validateField( '#patient-languages-spoken' );
-                    validateField( 'input[name="patient-understand-english"]' );
+                    validateField( '#patient-languagesSpoken' );
+                    validateField( 'input[name="patient[understandsEnglish]"' );
                     break;
             }
 
-            return true;
             return isValid;
         }
 
@@ -490,11 +507,50 @@ window.onload = function() {
             }
         }
 
+        /**
+         * Referral form submit success Callback.
+         */
+        function submitSuccess(data) {
+            working_panel.hide();
+            fieldsets.hide();
+            progress_list.hide();
+            submit_button.hide();
+            next_button.hide();
+            previous_button.hide();
+
+            $( '#romacId' ).text( data );
+            confirmation_panel.show();
+        }
+
+        $.validator.addMethod("noOlderThan18Years", function(value, element) {
+            var todaysDate = new Date();
+            var dobDate = Date.parse( value );
+            if ( isNaN(todaysDate) || isNaN(dobDate) ) {
+                return false;
+            }
+            // 86400000 is one day in milliseconds
+            // 6574.36 is how many days in 18 years (accounting for leaps)
+            var eighteenYears = 86400000 * 6574.36;
+            if (todaysDate - dobDate > eighteenYears) {
+                return false;
+            }
+            return true;
+        });
+
+
+        //
+        // Start Form instantiation
+        //
+
+
+
         // attach a click handler to the begin button
         begin_button.click(function() {
             form_started = true;
+            $( '#started' ).val( 'true' );
             ping();
         });
+
         // attach a click handler to the next button
         next_button.click(function() {
             if (!validateFieldset(current_fieldset)) {
@@ -505,6 +561,7 @@ window.onload = function() {
                 ping();
             }
         });
+
         // attach a click handler to the previous button
         previous_button.click(function() {
             if (current_fieldset > 0) {
@@ -513,49 +570,73 @@ window.onload = function() {
             }
         });
 
+        // attach submit click action
+        submit_button.click(function() {
+            $( '#referral-form' ).hide();
+            progress_items.hide();
+            working_panel.show();
+
+            var json = $( '#referral-form' ).serializeJSON();
+            $.post( '/patients/refer-a-patient', json, submitSuccess );
+        });
+
         // attach a change handler to the accompaniment select list
         accompaniment_select.change( onAccompanySelectChange );
 
         // attach handlers to the if has mother/father inputs
-        $( "#patient-has-mother-yes" ).change(function() {
+        $( "#patient-hasMother-yes" ).change(function() {
             showOptionalGroup( this, '#patient-mother-optional-group' );
         });
-        $( "#patient-has-mother-no" ).change(function() {
+        $( "#patient-hasMother-no" ).change(function() {
             showOptionalGroup( this, '#patient-mother-optional-group' );
         });
-        $( "#patient-has-father-yes" ).change(function() {
+        $( "#patient-hasFather-yes" ).change(function() {
             showOptionalGroup( this, '#patient-father-optional-group' );
         });
-        $( "#patient-has-father-no" ).change(function() {
+        $( "#patient-hasFather-no" ).change(function() {
             showOptionalGroup( this, '#patient-father-optional-group' );
         });
 
-        // Instantiate special form controls - select2, datepicker etc
-        var select2options = { maximumSelectionLength: 2 };
-        $( "#patient-languages-spoken" ).select2( select2options );
-        $( "#patient-mother-languages-spoken" ).select2( select2options );
-        $( "#patient-father-languages-spoken" ).select2( select2options );
-        $( "#patient-accompaniment-languages-spoken" ).select2( select2options );
-        $( "#patient-country-of-origin" ).select2();
-        $( "#patient-mother-country-of-origin" ).select2();
-        $( "#patient-father-country-of-origin" ).select2();
-        $( "#patient-accompaniment-country-of-origin" ).select2();
+        /**
+         * Instantiate sisyphus so that the form values are persisted to local-storage
+         */
+        $( '#referral-form' ).sisyphus({
+            autoRelease: false // only clear form if post success
+        });
+
+        form_started = $( '#started' ).val() == 'true';
+
+        /**
+         * Instantiate special form controls
+         */
+        var select2LanguageOptions = { maximumSelectionLength: 2 };
+        $( "#patient-languagesSpoken" ).select2( select2LanguageOptions );
+        $( "#mother-languagesSpoken" ).select2( select2LanguageOptions );
+        $( "#father-languagesSpoken" ).select2( select2LanguageOptions );
+        $( "#accompaniment-languagesSpoken" ).select2( select2LanguageOptions );
+        // country
+        $( "#patient-countryOfOrigin" ).select2();
+        $( "#mother-countryOfOrigin" ).select2();
+        $( "#father-countryOfOrigin" ).select2();
+        $( "#accompaniment-countryOfOrigin" ).select2();
+        // nationality
         $( "#patient-nationality" ).select2();
 
+        /**
+         * Attaches click handlers to the 'add document' buttons.
+         * This will dynamically add a new line for another document.
+         */
         $( "#add-photo" ).click(onAddPhotoClick);
         $( "#add-document" ).click(onAddDocumentClick);
 
-        //$( "#patient-photo-1-input" ).change(function() {
-        //    readURL(this, '#patient-photo-1');
-        //});
-        //$( "#patient-photo-2-input" ).change(function() {
-        //    readURL(this, '#patient-photo-2');
-        //});
-        //$( "#patient-photo-3-input" ).change(function() {
-        //    readURL(this, '#patient-photo-3');
-        //});
-
+        /**
+         * Dynamically generates the  1-2-3-4-5... steps based on fieldsets
+         */
         initialiseProgressList();
+
+        /**
+         * Trigger a state refresh when the form is loaded.
+         */
         ping();
     });
 })( jQuery );
