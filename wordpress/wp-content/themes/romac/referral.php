@@ -383,14 +383,15 @@ get_header(); ?>
                                     </div>
                                     <div id="patientDobKnown">
                                         <div class="row">
-                                            <?echo form_control_yes_no( 'patient-hasBirthCertificate', 'patient[hasBirthCertificate]', 'Does the Patient have a birth certificate?', null, array( 'required' => null ) ); ?>
+                                            <?php echo form_control( 'patient-dateOfBirth', 'patient[dateOfBirth]', 'Date of Birth', 'date' ); ?>
                                         </div>
                                         <div class="row">
-                                            <?php echo form_control( 'patient-dateOfBirth', 'patient[dateOfBirth]', 'Date of Birth', 'date', array( 'required' => null )); ?>
+                                            <?echo form_control_yes_no( 'patient-hasBirthCertificate', 'patient[hasBirthCertificate]', 'Does the Patient have a birth certificate?' ); ?>
                                         </div>
                                     </div>
                                     <div id="patientDobUnknown">
-
+                                        <?php $maxYear = date("Y"); $minYear = $maxYear - 18; ?>
+                                        <?php echo form_control( 'patient-yearOfBirth', 'patient[yearOfBirth]', 'Please estimate the patients year of birth', 'number', array( 'min' => $minYear, 'max' => $maxYear ) ); ?>
                                     </div>
                                     <div class="row">
                                         <div class="form-control">

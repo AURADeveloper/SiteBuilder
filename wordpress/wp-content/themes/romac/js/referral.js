@@ -1,179 +1,351 @@
-/**
- * A guard that prevents the leave page confirmation been shown if the form is being posted.
- * This variable is assigned to true on form submission.
- *
- * @type {boolean}
- */
-var form_submitting = false;
-
-/**
- * A flag that indicates the form has been started.
- * If it assigned true when the user clicks the begin referral button.
- *
- * @type {boolean}
- */
-var form_started = false;
-
-/**
- * A function that sets the form_submitting variable to true.
- * This is designed to be attached to the form element on the onsubmit attribute.
- * <code>
- *     <form onsubmit="setFormSubmitting"></form>
- * </code>
- */
-var setFormSubmitting = function() {
-    form_submitting = true;
-};
-
-/**
- * Attaches a leave page confirmation.<br/>
- * The user will be prompted if they wish to leave the page or not if the referral form has been started.
- *
- * DEPRECIATED: form state is now saved to local storage automatically
- */
-//window.onload = function() {
-//    window.addEventListener('beforeunload', function (e) {
-//        var confirmationMessage = 'You have started a referral form submission. ';
-//        confirmationMessage += 'If you leave before saving, your changes will be lost.';
-//
-//        if (form_submitting || !form_started) {
-//            return undefined;
-//        }
-//
-//        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-//        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
-//    });
-//};
-
 // be safe - map $ to jQuery in a anonymous function
 (function($) {
+    /**
+     * No older than 18 years validator.
+     * ---------------------------------
+     *
+     * Custom validator method for testing the supplied date is no greater than 18 years.
+     */
+    $.validator.addMethod("noOlderThan18Years", function(value, element) {
+        var todaysDate = new Date();
+        var dobDate = Date.parse( value );
+        if ( isNaN(todaysDate) || isNaN(dobDate) ) {
+            return false;
+        }
+        // 86400000 is one day in milliseconds
+        // 6574.36 is how many days in 18 years (accounting for leaps)
+        var eighteenYears = 86400000 * 6574.36;
+        if (todaysDate - dobDate > eighteenYears) {
+            return false;
+        }
+        return true;
+    });
 
     /**
-     * Bootstrap document ready.
+     * Referral Form Controller Logic.
+     * -------------------------------
+     *
+     * Dependencies: jQuery     (https://jquery.com/)
+     *               sisyphus   (http://sisyphus-js.herokuapp.com/)
+     *               validation (http://jqueryvalidation.org/)
      */
-    $(document).ready(function() {
-        /**
-         * The index of the current, visible fieldset.
-         * @type {number}
-         */
-        var current_fieldset = 0;
+    var referralForm = function() {
+        var config = {
+            elements: {
+                referralForm: '#referral-form',
+                preambleElement: '#referral-preamble',
+                confirmationElement: '#confirmation',
+                workingElement: '#working',
 
-        /**
-         * The index of the fieldset that contains the accompaniment fields.
-         * @type {number}
-         */
-        var accompaniment_fieldset = 2;
+                progressList: '#referral-progress ul',
+                progressListItems: '#referral-progress ul li',
 
-        /**
-         * Reference to the preamble element. This is hidden when the form is started.
-         * @type {*|HTMLElement}
-         */
-        var preamable_panel = $('#referral-preamble');
+                beginButton: '#referral-begin',
+                nextButton: '#referral-next',
+                previousButton: '#referral-previous',
+                submitButton: '#submit',
 
-        /**
-         * Reference to the confirmation element. This is only displayed when the referral form has been submitted.
-         * @type {*|HTMLElement}
-         */
-        var confirmation_panel = $( '#confirmation' );
+                patientDobKnown: '#patientDobKnown',
+                patientDobUnknown: '#patientDobUnknown',
+                addPhotoButton: '#add-photo',
+                addDocumentButton: '#add-document',
 
-        /**
-         * Reference to the list that holds the numbered progress list.
-         * @type {*|HTMLElement}
-         */
-        var progress_list = $('#referral-progress ul');
+                conditionsAcceptedInput: '#started'
+            },
+            fieldsets: {
+                patient: {
+                    firstName: '#patient-firstName',
+                    lastName: '#patient-lastName',
+                    isDobKnown: 'input[name="patient[isDobKnown]"]',
+                    dateOfBirth: '#patient-dateOfBirth',
+                    hasBirthCertificate: 'input[name="patient[hasBirthCertificate]"]',
+                    gender: '#patient-gender',
+                    height: '#patient-height',
+                    weight: '#patient-weight',
+                    address: '#patient-address',
+                    countryOfOrigin: '#patient-countryOfOrigin',
+                    religion: '#patient-religion',
+                    languagesSpoken: '#patient-languagesSpoken',
+                    understandsEnglish: 'input[name="patient[understandsEnglish]"]'
+                },
+                guardians: {
+                    hasMother: 'input[name="patient[hasMother]"]',
+                    motherFirstName: '#mother-firstName'
+                },
+                accompaniment: {
 
-        /**
-         * The collection of <li> elements that populate the progress list.
-         * Each number in the list presents a fieldset/panel in the wizard. 1,2,3,4...
-         * @type {*|HTMLElement}
-         */
-        var progress_items = null; // instantiated by init_steps()
+                },
+                byIndex: function(index) {
+                    switch (index) {
+                        case config.patientFieldsetIndex:
+                            return config.fieldsets.patient;
+                        case config.guardianFieldsetIndex:
+                            return config.fieldsets.guardians;
+                        case config.accompanimentFieldsetIndex:
+                            return config.fieldsets.accompaniment;
+                        default:
+                            return { };
+                    }
+                }
+            },
+            sisyphus: {
+                autoRelease: false // manually clear form on successful submit
+            },
+            validation: {
+                rules: {
+                    "patient[dateOfBirth]": {
+                        noOlderThan18Years: true,
+                        required: true,
+                        depends: function(element) {
+                            return $( config.fieldsets.patient.isDobKnown + ":checked" ).val() == 'true';
+                        }
+                    },
+                    "patient[hasBirthCertificate]": {
+                        required: true,
+                        depends: function(element) {
+                            return $( config.fieldsets.patient.isDobKnown + ":checked" ).val() == 'true';
+                        }
+                    },
+                    "patient[yearOfBirth]": {
+                        required: true,
+                        depends: function(element) {
+                            return $( config.fieldsets.patient.isDobKnown + ":checked" ).val() == 'false';
+                        }
+                    }
+                },
+                messages: {
+                    "patient[dateOfBirth]": {
+                        noOlderThan18Years: "Patient must be < 18 years old",
+                        required: "Please specify DOB"
+                    }
+                }
+            },
+            patientFieldsetIndex: 0,
+            guardianFieldsetIndex: 1,
+            accompanimentFieldsetIndex: 2,
+            postUrl: '/patients/refer-a-patient'
+        };
 
-        /**
-         * The collection of all fieldsets in the referral form.
-         * @type {*|HTMLElement}
-         */
-        var fieldsets = $('#referral-form fieldset');
+        var activeFieldsetIndex = 0;
 
-        /**
-         * The form submit button.
-         * Pressing the button will cause the form to post.
-         * @type {*|HTMLElement}
-         */
-        var submit_button = $('#submit');
+        function init() {
+            // enable persistence
+            $( config.elements.referralForm ).sisyphus( config.sisyphus );
 
-        /**
-         * The form begin button.
-         * Pressing the button will skip the preamble to the first fieldset.
-         * @type {*|HTMLElement}
-         */
-        var begin_button = $('#referral-begin');
-
-        /**
-         * The form previous button.
-         * Pressing the button will step back to the previous fieldset.
-         * @type {*|HTMLElement}
-         */
-        var previous_button = $('#referral-prev');
-
-        /**
-         * The form next button.
-         * Pressing the button will processed to the next fieldset.
-         * @type {*|HTMLElement}
-         */
-        var next_button = $('#referral-next');
-
-        /**
-         * The accompaniment select element.
-         * Options (mother, father) are added and removed dynamically depending if they are present.
-         * @type {*|HTMLElement}
-         */
-        var accompaniment_select = $('#patient-accompaniment');
-
-        var working_panel = $( '#working' );
-
-        /**
-         * Checks if form has been started, applying the default state.
-         * The form_started flag is returned, false meaning there should be no further states to evaluate.
-         *
-         * @returns {boolean} True if the form been started
-         */
-        function setFormDefaultState(form_started) {
-            if (form_started) {
-                preamable_panel.hide();
-                begin_button.hide();
-                submit_button.show();
-                submit_button.attr('disabled', '');
-                next_button.show();
-                next_button.removeAttr('disabled');
-                previous_button.show();
-                previous_button.removeAttr('disabled');
-                fieldsets.hide();
-                fieldsets.eq(current_fieldset).show();
-                progress_list.show();
-                progress_items.each(function() {
-                    $(this).removeClass();
-                });
-                progress_items.eq(current_fieldset).addClass('active');
-            } else {
-                // hide all none preamble elements
-                fieldsets.hide();
-                progress_list.hide();
-                submit_button.hide();
-                next_button.hide();
-                previous_button.hide();
-            }
-
-            working_panel.hide();
-            confirmation_panel.hide();
-
-            return form_started;
+            // init routine
+            initSelect2Lists();
+            attachClickHandlers();
+            attachChangeHandlers();
+            buildProgressList();
+            ping();
         }
 
-        /**
-         * Populates the confirmation page, copying the fieldset values into the confirmation page.
-         */
-        function populateConfirmationFielset() {
+        function attachClickHandlers() {
+            // the begin referral button - accepts the terms and conditions
+            $( config.elements.beginButton ).click( function() {
+                $( config.elements.conditionsAcceptedInput ).val( 'true' );
+                ping();
+            } );
+
+            // the next button - progresses to the next fieldset if the current is valid
+            $( config.elements.nextButton ).click( function() {
+                if ( validateCurrentFieldset() ) {
+                    if ( !isLastFieldset() ) {
+                        activeFieldsetIndex++;
+                        ping();
+                    }
+                }
+            } );
+
+            // the previous button - moves back one fieldset
+            $( config.elements.previousButton ).click( function() {
+                if ( !isFirstFieldset() ) {
+                    activeFieldsetIndex--;
+                    ping();
+                }
+            } );
+
+            // the submit button
+            $( config.elements.submitButton ).click( function() {
+                $( config.elements.referralForm ).hide();
+                $( config.elements.progressList ).hide();
+                $( config.elements.workingElement ).show();
+
+                var json = $( config.elements.referralForm ).serializeJSON();
+                $.post( config.postUrl, json, submitSuccess );
+            } );
+
+            // add another photo button
+            $( config.elements.addPhotoButton ).click( function() {
+                var currentInputs = $( "#patient-photos input" );
+                if (currentInputs.last().val() != '') {
+                    var i = currentInputs.length;
+                    $("#patient-photos .inputs").append(
+                        '<div class="form-control">' +
+                        '<input type="file" name="patient-photo-input-' + i + '">' +
+                        '</div>');
+                }
+            } );
+
+            // add another document button
+            $( config.elements.addDocumentButton ).click( function() {
+                var currentInputs = $( "#patient-documents input" );
+                if ( currentInputs.last().val() != '' ) {
+                    var i = currentInputs.length;
+                    $("#patient-documents .inputs").append(
+                        '<div class="form-control">' +
+                        '<input type="file" name="patient-document-input-' + i + '">' +
+                        '</div>');
+                }
+            } );
+        }
+
+        function attachChangeHandlers() {
+            // hide/show dob fields depending if dob is known or not
+            $( config.fieldsets.patient.isDobKnown ).change( function(eventData, handler) {
+                if (eventData.target.value == 'true') {
+                    $( config.elements.patientDobKnown ).show();
+                    $( config.elements.patientDobUnknown ).hide();
+                    return;
+                }
+                if (eventData.target.value == 'false') {
+                    $( config.elements.patientDobKnown ).hide();
+                    $( config.elements.patientDobUnknown ).show();
+                    return;
+                }
+                $( config.elements.patientDobKnown ).hide();
+                $( config.elements.patientDobUnknown ).hide();
+            } );
+
+            $( '#patient-accompaniment' ).change( function() {
+                var val = $( '#patient-accompaniment' ).val();
+                if (val == "other") {
+                    $('#patient-accompaniment-optional-group').show();
+                } else {
+                    $('#patient-accompaniment-optional-group').hide();
+                }
+            } );
+
+            // attach handlers to the if has mother/father inputs
+            $( "#patient-hasMother-yes" ).change(function() {
+                showOptionalGroup( this, '#patient-mother-optional-group' );
+            });
+            $( "#patient-hasMother-no" ).change(function() {
+                showOptionalGroup( this, '#patient-mother-optional-group' );
+            });
+            $( "#patient-hasFather-yes" ).change(function() {
+                showOptionalGroup( this, '#patient-father-optional-group' );
+            });
+            $( "#patient-hasFather-no" ).change(function() {
+                showOptionalGroup( this, '#patient-father-optional-group' );
+            });
+        }
+
+        function showOptionalGroup(input, groupId) {
+            if ($(input).val() == 'true') {
+                $(groupId).show('slow');
+            } else {
+                $(groupId).hide('slow');
+            }
+        }
+
+        function initSelect2Lists() {
+            var select2LanguageOptions = { maximumSelectionLength: 2 };
+            $( "#patient-languagesSpoken" ).select2( select2LanguageOptions );
+            $( "#mother-languagesSpoken" ).select2( select2LanguageOptions );
+            $( "#father-languagesSpoken" ).select2( select2LanguageOptions );
+            $( "#accompaniment-languagesSpoken" ).select2( select2LanguageOptions );
+            // country
+            $( "#patient-countryOfOrigin" ).select2();
+            $( "#mother-countryOfOrigin" ).select2();
+            $( "#father-countryOfOrigin" ).select2();
+            $( "#accompaniment-countryOfOrigin" ).select2();
+            // nationality
+            $( "#patient-nationality" ).select2();
+        }
+
+        function buildProgressList() {
+            var i = 1;
+            $( 'fieldset' ).each(function() {
+                $( config.elements.progressList ).append('<li>' + i++ + '</li>');
+            });
+        }
+
+        function ping() {
+            // always hide these, only shown when form submitted
+            $( config.elements.workingElement ).hide();
+            $( config.elements.confirmationElement ).hide();
+
+            // if conditions are not accepted, set initial state - show conditions
+            if (!areConditionsAccepted()) {
+                // hide all none preamble elements
+                $( 'fieldset' ).hide();
+                $( config.elements.progressList ).hide();
+                $( config.elements.submitButton ).hide();
+                $( config.elements.nextButton ).hide();
+                $( config.elements.previousButton ).hide();
+                return;
+            }
+
+            // else, form has been started, configure it
+            $( config.elements.preambleElement ).hide();
+
+            // reset control button states
+            $( config.elements.beginButton ).hide();
+            $( config.elements.submitButton ).show();
+            $( config.elements.submitButton ).attr('disabled', '');
+            $( config.elements.nextButton ).show();
+            $( config.elements.nextButton ).removeAttr('disabled');
+            $( config.elements.previousButton ).show();
+            $( config.elements.previousButton ).removeAttr('disabled');
+
+            // only show the active fieldset
+            var fieldsets = $( 'fieldset' );
+            fieldsets.hide();
+            fieldsets.eq( activeFieldsetIndex ).show();
+
+            // highlight the active progress list item
+            $( config.elements.progressList ).show();
+            var progressListItems = $( config.elements.progressListItems );
+            progressListItems.each(function() {
+                $( this ).removeClass();
+            });
+            progressListItems.eq( activeFieldsetIndex ).addClass('active');
+
+            $( config.fieldsets.patient.isDobKnown + ":checked" ).trigger( 'change' );
+
+            if (isLastFieldset()) {
+                populateConfirmationFields();
+                $( config.elements.nextButton ).attr('disabled', '');
+                $( config.elements.submitButton ).removeAttr('disabled');
+            }
+
+            if (isFirstFieldset()) {
+                $( config.elements.previousButton ).attr('disabled', '');
+            }
+
+            if (activeFieldsetIndex == config.accompanimentFieldsetIndex) {
+                populateAccompanimentSelect();
+            }
+        }
+
+        function validateFieldset( groupId ) {
+            var fieldset = config.fieldsets.byIndex( groupId );
+            var validatedForm = $( config.elements.referralForm ).validate( config.validation );
+
+            for (var property in fieldset) {
+                if (fieldset.hasOwnProperty( property )) {
+                    var value = fieldset[property];
+                    if (!validatedForm.element( value )) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        function populateConfirmationFields() {
             // iterate through all form inputs
             $('form input, form select, form textarea').each(function(index, element) {
                 // get the name attribute of the context input element
@@ -292,18 +464,15 @@ var setFormSubmitting = function() {
             }
         }
 
-        /**
-         * Evaluates the form state, populating the accompaniment select list with the mother and father depending if
-         * they have been provided.
-         */
         function populateAccompanimentSelect() {
+            var selectList = $( '#patient-accompaniment' );
             var hasMother = $('input[name="patient[hasMother]"]:checked').val();
             var hasMotherOpt = $('#patient-accompaniment option[value="mother"]');
             var hasFather = $('input[name="patient[hasFather]"]:checked').val();
             var hasFatherOpt = $('#patient-accompaniment option[value="father"]');
 
             if (hasMother == "true" && !hasMotherOpt.length) {
-                accompaniment_select.append($('<option>', {
+                selectList.append($('<option>', {
                     'value': 'mother',
                     'text': 'Mother',
                     'selected': ''
@@ -314,7 +483,7 @@ var setFormSubmitting = function() {
             }
 
             if (hasFather == "true" && !hasFatherOpt.length) {
-                accompaniment_select.append($('<option>', {
+                selectList.append($('<option>', {
                     'value': 'father',
                     'text': 'Father'
                 }));
@@ -323,320 +492,47 @@ var setFormSubmitting = function() {
                 hasFatherOpt.remove();
             }
 
-            onAccompanySelectChange();
+            selectList.trigger( 'change' );
         }
 
-        /**
-         * Returns if the first fieldset is active.
-         * @returns {boolean}
-         */
-        function isFirstFielsetActive() {
-            return current_fieldset == 0;
-        }
-
-        /**
-         * Returns if the confirmation (last) fieldset is active.
-         * @returns {boolean}
-         */
-        function isConfirmationFieldsetActive() {
-            return current_fieldset == fieldsets.size()-1;
-        }
-
-        /**
-         * Returns if the accompaniment is active.
-         * @returns {boolean}
-         */
-        function isAccompanimentFieldsetActive() {
-            return current_fieldset == accompaniment_fieldset;
-        }
-
-        /**
-         * The ping function evaluates the form state and modifies it accordingly.
-         * This function is generally called when the user cycles through the form using the previous and next buttons.
-         */
-        function ping() {
-            if (!setFormDefaultState(form_started)) {
-                return;
-            }
-
-            if (isConfirmationFieldsetActive()) {
-                populateConfirmationFielset();
-                next_button.attr('disabled', '');
-                submit_button.removeAttr('disabled');
-            }
-
-            if (isFirstFielsetActive()) {
-                previous_button.attr('disabled', '');
-            }
-
-            if (isAccompanimentFieldsetActive()) {
-                populateAccompanimentSelect();
-            }
-        }
-
-        /**
-         * Populates the wizard progress list with numbers corresponding to each fieldset.
-         */
-        function initialiseProgressList() {
-            var i = 1;
-            fieldsets.each(function() {
-                progress_list.append('<li>' + i++ + '</li>');
-            });
-            progress_items = $('#referral-progress ul li');
-        }
-
-        /**
-         * A change handler for the accompaniment select list.
-         * If the other choice is selected, a fieldset to enter the accompaniments details is shown.
-         * Otherwise, this is hidden because the mothers, fathers details have already been recorded.
-         */
-        function onAccompanySelectChange() {
-            var val = accompaniment_select.val();
-            if (val == "other") {
-                $('#patient-accompaniment-optional-group').show();
-            } else {
-                $('#patient-accompaniment-optional-group').hide();
-            }
-        }
-
-        /**
-         * Reads a file typed input and assigns the encoded image src to the #patient-photo element.
-         *
-         * @param input The source input[type=file]
-         */
-        function readURL(input, imgElem) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    $( imgElem ).attr('src', e.target.result);
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        /**
-         * Shows or hides a group of inputs that is toggled by a paired radio input.
-         *
-         * @param input The radio input that shows/hides the group
-         * @param groupId The corresponding group to toggle the visibility of
-         */
-        function showOptionalGroup(input, groupId) {
-            if ($(input).val() == 'true') {
-                $(groupId).show('slow');
-            } else {
-                $(groupId).hide('slow');
-            }
-        }
-
-        /**
-         * Validates a fieldset for invalid input.
-         *
-         * @param groupId {number} The index of the corresponding fielset
-         * @returns {boolean} True if there are no validation errors
-         */
-        function validateFieldset( groupId ) {
-            function validateField(fieldId) {
-                if ( !referralForm.element( fieldId ) ) {
-                    isValid = false;
-                }
-            }
-
-            var referralForm = $( '#referral-form' ).validate({
-                rules: {
-                    "patient[dateOfBirth]": {
-                        noOlderThan18Years: true,
-                        required: true
-                    }
-                },
-                messages: {
-                    "patient[dateOfBirth]": {
-                        noOlderThan18Years: "Patient must be < 18 years old",
-                        required: "Please specify DOB"
-                    }
-                }
-            });
-            var isValid = true;
-
-            switch ( groupId ) {
-                case 0: // patient details
-                    validateField( '#patient-firstName' );
-                    validateField( '#patient-lastName' );
-                    validateField( '#patient-dateOfBirth' );
-                    validateField( '#patient-gender' );
-                    validateField( '#patient-height' );
-                    validateField( '#patient-weight' );
-                    validateField( '#patient-address' );
-                    validateField( '#patient-countryOfOrigin' );
-                    validateField( '#patient-nationality' );
-                    validateField( '#patient-religion' );
-                    validateField( '#patient-languagesSpoken' );
-                    validateField( 'input[name="patient[understandsEnglish]"' );
-                    break;
-            }
-
-            return isValid;
-        }
-
-        /**
-         * Adds a clicks handlers to the add photo button.
-         * It will add a new line for a photo as long as there are no other empty inputs.
-         */
-        function onAddPhotoClick() {
-            var currentInputs = $( "#patient-photos input" );
-            if (currentInputs.last().val() != '') {
-                var i = currentInputs.length;
-                $("#patient-photos .inputs").append(
-                    '<div class="form-control">' +
-                        '<input type="file" name="patient-photo-input-' + i + '">' +
-                    '</div>');
-            }
-        }
-
-        /**
-         * Adds a clicks handlers to the add document button.
-         * It will add a new line for a document as long as there are no other empty inputs.
-         */
-        function onAddDocumentClick() {
-            var currentInputs = $( "#patient-documents input" );
-            if ( currentInputs.last().val() != '' ) {
-                var i = currentInputs.length;
-                $("#patient-documents .inputs").append(
-                    '<div class="form-control">' +
-                        '<input type="file" name="patient-document-input-' + i + '">' +
-                    '</div>');
-            }
-        }
-
-        /**
-         * Referral form submit success Callback.
-         */
         function submitSuccess(data) {
-            working_panel.hide();
-            fieldsets.hide();
-            progress_list.hide();
-            submit_button.hide();
-            next_button.hide();
-            previous_button.hide();
+            $( config.elements.workingElement ).hide();
+            $( 'fieldset' ).hide();
+            $( config.elements.progressList ).hide();
+            $( config.elements.submitButton ).hide();
+            $( config.elements.nextButton ).hide();
+            $( config.elements.previousButton ).hide();
 
             $( '#romacId' ).text( data );
-            confirmation_panel.show();
+            $( config.elements.confirmationElement ).show();
         }
 
-        $.validator.addMethod("noOlderThan18Years", function(value, element) {
-            var todaysDate = new Date();
-            var dobDate = Date.parse( value );
-            if ( isNaN(todaysDate) || isNaN(dobDate) ) {
-                return false;
-            }
-            // 86400000 is one day in milliseconds
-            // 6574.36 is how many days in 18 years (accounting for leaps)
-            var eighteenYears = 86400000 * 6574.36;
-            if (todaysDate - dobDate > eighteenYears) {
-                return false;
-            }
-            return true;
-        });
+        function areConditionsAccepted() {
+            return $( config.elements.conditionsAcceptedInput ).val() == 'true';
+        }
 
+        function isFirstFieldset() {
+            return activeFieldsetIndex == 0;
+        }
 
-        //
-        // Start Form instantiation
-        //
+        function isLastFieldset() {
+            return !(activeFieldsetIndex < $( 'fieldset' ).size()-1);
+        }
 
+        function validateCurrentFieldset() {
+            return validateFieldset( activeFieldsetIndex );
+        }
 
+        return {
+            init: init,
+            config: config
+        }
+    }();
 
-        // attach a click handler to the begin button
-        begin_button.click(function() {
-            form_started = true;
-            $( '#started' ).val( 'true' );
-            ping();
-        });
-
-        // attach a click handler to the next button
-        next_button.click(function() {
-            if (!validateFieldset(current_fieldset)) {
-                return;
-            }
-            if (current_fieldset < fieldsets.size()-1) {
-                current_fieldset++;
-                ping();
-            }
-        });
-
-        // attach a click handler to the previous button
-        previous_button.click(function() {
-            if (current_fieldset > 0) {
-                current_fieldset--;
-                ping();
-            }
-        });
-
-        // attach submit click action
-        submit_button.click(function() {
-            $( '#referral-form' ).hide();
-            progress_items.hide();
-            working_panel.show();
-
-            var json = $( '#referral-form' ).serializeJSON();
-            $.post( '/patients/refer-a-patient', json, submitSuccess );
-        });
-
-        // attach a change handler to the accompaniment select list
-        accompaniment_select.change( onAccompanySelectChange );
-
-        // attach handlers to the if has mother/father inputs
-        $( "#patient-hasMother-yes" ).change(function() {
-            showOptionalGroup( this, '#patient-mother-optional-group' );
-        });
-        $( "#patient-hasMother-no" ).change(function() {
-            showOptionalGroup( this, '#patient-mother-optional-group' );
-        });
-        $( "#patient-hasFather-yes" ).change(function() {
-            showOptionalGroup( this, '#patient-father-optional-group' );
-        });
-        $( "#patient-hasFather-no" ).change(function() {
-            showOptionalGroup( this, '#patient-father-optional-group' );
-        });
-
-        /**
-         * Instantiate sisyphus so that the form values are persisted to local-storage
-         */
-        $( '#referral-form' ).sisyphus({
-            autoRelease: false // only clear form if post success
-        });
-
-        form_started = $( '#started' ).val() == 'true';
-
-        /**
-         * Instantiate special form controls
-         */
-        var select2LanguageOptions = { maximumSelectionLength: 2 };
-        $( "#patient-languagesSpoken" ).select2( select2LanguageOptions );
-        $( "#mother-languagesSpoken" ).select2( select2LanguageOptions );
-        $( "#father-languagesSpoken" ).select2( select2LanguageOptions );
-        $( "#accompaniment-languagesSpoken" ).select2( select2LanguageOptions );
-        // country
-        $( "#patient-countryOfOrigin" ).select2();
-        $( "#mother-countryOfOrigin" ).select2();
-        $( "#father-countryOfOrigin" ).select2();
-        $( "#accompaniment-countryOfOrigin" ).select2();
-        // nationality
-        $( "#patient-nationality" ).select2();
-
-        /**
-         * Attaches click handlers to the 'add document' buttons.
-         * This will dynamically add a new line for another document.
-         */
-        $( "#add-photo" ).click(onAddPhotoClick);
-        $( "#add-document" ).click(onAddDocumentClick);
-
-        /**
-         * Dynamically generates the  1-2-3-4-5... steps based on fieldsets
-         */
-        initialiseProgressList();
-
-        /**
-         * Trigger a state refresh when the form is loaded.
-         */
-        ping();
-    });
+    /**
+     * Bootstrap document ready.
+     */
+    $( document ).ready( function() {
+        referralForm.init();
+    } );
 })( jQuery );
