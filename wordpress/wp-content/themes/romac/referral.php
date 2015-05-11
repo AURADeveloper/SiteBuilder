@@ -870,9 +870,12 @@ get_header(); ?>
 
                     <div id="form-controls" class="referral-controls">
                         <button type="button" id="referral-begin">Begin</button>
-                        <button type="button" id="referral-prev">Back</button>
-                        <button type="button" id="submit">Submit</button>
+                        <button type="button" id="referral-previous">Back</button>
+                        <button type="button" id="referral-submit">Submit</button>
                         <button type="button" id="referral-next">Next</button>
+                        <div class="reset">
+                            <a href="#" id="referral-reset">Reset</a>
+                        </div>
                     </div>
                 </form>
 

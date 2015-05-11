@@ -43,7 +43,8 @@
                 beginButton: '#referral-begin',
                 nextButton: '#referral-next',
                 previousButton: '#referral-previous',
-                submitButton: '#submit',
+                submitButton: '#referral-submit',
+                resetLink: '#referral-reset',
 
                 patientDobKnown: '#patientDobKnown',
                 patientDobUnknown: '#patientDobUnknown',
@@ -70,10 +71,44 @@
                 },
                 guardians: {
                     hasMother: 'input[name="patient[hasMother]"]',
-                    motherFirstName: '#mother-firstName'
+                    motherFirstName: '#mother-firstName',
+                    motherLastName: '#mother-lastName',
+                    motherDob: '#mother-dateOfBirth',
+                    motherAddress: '#mother-address',
+                    motherEmail: '#mother-email',
+                    motherHomePhone: '#mother-homePhone',
+                    motherMobilePhone: '#mother-mobilePhone',
+                    motherReligion: '#mother-religion',
+                    motherOccupation: '#mother-occupation',
+                    motherLanguagesSpoke: '#mother-languagesSpoken',
+                    motherUnderstandsEnglish: '#mother-understandsEnglish',
+                    hasFather: 'input[name="patient[hasFather]"]',
+                    fatherFirstName: '#father-firstName',
+                    fatherLastName: '#father-lastName',
+                    fatherDob: '#father-dateOfBirth',
+                    fatherAddress: '#father-address',
+                    fatherEmail: '#father-email',
+                    fatherHomePhone: '#father-homePhone',
+                    fatherMobilePhone: '#father-mobilePhone',
+                    fatherReligion: '#father-religion',
+                    fatherOccupation: '#father-occupation',
+                    fatherLanguagesSpoke: '#father-languagesSpoken',
+                    fatherUnderstandsEnglish: '#father-understandsEnglish'
                 },
                 accompaniment: {
-
+                    patientAccompaniment: '#patient-accompaniment',
+                    accompanimentConnection: '#accompaniment-connection',
+                    accompanimentFirstName: '#accompaniment-firstName',
+                    accompanimentLastName: '#accompaniment-lastName',
+                    accompanimentDob: '#accompaniment-dateOfBirth',
+                    accompanimentAddress: '#accompaniment-address',
+                    accompanimentEmail: '#accompaniment-email',
+                    accompanimentHomePhone: '#accompaniment-homePhone',
+                    accompanimentMobilePhone: '#accompaniment-mobilePhone',
+                    accompanimentReligion: '#accompaniment-religion',
+                    accompanimentOccupation: '#accompaniment-occupation',
+                    accompanimentLanguagesSpoke: '#accompaniment-languagesSpoken',
+                    accompanimentUnderstandsEnglish: '#accompaniment-understandsEnglish'
                 },
                 byIndex: function(index) {
                     switch (index) {
@@ -111,26 +146,34 @@
                         depends: function(element) {
                             return $( config.fieldsets.patient.isDobKnown + ":checked" ).val() == 'false';
                         }
+                    },
+                    "patient[mother][firstName]": {
+                        depends: function(element) {
+                            return $( config.fieldsets.patient.hasMother + ":checked" ).val() == 'false';
+                        }
                     }
                 },
                 messages: {
                     "patient[dateOfBirth]": {
-                        noOlderThan18Years: "Patient must be < 18 years old",
-                        required: "Please specify DOB"
+                        noOlderThan18Years: "Accepted patients must be < 18 years old",
+                        required: "Please provide the patients DOB"
                     }
                 }
             },
+
             patientFieldsetIndex: 0,
             guardianFieldsetIndex: 1,
             accompanimentFieldsetIndex: 2,
+
             postUrl: '/patients/refer-a-patient'
         };
 
         var activeFieldsetIndex = 0;
+        var sisyphusCache = null;
 
         function init() {
             // enable persistence
-            $( config.elements.referralForm ).sisyphus( config.sisyphus );
+            sisyphusCache = $( config.elements.referralForm ).sisyphus( config.sisyphus );
 
             // init routine
             initSelect2Lists();
@@ -175,6 +218,13 @@
                 $.post( config.postUrl, json, submitSuccess );
             } );
 
+            // the reset form link
+            $( config.elements.resetLink ).click( function() {
+                sisyphusCache.manuallyReleaseData();
+                sisyphusCache = $( config.elements.referralForm ).sisyphus( config.sisyphus );
+                ping();
+            } );
+
             // add another photo button
             $( config.elements.addPhotoButton ).click( function() {
                 var currentInputs = $( "#patient-photos input" );
@@ -213,6 +263,8 @@
                     $( config.elements.patientDobUnknown ).show();
                     return;
                 }
+                
+                // default state - no option selected, hide all
                 $( config.elements.patientDobKnown ).hide();
                 $( config.elements.patientDobUnknown ).hide();
             } );
@@ -225,6 +277,15 @@
                     $('#patient-accompaniment-optional-group').hide();
                 }
             } );
+
+            // helper function to show/hide a element
+            function showOptionalGroup(input, groupId) {
+                if ($(input).val() == 'true') {
+                    $(groupId).show('slow');
+                } else {
+                    $(groupId).hide('slow');
+                }
+            }
 
             // attach handlers to the if has mother/father inputs
             $( "#patient-hasMother-yes" ).change(function() {
@@ -239,14 +300,6 @@
             $( "#patient-hasFather-no" ).change(function() {
                 showOptionalGroup( this, '#patient-father-optional-group' );
             });
-        }
-
-        function showOptionalGroup(input, groupId) {
-            if ($(input).val() == 'true') {
-                $(groupId).show('slow');
-            } else {
-                $(groupId).hide('slow');
-            }
         }
 
         function initSelect2Lists() {
