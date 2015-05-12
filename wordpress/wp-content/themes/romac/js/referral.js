@@ -148,6 +148,13 @@
                         }
                     },
                     "patient[mother][firstName]": {
+                        required: true,
+                        depends: function(element) {
+                            return $( config.fieldsets.patient.hasMother + ":checked" ).val() == 'false';
+                        }
+                    },
+                    "patient[mother][lastName]": {
+                        required: true,
                         depends: function(element) {
                             return $( config.fieldsets.patient.hasMother + ":checked" ).val() == 'false';
                         }
@@ -192,12 +199,12 @@
 
             // the next button - progresses to the next fieldset if the current is valid
             $( config.elements.nextButton ).click( function() {
-                if ( validateCurrentFieldset() ) {
+                //if ( validateCurrentFieldset() ) {
                     if ( !isLastFieldset() ) {
                         activeFieldsetIndex++;
                         ping();
                     }
-                }
+                //}
             } );
 
             // the previous button - moves back one fieldset
@@ -390,6 +397,7 @@
                 if (fieldset.hasOwnProperty( property )) {
                     var value = fieldset[property];
                     if (!validatedForm.element( value )) {
+                        validatedForm.focusInvalid();
                         return false;
                     }
                 }

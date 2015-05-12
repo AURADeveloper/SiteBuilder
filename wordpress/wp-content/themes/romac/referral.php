@@ -344,7 +344,7 @@ get_header(); ?>
 		<main id="main" class="site-main" role="main">
 			<?php while ( have_posts() ) : the_post(); ?>
                 <h1 class="title">
-                    <?php the_title(); ?> <span>Referral Form</span>
+                    <?php //the_title(); ?>Patient Referral Form
                 </h1>
 
                 <div id="referral-preamble">
@@ -360,91 +360,101 @@ get_header(); ?>
                     <fieldset>
                         <legend>Step 1: Patients Details</legend>
                         <div class="heading padded">
-                            <h2>Patient</h2>
+                            <h2>Patient Details</h2>
+                            <p>Please provide the personal details of the referred patient, all fields are required.</p>
                         </div>
-                        <div class="shaded padded">
-                            <div class="row spacing">
-                                <div class="col col-1-2">
+                        <div class="row-set shaded">
+                            <div class="row">
+                                <?php echo form_control_first_last_name( 'patient' ); ?>
+                            </div>
+                            <div class="row">
+                                <div class="form-control">
+                                    <label for="patient-gender">Gender</label>
+                                    <select id="patient-gender" name="patient[gender]" required>
+                                        <option></option>
+                                        <option value="MALE">Male</option>
+                                        <option value="FEMALE">Female</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row flat">
+                                <div class="row">
+                                    <?echo form_control_yes_no( 'patient-isDobKnown', 'patient[isDobKnown]', 'Is the Patients date of birth known?', null, array( 'required' => null ) ); ?>
+                                </div>
+                                <div id="patientDobKnown">
                                     <div class="row">
-                                        <?php echo form_control_first_last_name( 'patient' ); ?>
+                                        <?php echo form_control( 'patient-dateOfBirth', 'patient[dateOfBirth]', 'Date of Birth', 'date' ); ?>
                                     </div>
                                     <div class="row">
-                                        <div class="form-control">
-                                            <label for="patient-gender">Gender</label>
-                                            <select id="patient-gender" name="patient[gender]" required>
-                                                <option></option>
-                                                <option value="MALE">Male</option>
-                                                <option value="FEMALE">Female</option>
-                                            </select>
-                                        </div>
+                                        <?echo form_control_yes_no( 'patient-hasBirthCertificate', 'patient[hasBirthCertificate]', 'Does the Patient have a birth certificate?' ); ?>
                                     </div>
+                                </div>
+                                <div id="patientDobUnknown">
                                     <div class="row">
-                                        <?echo form_control_yes_no( 'patient-isDobKnown', 'patient[isDobKnown]', 'Is the Patients date of birth known?', null, array( 'required' => null ) ); ?>
-                                    </div>
-                                    <div id="patientDobKnown">
-                                        <div class="row">
-                                            <?php echo form_control( 'patient-dateOfBirth', 'patient[dateOfBirth]', 'Date of Birth', 'date' ); ?>
-                                        </div>
-                                        <div class="row">
-                                            <?echo form_control_yes_no( 'patient-hasBirthCertificate', 'patient[hasBirthCertificate]', 'Does the Patient have a birth certificate?' ); ?>
-                                        </div>
-                                    </div>
-                                    <div id="patientDobUnknown">
                                         <?php $maxYear = date("Y"); $minYear = $maxYear - 18; ?>
                                         <?php echo form_control( 'patient-yearOfBirth', 'patient[yearOfBirth]', 'Please estimate the patients year of birth', 'number', array( 'min' => $minYear, 'max' => $maxYear ) ); ?>
                                     </div>
-                                    <div class="row">
-                                        <div class="form-control">
-                                            <label for="patient-height">Height (cm)</label>
-                                            <input id="patient-height" name="patient[height]" type="number" min="10" max="250" required>
-                                        </div>
-                                        <div class="form-control">
-                                            <label for="patient-weight">Weight (kg)</label>
-                                            <input id="patient-weight" name="patient[weight]" type="number" min="1" max="100" required>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <?php echo form_control_address( 'patient' ); ?>
-                                    </div>
                                 </div>
-                                <div class="col col-1-2">
-                                    <div class="row">
-                                        <?php echo form_control_country( 'patient', array( 'required' => null ) ); ?>
-                                    </div>
-                                    <div class="row">
-                                        <?php echo form_control_nationality( 'patient', array( 'required' => null ) ); ?>
-                                    </div>
-                                    <div class="row">
-                                        <?php echo form_control_religion( 'patient', array( 'required' => null ) ); ?>
-                                    </div>
-                                    <div class="row">
-                                        <?php echo form_control_languages( 'patient', array( 'multiple' => null, 'required' => null ) ); ?>
-                                    </div>
-                                    <div class="row">
-                                        <?php echo form_control_yes_no( 'patient-understandsEnglish', 'patient[understandsEnglish]', 'Does the patient understand English?' ); ?>
-                                    </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-control">
+                                    <label for="patient-height">Height (cm)</label>
+                                    <input id="patient-height" name="patient[height]" type="number" min="10" max="250" required>
                                 </div>
+                                <div class="form-control">
+                                    <label for="patient-weight">Weight (kg)</label>
+                                    <input id="patient-weight" name="patient[weight]" type="number" min="1" max="100" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <?php echo form_control_address( 'patient' ); ?>
+                            </div>
+                            <div class="row">
+                                <?php echo form_control_country( 'patient', array( 'required' => null ) ); ?>
+                            </div>
+                            <div class="row">
+                                <?php echo form_control_nationality( 'patient', array( 'required' => null ) ); ?>
+                            </div>
+                            <div class="row">
+                                <?php echo form_control_religion( 'patient', array( 'required' => null ) ); ?>
+                            </div>
+                            <div class="row">
+                                <?php echo form_control_languages( 'patient', array( 'multiple' => null, 'required' => null ) ); ?>
+                            </div>
+                            <div class="row">
+                                <?php echo form_control_yes_no( 'patient-understandsEnglish', 'patient[understandsEnglish]', 'Does the patient understand English?' ); ?>
                             </div>
                         </div>
 
                         <div class="heading padded">
                             <h2>Patient Photographs</h2>
+                            <p>Please include a portrait photograph of the patient and others that show the medical condition if feesible.</p>
+                            <dl>
+                                <dt>Max Files:</dt>
+                                <dd>4 (instructions provided later if more required)</dd>
+                                <dt>Accepted Formats:</dt>
+                                <dd>PNG, JPEG</dd>
+                                <dt>Max File Size:</dt>
+                                <dd>512kb (72 dpi adequate)</dd>
+                            </dl>
                         </div>
-                        <div id="patient-photos" class="row spacing shaded padded">
-                            <div class="inputs">
-                                <div class="form-control">
-                                    <input type='file' name="photos">
+                        <div id="patient-photos" class="row-set shaded">
+                            <div class="row flat">
+                                <div class="row inputs">
+                                    <div class="form-control">
+                                        <input type='file' name="photos">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row section-buttons">
-                                <button type="button" id="add-photo">Add Photo</button>
+                                <div class="row section-buttons">
+                                    <button type="button" id="add-photo">Add Photo</button>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="heading padded">
+                        <div class="heading padded" style="display: none">
                             <h2>Medical Documentation</h2>
                         </div>
-                        <div id="patient-documents" class="row spacing shaded padded">
+                        <div id="patient-documents" class="row spacing shaded padded" style="display: none">
                             <div class="inputs">
                                 <div class="form-control">
                                     <input type='file' name="documents">
@@ -458,74 +468,64 @@ get_header(); ?>
 
                     <fieldset>
                         <legend>Step 2: Family Details</legend>
-                        <div class="row spacing">
-                            <div class="col col-1-2">
-                                <div class="heading padded">
-                                    <h2>Mothers Details</h2>
-                                </div>
-                                <div class="shaded padded">
-                                    <div class="row">
-                                        <?php echo form_control_yes_no( 'patient-hasMother', 'patient[hasMother]', 'Does the patient have a mother?', 'Yes' ); ?>
-                                    </div>
-                                    <div id="patient-mother-optional-group">
-                                        <?php echo form_person( 'mother', 'mother' ); ?>
-                                    </div>
-                                </div>
+
+                        <div class="heading padded">
+                            <h2>Mothers Details</h2>
+                        </div>
+                        <div class="row-set shaded">
+                            <div class="row">
+                                <?php echo form_control_yes_no( 'patient-hasMother', 'patient[hasMother]', 'Does the patient have a mother?', 'Yes' ); ?>
                             </div>
-                            <div class="col col-1-2">
-                                <div class="heading padded">
-                                    <h2>Fathers Details</h2>
-                                </div>
-                                <div class="shaded padded">
-                                    <div class="row">
-                                        <?php echo form_control_yes_no( 'patient-hasFather', 'patient[hasFather]', 'Does the patient have a father?', 'Yes' ); ?>
-                                    </div>
-                                    <div id="patient-father-optional-group">
-                                        <?php echo form_person( 'father', 'father' ); ?>
-                                    </div>
-                                </div>
+                            <div id="patient-mother-optional-group">
+                                <?php echo form_person( 'mother', 'mother' ); ?>
                             </div>
                         </div>
+
+                        <div class="heading padded">
+                            <h2>Fathers Details</h2>
+                        </div>
+                        <div class="row-set shaded">
+                            <div class="row">
+                                <?php echo form_control_yes_no( 'patient-hasFather', 'patient[hasFather]', 'Does the patient have a father?', 'Yes' ); ?>
+                            </div>
+                            <div id="patient-father-optional-group">
+                                <?php echo form_person( 'father', 'father' ); ?>
+                            </div>
+                        </div>
+
                     </fieldset>
 
                     <fieldset>
                         <legend>Step 3: Person to Accompany Patient</legend>
-                        <div class="row spacing">
-                            <div class="col col-1-2">
-                                <div class="heading padded">
-                                    <h2>Accompaniment</h2>
-                                </div>
-                                <div class="shaded padded">
-                                    <div class="row">
-                                        <div class="form-control">
-                                            <label for="patient-accompaniment">Who is accompanying the patient?</label>
-                                            <p class="help-text">ROMACs preference is the mother.</p>
-                                            <select id="patient-accompaniment" name="accompaniment">
-                                                <option value="other">Other</option>
-                                            </select>
-                                        </div>
-                                    </div>
+
+                        <div class="heading padded">
+                            <h2>Accompaniment</h2>
+                            <p>If accepted, please nominate guardian would will accompany the patient when travelling.</p>
+                            <p>ROMACs preference is the mother.</p>
+                        </div>
+                        <div class="row-set shaded">
+                            <div class="row">
+                                <div class="form-control">
+                                    <label for="patient-accompaniment">Who is accompanying the patient?</label>
+                                    <select id="patient-accompaniment" name="accompaniment">
+                                        <option value="other">Other</option>
+                                    </select>
                                 </div>
                             </div>
-                            <div id="patient-accompaniment-optional-group" class="col col-1-2">
-                                <div class="heading padded">
-                                    <h2>Accompaniment Details</h2>
-                                </div>
-                                <div class="shaded padded">
-                                    <div class="row">
-                                        <div class="form-control">
-                                            <label for="other-relationship">Relationship to patient</label>
-                                            <select id="other-relationship" name="other[relationship]">
-                                                <option>Brother</option>
-                                                <option>Sister</option>
-                                                <option>Auntie</option>
-                                                <option>Uncle</option>
-                                                <option>Friend</option>
-                                            </select>
-                                        </div>
+                            <div id="patient-accompaniment-optional-group">
+                                <div class="row">
+                                    <div class="form-control">
+                                        <label for="other-relationship">Relationship to patient</label>
+                                        <select id="other-relationship" name="other[relationship]">
+                                            <option>Brother</option>
+                                            <option>Sister</option>
+                                            <option>Auntie</option>
+                                            <option>Uncle</option>
+                                            <option>Friend</option>
+                                        </select>
                                     </div>
-                                    <?php echo form_person( 'other', 'accompaniment' ); ?>
                                 </div>
+                                <?php echo form_person( 'other', 'accompaniment' ); ?>
                             </div>
                         </div>
                     </fieldset>
@@ -535,334 +535,313 @@ get_header(); ?>
                         <div class="heading padded">
                             <h2>Referrer</h2>
                         </div>
-                        <div class="row spacing shaded padded">
-                            <div class="col col-1-2">
-                                <div class="row">
-                                    <?php echo form_control( 'referrer-name', 'referrer[name]', 'Name of Person/Club/Organisation', 'text' ); ?>
-                                </div>
-                                <div class="row">
-                                    <?php echo form_control_address( 'referrer' ); ?>
-                                </div>
+                        <div class="row-set shaded">
+                            <div class="row">
+                                <?php echo form_control( 'referrer-name', 'referrer[name]', 'Name of Person/Club/Organisation', 'text' ); ?>
                             </div>
-                            <div class="col col-1-2">
-                                <div class="row">
-                                    <?php echo form_control( 'referrer-homePhone', 'referrer[homePhone]', 'Office/Home Phone', 'tel' ); ?>
-                                </div>
-                                <div class="row">
-                                    <?php echo form_control( 'referrer-mobilePhone', 'referrer[mobilePhone]', 'Mobile Phone', 'tel' ); ?>
-                                </div>
-                                <div class="row">
-                                    <?php echo form_control( 'referrer-email', 'referrer[email]', 'E-Mail Address', 'email' ); ?>
-                                </div>
+                            <div class="row">
+                                <?php echo form_control_address( 'referrer' ); ?>
+                            </div>
+                            <div class="row">
+                                <?php echo form_control( 'referrer-homePhone', 'referrer[homePhone]', 'Office/Home Phone', 'tel' ); ?>
+                                <?php echo form_control( 'referrer-mobilePhone', 'referrer[mobilePhone]', 'Mobile Phone', 'tel' ); ?>
+                            </div>
+                            <div class="row">
+                                <?php echo form_control( 'referrer-email', 'referrer[email]', 'E-Mail Address', 'email' ); ?>
                             </div>
                         </div>
                     </fieldset>
 
                     <fieldset>
                         <legend>Step 5: Confirmation Submission</legend>
-                        <div class="row spacing">
-                            <div class="col col-1-2">
-                                <div class="heading padded">
-                                    <h2>Patient Details</h2>
+                        <div class="heading padded">
+                            <h2>Patient Details</h2>
+                        </div>
+                        <div class="row spacing shaded padded">
+                            <div class="col confirm-labels">
+                                <div>
+                                    <label>First Name:</label>
+                                    <span id="patient-firstName-c"></span>
                                 </div>
-                                <div class="row spacing shaded padded">
-                                    <div class="col confirm-labels">
-                                        <div>
-                                            <label>First Name:</label>
-                                            <span id="patient-firstName-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Last Name:</label>
-                                            <span id="patient-lastName-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Date of Birth:</label>
-                                            <span id="patient-dateOfBirth-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Sex:</label>
-                                            <span id="patient-gender-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Height (cm):</label>
-                                            <span id="patient-height-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Weight (kg):</label>
-                                            <span id="patient-weight-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Address:</label>
-                                            <span id="patient-address-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Country of Origin:</label>
-                                            <span id="patient-countryOfOrigin-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Nationality:</label>
-                                            <span id="patient-nationality-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Religion:</label>
-                                            <span id="patient-religion-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Languages Spoken:</label>
-                                            <span id="patient-languagesSpoken-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Understands English:</label>
-                                            <span id="patient-understandsEnglish-c"></span>
-                                        </div>
-                                    </div>
+                                <div>
+                                    <label>Last Name:</label>
+                                    <span id="patient-lastName-c"></span>
                                 </div>
-                            </div>
-                            <div class="col col-1-2">
-                                <div class="heading padded">
-                                    <h2>Source of Referral</h2>
+                                <div>
+                                    <label>Date of Birth:</label>
+                                    <span id="patient-dateOfBirth-c"></span>
                                 </div>
-                                <div class="row spacing shaded padded">
-                                    <div class="col confirm-labels">
-                                        <div>
-                                            <label>Name:</label>
-                                            <span id="referrer-name-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Address:</label>
-                                            <span id="referrer-address-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Home Phone:</label>
-                                            <span id="referrer-homePhone-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Mobile Phone:</label>
-                                            <span id="referrer-mobilePhone-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Email:</label>
-                                            <span id="referrer-email-c"></span>
-                                        </div>
-                                    </div>
+                                <div>
+                                    <label>Sex:</label>
+                                    <span id="patient-gender-c"></span>
                                 </div>
-                                <div class="heading padded">
-                                    <h2>Supporting Files</h2>
+                                <div>
+                                    <label>Height (cm):</label>
+                                    <span id="patient-height-c"></span>
                                 </div>
-                                <div class="row spacing shaded padded">
-                                    <div class="col confirm-labels">
-                                        <div>
-                                            <label>Photos:</label>
-                                            <span id="patient-photos-c" class="text-right"></span>
-                                        </div>
-                                        <div>
-                                            <label>Documents:</label>
-                                            <span id="patient-documents-c" class="text-right"></span>
-                                        </div>
-                                    </div>
+                                <div>
+                                    <label>Weight (kg):</label>
+                                    <span id="patient-weight-c"></span>
+                                </div>
+                                <div>
+                                    <label>Address:</label>
+                                    <span id="patient-address-c"></span>
+                                </div>
+                                <div>
+                                    <label>Country of Origin:</label>
+                                    <span id="patient-countryOfOrigin-c"></span>
+                                </div>
+                                <div>
+                                    <label>Nationality:</label>
+                                    <span id="patient-nationality-c"></span>
+                                </div>
+                                <div>
+                                    <label>Religion:</label>
+                                    <span id="patient-religion-c"></span>
+                                </div>
+                                <div>
+                                    <label>Languages Spoken:</label>
+                                    <span id="patient-languagesSpoken-c"></span>
+                                </div>
+                                <div>
+                                    <label>Understands English:</label>
+                                    <span id="patient-understandsEnglish-c"></span>
                                 </div>
                             </div>
                         </div>
-                        <div class="row spacing">
-                            <div class="col col-1-2">
-                                <div class="heading padded">
-                                    <h2>Mothers Details</h2>
+                        <div class="heading padded">
+                            <h2>Supporting Files</h2>
+                        </div>
+                        <div class="row spacing shaded padded">
+                            <div class="col confirm-labels">
+                                <div>
+                                    <label>Photos:</label>
+                                    <span id="patient-photos-c" class="text-right"></span>
                                 </div>
-                                <div class="row spacing shaded padded">
-                                    <div id="patient-mother-group-none-c" class="col confirm-labels">
-                                        <div>
-                                            The patient has no mother.
-                                        </div>
-                                    </div>
-                                    <div id="patient-mother-group-c" class="col confirm-labels">
-                                        <div>
-                                            <label>Has Mother:</label>
-                                            <span id="patient-hasMother-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>First Name:</label>
-                                            <span id="mother-firstName-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Last Name:</label>
-                                            <span id="mother-lastName-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Date of Birth:</label>
-                                            <span id="mother-dateOfBirth-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Address:</label>
-                                            <span id="mother-address-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Email:</label>
-                                            <span id="mother-email-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Home Phone:</label>
-                                            <span id="mother-homePhone-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Mobile Phone:</label>
-                                            <span id="mother-mobilePhone-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Religion:</label>
-                                            <span id="mother-religion-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Occupation Industry:</label>
-                                            <span id="mother-occupation-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Language/s Spoken:</label>
-                                            <span id="mother-languagesSpoken-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Understands English:</label>
-                                            <span id="mother-understandsEnglish-c"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col col-1-2">
-                                <div class="heading padded">
-                                    <h2>Fathers Details</h2>
-                                </div>
-                                <div class="row spacing shaded padded">
-                                    <div id="patient-father-group-none-c" class="col confirm-labels">
-                                        <div>
-                                            The patient has no father.
-                                        </div>
-                                    </div>
-                                    <div id="patient-father-group-c" class="col confirm-labels">
-                                        <div>
-                                            <label>Has Father:</label>
-                                            <span id="patient-hasFather-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>First Name:</label>
-                                            <span id="father-firstName-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Last Name:</label>
-                                            <span id="father-lastName-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Date of Birth:</label>
-                                            <span id="father-dateOfBirth-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Address:</label>
-                                            <span id="father-address-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Email:</label>
-                                            <span id="father-email-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Home Phone:</label>
-                                            <span id="father-homePhone-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Mobile Phone:</label>
-                                            <span id="father-mobilePhone-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Religion:</label>
-                                            <span id="father-religion-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Occupation Industry:</label>
-                                            <span id="father-occupation-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Language/s Spoken:</label>
-                                            <span id="father-languagesSpoken-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Understands English:</label>
-                                            <span id="father-understandsEnglish-c"></span>
-                                        </div>
-                                    </div>
+                                <div>
+                                    <label>Documents:</label>
+                                    <span id="patient-documents-c" class="text-right"></span>
                                 </div>
                             </div>
                         </div>
-                        <div class="row spacing">
-                            <div class="col col-1-2">
-                                <div class="heading padded">
-                                    <h2>Accompaniment</h2>
+                        <div class="heading padded">
+                            <h2>Source of Referral</h2>
+                        </div>
+                        <div class="row spacing shaded padded">
+                            <div class="col confirm-labels">
+                                <div>
+                                    <label>Name:</label>
+                                    <span id="referrer-name-c"></span>
                                 </div>
-                                <div class="row spacing shaded padded">
-                                    <div class="col confirm-labels">
-                                        <div>
-                                            <label>Who is accompanying the patient?</label>
-                                            <span id="patient-accompaniment-c"></span>
-                                        </div>
-                                    </div>
+                                <div>
+                                    <label>Address:</label>
+                                    <span id="referrer-address-c"></span>
+                                </div>
+                                <div>
+                                    <label>Home Phone:</label>
+                                    <span id="referrer-homePhone-c"></span>
+                                </div>
+                                <div>
+                                    <label>Mobile Phone:</label>
+                                    <span id="referrer-mobilePhone-c"></span>
+                                </div>
+                                <div>
+                                    <label>Email:</label>
+                                    <span id="referrer-email-c"></span>
                                 </div>
                             </div>
-                            <div class="col col-1-2">
-                                <div class="heading padded">
-                                    <h2>Accompaniment Details</h2>
+                        </div>
+                        <div class="heading padded">
+                            <h2>Mothers Details</h2>
+                        </div>
+                        <div class="row spacing shaded padded">
+                            <div id="patient-mother-group-none-c" class="col confirm-labels">
+                                <div>
+                                    The patient has no mother.
                                 </div>
-                                <div class="row spacing shaded padded">
-                                    <div id="patient-accompaniment-group-none-c" class="col confirm-labels">
-                                        <div>
-                                            As above.
-                                        </div>
-                                    </div>
-                                    <div id="patient-accompaniment-group-c" class="col confirm-labels">
-                                        <div>
-                                            <label>Relationship:</label>
-                                            <span id="accompaniment-connection-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>First Name:</label>
-                                            <span id="accompaniment-firstName-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Last Name:</label>
-                                            <span id="accompaniment-lastName-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Date of Birth:</label>
-                                            <span id="accompaniment-dateOfBirth-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Address:</label>
-                                            <span id="accompaniment-address-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Email:</label>
-                                            <span id="accompaniment-emailAddress-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Home Phone:</label>
-                                            <span id="accompaniment-homePhone-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Mobile Phone:</label>
-                                            <span id="accompaniment-mobilePhone-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Religion:</label>
-                                            <span id="accompaniment-religion-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Occupation Industry:</label>
-                                            <span id="accompaniment-occupation-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Language/s Spoken:</label>
-                                            <span id="accompaniment-languagesSpoken-c"></span>
-                                        </div>
-                                        <div>
-                                            <label>Understands English:</label>
-                                            <span id="accompaniment-understandsEnglish-c"></span>
-                                        </div>
-                                    </div>
+                            </div>
+                            <div id="patient-mother-group-c" class="col confirm-labels">
+                                <div>
+                                    <label>Has Mother:</label>
+                                    <span id="patient-hasMother-c"></span>
+                                </div>
+                                <div>
+                                    <label>First Name:</label>
+                                    <span id="mother-firstName-c"></span>
+                                </div>
+                                <div>
+                                    <label>Last Name:</label>
+                                    <span id="mother-lastName-c"></span>
+                                </div>
+                                <div>
+                                    <label>Date of Birth:</label>
+                                    <span id="mother-dateOfBirth-c"></span>
+                                </div>
+                                <div>
+                                    <label>Address:</label>
+                                    <span id="mother-address-c"></span>
+                                </div>
+                                <div>
+                                    <label>Email:</label>
+                                    <span id="mother-email-c"></span>
+                                </div>
+                                <div>
+                                    <label>Home Phone:</label>
+                                    <span id="mother-homePhone-c"></span>
+                                </div>
+                                <div>
+                                    <label>Mobile Phone:</label>
+                                    <span id="mother-mobilePhone-c"></span>
+                                </div>
+                                <div>
+                                    <label>Religion:</label>
+                                    <span id="mother-religion-c"></span>
+                                </div>
+                                <div>
+                                    <label>Occupation Industry:</label>
+                                    <span id="mother-occupation-c"></span>
+                                </div>
+                                <div>
+                                    <label>Language/s Spoken:</label>
+                                    <span id="mother-languagesSpoken-c"></span>
+                                </div>
+                                <div>
+                                    <label>Understands English:</label>
+                                    <span id="mother-understandsEnglish-c"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="heading padded">
+                            <h2>Fathers Details</h2>
+                        </div>
+                        <div class="row spacing shaded padded">
+                            <div id="patient-father-group-none-c" class="col confirm-labels">
+                                <div>
+                                    The patient has no father.
+                                </div>
+                            </div>
+                            <div id="patient-father-group-c" class="col confirm-labels">
+                                <div>
+                                    <label>Has Father:</label>
+                                    <span id="patient-hasFather-c"></span>
+                                </div>
+                                <div>
+                                    <label>First Name:</label>
+                                    <span id="father-firstName-c"></span>
+                                </div>
+                                <div>
+                                    <label>Last Name:</label>
+                                    <span id="father-lastName-c"></span>
+                                </div>
+                                <div>
+                                    <label>Date of Birth:</label>
+                                    <span id="father-dateOfBirth-c"></span>
+                                </div>
+                                <div>
+                                    <label>Address:</label>
+                                    <span id="father-address-c"></span>
+                                </div>
+                                <div>
+                                    <label>Email:</label>
+                                    <span id="father-email-c"></span>
+                                </div>
+                                <div>
+                                    <label>Home Phone:</label>
+                                    <span id="father-homePhone-c"></span>
+                                </div>
+                                <div>
+                                    <label>Mobile Phone:</label>
+                                    <span id="father-mobilePhone-c"></span>
+                                </div>
+                                <div>
+                                    <label>Religion:</label>
+                                    <span id="father-religion-c"></span>
+                                </div>
+                                <div>
+                                    <label>Occupation Industry:</label>
+                                    <span id="father-occupation-c"></span>
+                                </div>
+                                <div>
+                                    <label>Language/s Spoken:</label>
+                                    <span id="father-languagesSpoken-c"></span>
+                                </div>
+                                <div>
+                                    <label>Understands English:</label>
+                                    <span id="father-understandsEnglish-c"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="heading padded">
+                            <h2>Accompaniment</h2>
+                        </div>
+                        <div class="row spacing shaded padded">
+                            <div class="col confirm-labels">
+                                <div>
+                                    <label>Who is accompanying the patient?</label>
+                                    <span id="patient-accompaniment-c"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="heading padded">
+                            <h2>Accompaniment Details</h2>
+                        </div>
+                        <div class="row spacing shaded padded">
+                            <div id="patient-accompaniment-group-none-c" class="col confirm-labels">
+                                <div>
+                                    As above.
+                                </div>
+                            </div>
+                            <div id="patient-accompaniment-group-c" class="col confirm-labels">
+                                <div>
+                                    <label>Relationship:</label>
+                                    <span id="accompaniment-connection-c"></span>
+                                </div>
+                                <div>
+                                    <label>First Name:</label>
+                                    <span id="accompaniment-firstName-c"></span>
+                                </div>
+                                <div>
+                                    <label>Last Name:</label>
+                                    <span id="accompaniment-lastName-c"></span>
+                                </div>
+                                <div>
+                                    <label>Date of Birth:</label>
+                                    <span id="accompaniment-dateOfBirth-c"></span>
+                                </div>
+                                <div>
+                                    <label>Address:</label>
+                                    <span id="accompaniment-address-c"></span>
+                                </div>
+                                <div>
+                                    <label>Email:</label>
+                                    <span id="accompaniment-emailAddress-c"></span>
+                                </div>
+                                <div>
+                                    <label>Home Phone:</label>
+                                    <span id="accompaniment-homePhone-c"></span>
+                                </div>
+                                <div>
+                                    <label>Mobile Phone:</label>
+                                    <span id="accompaniment-mobilePhone-c"></span>
+                                </div>
+                                <div>
+                                    <label>Religion:</label>
+                                    <span id="accompaniment-religion-c"></span>
+                                </div>
+                                <div>
+                                    <label>Occupation Industry:</label>
+                                    <span id="accompaniment-occupation-c"></span>
+                                </div>
+                                <div>
+                                    <label>Language/s Spoken:</label>
+                                    <span id="accompaniment-languagesSpoken-c"></span>
+                                </div>
+                                <div>
+                                    <label>Understands English:</label>
+                                    <span id="accompaniment-understandsEnglish-c"></span>
                                 </div>
                             </div>
                         </div>
@@ -870,9 +849,9 @@ get_header(); ?>
 
                     <div id="form-controls" class="referral-controls">
                         <button type="button" id="referral-begin">Begin</button>
-                        <button type="button" id="referral-previous">Back</button>
+                        <button type="button" id="referral-previous"><i class="fa fa-angle-left"></i> Back</button>
                         <button type="button" id="referral-submit">Submit</button>
-                        <button type="button" id="referral-next">Next</button>
+                        <button type="button" id="referral-next">Next <i class="fa fa-angle-right"></i></button>
                         <div class="reset">
                             <a href="#" id="referral-reset">Reset</a>
                         </div>

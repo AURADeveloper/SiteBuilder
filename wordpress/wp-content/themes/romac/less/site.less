@@ -2,8 +2,21 @@
 @import "mixins.less";
 
 .container {
-  max-width: @site-max-width;
   margin: 0 auto;
+
+
+//  @media @mobiles {
+//    max-width: 720px;
+//  }
+  @media @tablets {
+    max-width: 760px;
+  }
+  @media @laptops {
+    max-width: 960px;
+  }
+  @media @desktops {
+    max-width: @site-max-width;
+  }
 }
 
 .site-header, .site-content, .site-title {
