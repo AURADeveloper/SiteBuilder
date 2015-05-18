@@ -22,6 +22,28 @@
     });
 
     /**
+     * Handy method for replacing the current hash.
+     * --------------------------------------------
+     *
+     * Source: http://stackoverflow.com/questions/9235304/how-to-replace-the-location-hash-and-only-keep-the-last-history-entry
+     */
+    // Should be executed BEFORE any hash change has occurred.
+    (function(namespace) { // Closure to protect local variable "var hash"
+        if ('replaceState' in history) { // Yay, supported!
+            namespace.replaceHash = function(newhash) {
+                if ((''+newhash).charAt(0) !== '#') newhash = '#' + newhash;
+                history.replaceState('', '', newhash);
+            }
+        } else {
+            var hash = location.hash;
+            namespace.replaceHash = function(newhash) {
+                if (location.hash !== hash) history.back();
+                location.hash = newhash;
+            };
+        }
+    })(window);
+
+    /**
      * Referral Form Controller Logic.
      * -------------------------------
      *
@@ -36,6 +58,7 @@
                 preambleElement: '#referral-preamble',
                 confirmationElement: '#confirmation',
                 workingElement: '#working',
+                errorElement: '#error',
 
                 progressList: '#referral-progress ul',
                 progressListItems: '#referral-progress ul li',
@@ -44,12 +67,16 @@
                 nextButton: '#referral-next',
                 previousButton: '#referral-previous',
                 submitButton: '#referral-submit',
+                newReferralButton: '#new-referral',
                 resetLink: '#referral-reset',
 
                 patientDobKnown: '#patientDobKnown',
                 patientDobUnknown: '#patientDobUnknown',
                 addPhotoButton: '#add-photo',
                 addDocumentButton: '#add-document',
+
+                patientMotherElement: '#patient-mother-optional-group',
+                patientFatherElement: '#patient-father-optional-group',
 
                 conditionsAcceptedInput: '#started'
             },
@@ -97,18 +124,18 @@
                 },
                 accompaniment: {
                     patientAccompaniment: '#patient-accompaniment',
-                    accompanimentConnection: '#accompaniment-connection',
-                    accompanimentFirstName: '#accompaniment-firstName',
-                    accompanimentLastName: '#accompaniment-lastName',
-                    accompanimentDob: '#accompaniment-dateOfBirth',
-                    accompanimentAddress: '#accompaniment-address',
-                    accompanimentEmail: '#accompaniment-email',
-                    accompanimentHomePhone: '#accompaniment-homePhone',
-                    accompanimentMobilePhone: '#accompaniment-mobilePhone',
-                    accompanimentReligion: '#accompaniment-religion',
-                    accompanimentOccupation: '#accompaniment-occupation',
-                    accompanimentLanguagesSpoke: '#accompaniment-languagesSpoken',
-                    accompanimentUnderstandsEnglish: '#accompaniment-understandsEnglish'
+                    accompanimentConnection: '#other-relationship',
+                    accompanimentFirstName: '#other-firstName',
+                    accompanimentLastName: '#other-lastName',
+                    accompanimentDob: '#other-dateOfBirth',
+                    accompanimentAddress: '#other-address',
+                    accompanimentEmail: '#other-email',
+                    accompanimentHomePhone: '#other-homePhone',
+                    accompanimentMobilePhone: '#other-mobilePhone',
+                    accompanimentReligion: '#other-religion',
+                    accompanimentOccupation: '#other-occupation',
+                    accompanimentLanguagesSpoke: '#other-languagesSpoken',
+                    accompanimentUnderstandsEnglish: '#other-understandsEnglish'
                 },
                 byIndex: function(index) {
                     switch (index) {
@@ -175,6 +202,9 @@
             postUrl: '/patients/refer-a-patient'
         };
 
+        var isSubmitting = false;
+        var isSubmitted = false;
+        var submitResult = false;
         var activeFieldsetIndex = 0;
         var sisyphusCache = null;
 
@@ -183,53 +213,95 @@
             sisyphusCache = $( config.elements.referralForm ).sisyphus( config.sisyphus );
 
             // init routine
-            initSelect2Lists();
+            //initSelect2Lists();
             attachClickHandlers();
             attachChangeHandlers();
             buildProgressList();
-            ping();
+
+            // do something with hash if there is one - also initiates initial form state via ping
+            $( window ).trigger( 'hashchange' );
         }
 
         function attachClickHandlers() {
-            // the begin referral button - accepts the terms and conditions
+            //
+            // the BEGIN referral button
+            // - accepts the terms and conditions
+            //
             $( config.elements.beginButton ).click( function() {
                 $( config.elements.conditionsAcceptedInput ).val( 'true' );
-                ping();
+                window.location.hash = 1;
+
+                // reposition user at the top of the page
+                $( '#referral-progress' ).animate( { scrollTop: 0 }, "slow" );
             } );
 
-            // the next button - progresses to the next fieldset if the current is valid
+            //
+            // the NEXT button
+            // - progresses to the next fieldset if the current is valid
+            //
             $( config.elements.nextButton ).click( function() {
                 //if ( validateCurrentFieldset() ) {
                     if ( !isLastFieldset() ) {
                         activeFieldsetIndex++;
-                        ping();
+                        window.location.hash = activeFieldsetIndex + 1;
+
+                        // reposition user at the top of the page
+                        $( '#referral-progress' ).animate( { scrollTop: 0 }, "slow" );
                     }
                 //}
             } );
 
-            // the previous button - moves back one fieldset
+            //
+            // the PREVIOUS button
+            // - moves back one fieldset
+            //
             $( config.elements.previousButton ).click( function() {
                 if ( !isFirstFieldset() ) {
                     activeFieldsetIndex--;
+                    window.replaceHash( activeFieldsetIndex + 1 );
                     ping();
                 }
             } );
 
-            // the submit button
+            //
+            // the SUBMIT button
+            // - posts form data to the server
+            //
             $( config.elements.submitButton ).click( function() {
                 $( config.elements.referralForm ).hide();
                 $( config.elements.progressList ).hide();
+                $( config.elements.errorElement ).hide();
                 $( config.elements.workingElement ).show();
 
                 var json = $( config.elements.referralForm ).serializeJSON();
-                $.post( config.postUrl, json, submitSuccess );
+                $.ajax( config.postUrl, {
+                    data: json,
+                    error: submitFailure,
+                    success: submitSuccess,
+                    method: 'POST'
+                } );
             } );
 
-            // the reset form link
+            //
+            // the REST form link
+            // - clears local storage and reloads the form
+            //
             $( config.elements.resetLink ).click( function() {
-                sisyphusCache.manuallyReleaseData();
-                sisyphusCache = $( config.elements.referralForm ).sisyphus( config.sisyphus );
-                ping();
+                var r = confirm( "Are you sure you want to reset the form? All existing data will be lost." );
+                if (r == true) {
+                    sisyphusCache.manuallyReleaseData();
+                    $( window ).unbind( 'hashchange' ); // do not want to fire ping again or we will persist form again
+                    location.reload(); // reload page to clear all fields
+                }
+            } );
+
+            //
+            // the NEW REFERRAL button
+            // - shown only when a referral has been successfull submitted
+            //
+            $( config.elements.newReferralButton ).click( function() {
+                $( window ).unbind( 'hashchange' ); // do not want to fire ping again or we will persist form again
+                location.reload(); // reload page to clear all fields
             } );
 
             // add another photo button
@@ -258,16 +330,41 @@
         }
 
         function attachChangeHandlers() {
-            // hide/show dob fields depending if dob is known or not
+            //
+            // Window LOCATION Hashbang
+            // - handles changes to the url, delegated to switching application state
+            //
+            $( window ).on( 'hashchange', function() {
+                var hash = window.location.hash.substr(1);
+                hash = parseInt( hash, 10 );
+
+                if (isNaN( hash )) {
+                    if (areConditionsAccepted()) {
+                        activeFieldsetIndex = 0;
+                        replaceHash( activeFieldsetIndex + 1);
+                    }
+                } else {
+                    activeFieldsetIndex = hash - 1;
+                }
+
+                // TODO check fieldset range, hash must sit somewhere inbetween
+                ping();
+            } );
+
+            //
+            // is PATIENT DATE OF BIRTH known?
+            // - hide/show dob fields depending if dob is known or not
+            //
             $( config.fieldsets.patient.isDobKnown ).change( function(eventData, handler) {
-                if (eventData.target.value == 'true') {
-                    $( config.elements.patientDobKnown ).show();
-                    $( config.elements.patientDobUnknown ).hide();
+                if ($( config.fieldsets.patient.isDobKnown + ':checked' ).val() === 'true') {
+                    $( config.elements.patientDobKnown ).show( 'slow' );
+                    $( config.elements.patientDobUnknown ).hide( 'slow' );
                     return;
                 }
-                if (eventData.target.value == 'false') {
-                    $( config.elements.patientDobKnown ).hide();
-                    $( config.elements.patientDobUnknown ).show();
+
+                if ($( config.fieldsets.patient.isDobKnown + ':checked' ).val() === 'false') {
+                    $( config.elements.patientDobKnown ).hide( 'slow' );
+                    $( config.elements.patientDobUnknown ).show( 'slow' );
                     return;
                 }
                 
@@ -276,37 +373,52 @@
                 $( config.elements.patientDobUnknown ).hide();
             } );
 
+            //
+            // Does the PATIENT have a MOTHER?
+            // - hide fieldset accordingly
+            //
+            $( config.fieldsets.guardians.hasMother ).change( function(eventData, handler) {
+                if ($( config.fieldsets.guardians.hasMother + ':checked' ).val() === 'true') {
+                    $( config.elements.patientMotherElement ).show( 'slow' );
+                    return;
+                }
+
+                if ($( config.fieldsets.guardians.hasMother + ':checked' ).val() === 'false') {
+                    $( config.elements.patientMotherElement ).hide( 'slow' );
+                    return;
+                }
+
+                // default state - no option selected, hide all
+                $( config.elements.patientMotherElement ).hide();
+            });
+
+            //
+            // Does the PATIENT have a FATHER?
+            // - hide fieldset accordingly
+            //
+            $( config.fieldsets.guardians.hasFather ).change( function(eventData, handler) {
+                if ($( config.fieldsets.guardians.hasFather + ':checked' ).val() === 'true') {
+                    $( config.elements.patientFatherElement ).show( 'slow' );
+                    return;
+                }
+
+                if ($( config.fieldsets.guardians.hasFather + ':checked' ).val() === 'false') {
+                    $( config.elements.patientFatherElement ).hide( 'slow' );
+                    return;
+                }
+
+                // default state - no option selected, hide all
+                $( config.elements.patientFatherElement ).hide();
+            });
+
             $( '#patient-accompaniment' ).change( function() {
                 var val = $( '#patient-accompaniment' ).val();
                 if (val == "other") {
-                    $('#patient-accompaniment-optional-group').show();
+                    $('#patient-accompaniment-optional-group').show( 'slow' );
                 } else {
-                    $('#patient-accompaniment-optional-group').hide();
+                    $('#patient-accompaniment-optional-group').hide( 'slow' );
                 }
             } );
-
-            // helper function to show/hide a element
-            function showOptionalGroup(input, groupId) {
-                if ($(input).val() == 'true') {
-                    $(groupId).show('slow');
-                } else {
-                    $(groupId).hide('slow');
-                }
-            }
-
-            // attach handlers to the if has mother/father inputs
-            $( "#patient-hasMother-yes" ).change(function() {
-                showOptionalGroup( this, '#patient-mother-optional-group' );
-            });
-            $( "#patient-hasMother-no" ).change(function() {
-                showOptionalGroup( this, '#patient-mother-optional-group' );
-            });
-            $( "#patient-hasFather-yes" ).change(function() {
-                showOptionalGroup( this, '#patient-father-optional-group' );
-            });
-            $( "#patient-hasFather-no" ).change(function() {
-                showOptionalGroup( this, '#patient-father-optional-group' );
-            });
         }
 
         function initSelect2Lists() {
@@ -314,7 +426,7 @@
             $( "#patient-languagesSpoken" ).select2( select2LanguageOptions );
             $( "#mother-languagesSpoken" ).select2( select2LanguageOptions );
             $( "#father-languagesSpoken" ).select2( select2LanguageOptions );
-            $( "#accompaniment-languagesSpoken" ).select2( select2LanguageOptions );
+            $( "#other-languagesSpoken" ).select2( select2LanguageOptions );
             // country
             $( "#patient-countryOfOrigin" ).select2();
             $( "#mother-countryOfOrigin" ).select2();
@@ -322,12 +434,21 @@
             $( "#accompaniment-countryOfOrigin" ).select2();
             // nationality
             $( "#patient-nationality" ).select2();
+            // religion
+            $( config.fieldsets.patient.religion ).select2();
+            $( config.fieldsets.guardians.motherReligion ).select2();
+            $( config.fieldsets.guardians.fatherReligion ).select2();
+            $( config.fieldsets.accompaniment.accompanimentReligion ).select2();
+            // occupation
+            $( config.fieldsets.guardians.motherOccupation ).select2();
+            $( config.fieldsets.guardians.fatherOccupation ).select2();
+            $( config.fieldsets.accompaniment.accompanimentOccupation ).select2();
         }
 
         function buildProgressList() {
             var i = 1;
             $( 'fieldset' ).each(function() {
-                $( config.elements.progressList ).append('<li>' + i++ + '</li>');
+                $( config.elements.progressList ).append('<li><a href="#' + i + '">' + i++ + '</a></li>');
             });
         }
 
@@ -335,6 +456,7 @@
             // always hide these, only shown when form submitted
             $( config.elements.workingElement ).hide();
             $( config.elements.confirmationElement ).hide();
+            $( config.elements.errorElement ).hide();
 
             // if conditions are not accepted, set initial state - show conditions
             if (!areConditionsAccepted()) {
@@ -344,6 +466,7 @@
                 $( config.elements.submitButton ).hide();
                 $( config.elements.nextButton ).hide();
                 $( config.elements.previousButton ).hide();
+                $( config.elements.resetLink ).hide();
                 return;
             }
 
@@ -351,6 +474,7 @@
             $( config.elements.preambleElement ).hide();
 
             // reset control button states
+            $( config.elements.resetLink ).show();
             $( config.elements.beginButton ).hide();
             $( config.elements.submitButton ).show();
             $( config.elements.submitButton ).attr('disabled', '');
@@ -372,7 +496,13 @@
             });
             progressListItems.eq( activeFieldsetIndex ).addClass('active');
 
-            $( config.fieldsets.patient.isDobKnown + ":checked" ).trigger( 'change' );
+            //
+            // trigger all attached change handlers to set correct state
+            //
+            $( config.fieldsets.patient.isDobKnown ).first().trigger( 'change' );
+            $( config.fieldsets.guardians.hasMother ).first().trigger( 'change' );
+            $( config.fieldsets.guardians.hasFather ).first().trigger( 'change' );
+            $( '#patient-accompaniment' ).trigger( 'change' );
 
             if (isLastFieldset()) {
                 populateConfirmationFields();
@@ -556,7 +686,7 @@
             selectList.trigger( 'change' );
         }
 
-        function submitSuccess(data) {
+        function submitSuccess(data, textStatus, jqXHR) {
             $( config.elements.workingElement ).hide();
             $( 'fieldset' ).hide();
             $( config.elements.progressList ).hide();
@@ -566,6 +696,16 @@
 
             $( '#romacId' ).text( data );
             $( config.elements.confirmationElement ).show();
+
+            sisyphusCache.manuallyReleaseData();
+        }
+
+        function submitFailure(jqXHR, textStatus, errorThrown) {
+            $( config.elements.workingElement ).hide();
+
+            $( config.elements.errorElement ).show();
+            $( config.elements.referralForm ).show();
+            $( config.elements.progressList ).show();
         }
 
         function areConditionsAccepted() {

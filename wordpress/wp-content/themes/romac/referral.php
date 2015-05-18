@@ -1,6 +1,5 @@
 <?php
 // Template Name: Referral Form
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // determine the url, convient conditional here for local testing
     if (isset($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'],'Google App Engine') !== false) {
@@ -21,7 +20,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ),
     );
     $context = stream_context_create( $options );
+
+    ob_start(); // prevent file_get_contents modifying header
     $result = file_get_contents( $url, false, $context );
+    ob_end_clean();
 
     //
     // now we want to basically relay to response back to the client
@@ -43,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     preg_match( '#HTTP/\d+\.\d+ (\d+)#', $http_response_header[0], $code_match );
 
     // prep work done, now the actual response
-    http_response_code( $code_match[1] );
+    header( $code_match[0] );
     echo $result;
     exit;
 }
@@ -251,7 +253,7 @@ function form_control_languages( $id_prefix, $args = array() ) {
     <div class="form-control">
         <?php $id = $id_prefix . '-languagesSpoken'; ?>
         <?php $name = $id_prefix . '[languagesSpoken]'; ?>
-        <label for="<?php echo $id; ?>">Language/s Spoken</label> <p class="help-text">Choose one or more</p>
+        <label for="<?php echo $id; ?>">Language/s Spoken</label> <p class="help-text">Please choose one (or more)</p>
         <select type="text" id="<?php echo $id; ?>" name="<?php echo $name; ?>"<?php echo element_attributes( $args ); ?>>
             <?php foreach($results as $row): ?>
                 <option value="<?php echo $row->id; ?>"><?php echo $row->name; ?></option>
@@ -350,9 +352,34 @@ get_header(); ?>
                 <div id="referral-preamble">
                     <?php the_content(); ?>
                 </div>
+
+                <div id="working" class="referral-message">
+                    <p><img src="/wp-content/themes/romac/images/ajax-loader.gif" alt="Ajax Loading" /></p>
+                    <p>Thank you, your referral is being submitted.</p>
+                    <p>Please leave the Window open, you will be notified once this process is complete.</p>
+                </div>
+
+                <div id="confirmation" class="referral-message">
+                    <p><i class="fa fa-check-square-o fa-5x"></i></p>
+                    <p>
+                        Thank you, your referral has been submitted.<br/>
+                        Your reference number is: <strong id="romacId"></strong>
+                    </p>
+                    <p>You have been emailed a copy of this receipt.</p>
+                    <p>
+                        <button id="new-referral" style="margin-top: 1em;">New Referral</button>
+                    </p>
+                </div>
+
+                <div id="error" class="referral-message">
+                    <p><i class="fa fa-exclamation-triangle fa-5x"></i></p>
+                    <p>There was an error submitting the referral form, please check your Internet connection and try again. If the problem persists, please contact the website administrator.</p>
+                </div>
+
                 <div id="referral-progress">
                     <ul></ul>
                 </div>
+
                 <form id="referral-form" class="flex-form" onsubmit="setFormSubmitting()" data-destroy="false">
                     <!-- Remember if the form has been started so the user does not have to agree to the agreement again. -->
                     <input type="hidden" id="started" name="started">
@@ -379,7 +406,7 @@ get_header(); ?>
                             </div>
                             <div class="row flat">
                                 <div class="row">
-                                    <?echo form_control_yes_no( 'patient-isDobKnown', 'patient[isDobKnown]', 'Is the Patients date of birth known?', null, array( 'required' => null ) ); ?>
+                                    <?echo form_control_yes_no( 'patient-isDobKnown', 'patient[isDobKnown]', 'Is the Patients date of birth known?', 'Yes', array( 'required' => null ) ); ?>
                                 </div>
                                 <div id="patientDobKnown">
                                     <div class="row">
@@ -439,15 +466,15 @@ get_header(); ?>
                             </dl>
                         </div>
                         <div id="patient-photos" class="row-set shaded">
-                            <div class="row flat">
-                                <div class="row inputs">
+                            <div class="row">
+                                <div class="row flat inputs">
                                     <div class="form-control">
                                         <input type='file' name="photos">
                                     </div>
                                 </div>
-                                <div class="row section-buttons">
-                                    <button type="button" id="add-photo">Add Photo</button>
-                                </div>
+                            </div>
+                            <div class="row section-buttons">
+                                <button type="button" id="add-photo">Add Photo</button>
                             </div>
                         </div>
 
@@ -473,8 +500,8 @@ get_header(); ?>
                             <h2>Mothers Details</h2>
                         </div>
                         <div class="row-set shaded">
-                            <div class="row">
-                                <?php echo form_control_yes_no( 'patient-hasMother', 'patient[hasMother]', 'Does the patient have a mother?', 'Yes' ); ?>
+                            <div class="row clear-bg">
+                                <?php echo form_control_yes_no( 'patient-hasMother', 'patient[hasMother]', 'Does the patient have a mother?' ); ?>
                             </div>
                             <div id="patient-mother-optional-group">
                                 <?php echo form_person( 'mother', 'mother' ); ?>
@@ -485,8 +512,8 @@ get_header(); ?>
                             <h2>Fathers Details</h2>
                         </div>
                         <div class="row-set shaded">
-                            <div class="row">
-                                <?php echo form_control_yes_no( 'patient-hasFather', 'patient[hasFather]', 'Does the patient have a father?', 'Yes' ); ?>
+                            <div class="row clear-bg">
+                                <?php echo form_control_yes_no( 'patient-hasFather', 'patient[hasFather]', 'Does the patient have a father?' ); ?>
                             </div>
                             <div id="patient-father-optional-group">
                                 <?php echo form_person( 'father', 'father' ); ?>
@@ -504,7 +531,7 @@ get_header(); ?>
                             <p>ROMACs preference is the mother.</p>
                         </div>
                         <div class="row-set shaded">
-                            <div class="row">
+                            <div class="row clear-bg">
                                 <div class="form-control">
                                     <label for="patient-accompaniment">Who is accompanying the patient?</label>
                                     <select id="patient-accompaniment" name="accompaniment">
@@ -554,10 +581,11 @@ get_header(); ?>
 
                     <fieldset>
                         <legend>Step 5: Confirmation Submission</legend>
+                        <p>Please review the details carefully to ensure the referral can be processed as fast as possible.</p>
                         <div class="heading padded">
                             <h2>Patient Details</h2>
                         </div>
-                        <div class="row spacing shaded padded">
+                        <div class="row-set shaded">
                             <div class="col confirm-labels">
                                 <div>
                                     <label>First Name:</label>
@@ -612,22 +640,22 @@ get_header(); ?>
                         <div class="heading padded">
                             <h2>Supporting Files</h2>
                         </div>
-                        <div class="row spacing shaded padded">
+                        <div class="row-set shaded">
                             <div class="col confirm-labels">
                                 <div>
                                     <label>Photos:</label>
-                                    <span id="patient-photos-c" class="text-right"></span>
+                                    <span id="patient-photos-c"></span>
                                 </div>
                                 <div>
                                     <label>Documents:</label>
-                                    <span id="patient-documents-c" class="text-right"></span>
+                                    <span id="patient-documents-c"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="heading padded">
                             <h2>Source of Referral</h2>
                         </div>
-                        <div class="row spacing shaded padded">
+                        <div class="row-set shaded">
                             <div class="col confirm-labels">
                                 <div>
                                     <label>Name:</label>
@@ -654,7 +682,7 @@ get_header(); ?>
                         <div class="heading padded">
                             <h2>Mothers Details</h2>
                         </div>
-                        <div class="row spacing shaded padded">
+                        <div class="row-set shaded">
                             <div id="patient-mother-group-none-c" class="col confirm-labels">
                                 <div>
                                     The patient has no mother.
@@ -715,7 +743,7 @@ get_header(); ?>
                         <div class="heading padded">
                             <h2>Fathers Details</h2>
                         </div>
-                        <div class="row spacing shaded padded">
+                        <div class="row-set shaded">
                             <div id="patient-father-group-none-c" class="col confirm-labels">
                                 <div>
                                     The patient has no father.
@@ -776,7 +804,7 @@ get_header(); ?>
                         <div class="heading padded">
                             <h2>Accompaniment</h2>
                         </div>
-                        <div class="row spacing shaded padded">
+                        <div class="row-set shaded">
                             <div class="col confirm-labels">
                                 <div>
                                     <label>Who is accompanying the patient?</label>
@@ -788,7 +816,7 @@ get_header(); ?>
                         <div class="heading padded">
                             <h2>Accompaniment Details</h2>
                         </div>
-                        <div class="row spacing shaded padded">
+                        <div class="row-set shaded">
                             <div id="patient-accompaniment-group-none-c" class="col confirm-labels">
                                 <div>
                                     As above.
@@ -797,51 +825,51 @@ get_header(); ?>
                             <div id="patient-accompaniment-group-c" class="col confirm-labels">
                                 <div>
                                     <label>Relationship:</label>
-                                    <span id="accompaniment-connection-c"></span>
+                                    <span id="other-relationship-c"></span>
                                 </div>
                                 <div>
                                     <label>First Name:</label>
-                                    <span id="accompaniment-firstName-c"></span>
+                                    <span id="other-firstName-c"></span>
                                 </div>
                                 <div>
                                     <label>Last Name:</label>
-                                    <span id="accompaniment-lastName-c"></span>
+                                    <span id="other-lastName-c"></span>
                                 </div>
                                 <div>
                                     <label>Date of Birth:</label>
-                                    <span id="accompaniment-dateOfBirth-c"></span>
+                                    <span id="other-dateOfBirth-c"></span>
                                 </div>
                                 <div>
                                     <label>Address:</label>
-                                    <span id="accompaniment-address-c"></span>
+                                    <span id="other-address-c"></span>
                                 </div>
                                 <div>
                                     <label>Email:</label>
-                                    <span id="accompaniment-emailAddress-c"></span>
+                                    <span id="other-email-c"></span>
                                 </div>
                                 <div>
                                     <label>Home Phone:</label>
-                                    <span id="accompaniment-homePhone-c"></span>
+                                    <span id="other-homePhone-c"></span>
                                 </div>
                                 <div>
                                     <label>Mobile Phone:</label>
-                                    <span id="accompaniment-mobilePhone-c"></span>
+                                    <span id="other-mobilePhone-c"></span>
                                 </div>
                                 <div>
                                     <label>Religion:</label>
-                                    <span id="accompaniment-religion-c"></span>
+                                    <span id="other-religion-c"></span>
                                 </div>
                                 <div>
                                     <label>Occupation Industry:</label>
-                                    <span id="accompaniment-occupation-c"></span>
+                                    <span id="other-occupation-c"></span>
                                 </div>
                                 <div>
                                     <label>Language/s Spoken:</label>
-                                    <span id="accompaniment-languagesSpoken-c"></span>
+                                    <span id="other-languagesSpoken-c"></span>
                                 </div>
                                 <div>
                                     <label>Understands English:</label>
-                                    <span id="accompaniment-understandsEnglish-c"></span>
+                                    <span id="other-understandsEnglish-c"></span>
                                 </div>
                             </div>
                         </div>
@@ -853,21 +881,10 @@ get_header(); ?>
                         <button type="button" id="referral-submit">Submit</button>
                         <button type="button" id="referral-next">Next <i class="fa fa-angle-right"></i></button>
                         <div class="reset">
-                            <a href="#" id="referral-reset">Reset</a>
+                            <a href="#" id="referral-reset">Clear All Form Data</a>
                         </div>
                     </div>
                 </form>
-
-                <div id="working" class="text-center">
-                    <p><img src="/wp-content/themes/romac/images/ajax-loader.gif" alt="Ajax Loading" /></p>
-                    <p>Thank you, your referral is being transmitted; this can take some time depending on the volume of attachments.</p>
-                    <p>Please be patient and refrain from closing this tab, you will be notified when this process is complete.</p>
-                </div>
-
-                <div id="confirmation" class="text-center">
-                    Thank you, your referral has been submitted.
-                    <p style="margin-top: 10px;">Your reference number is: <strong id="romacId"></strong></p>
-                </div>
 
 			<?php endwhile; // end of the loop. ?>
 

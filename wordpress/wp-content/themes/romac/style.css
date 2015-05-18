@@ -3304,11 +3304,11 @@ big {
   font-size: 1.125rem;
 }
 h1.title {
-  margin-bottom: 0.5em;
+  margin-bottom: 1em;
   font-size: 32px;
   font-size: 2rem;
   border-bottom: 1px dashed #ccc;
-  padding-bottom: 3px;
+  padding: 0 0.5em 3px;
 }
 h1.title span {
   font-size: 24px;
@@ -3557,7 +3557,6 @@ form .form-control.checkbox {
 form .form-control.radio-group {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 1em;
 }
 form .form-control.radio-group label:not(:last-child) {
   margin-right: .5em;
@@ -3583,7 +3582,7 @@ form.inline .form-control {
     flex-direction: column;
   }
 }
-@media only screen and (min-width: 768px) and (max-width: 992px), only screen and (min-width: 992px), only screen and (min-width: 1200px) {
+@media only screen and (min-width: 768px) and (max-width: 992px), only screen and (min-width: 992px) and (max-width: 1200px), only screen and (min-width: 1200px) {
   form.inline .form-control {
     -webkit-box-align: center;
     -moz-box-align: center;
@@ -3925,7 +3924,7 @@ form.inline .form-control select {
 .main-navigation li.jaffa .sub-menu li:hover {
   background-color: #f29b66;
 }
-@media only screen and (min-width: 768px) and (max-width: 992px), only screen and (min-width: 992px), only screen and (min-width: 1200px) {
+@media only screen and (min-width: 768px) and (max-width: 992px), only screen and (min-width: 992px) and (max-width: 1200px), only screen and (min-width: 1200px) {
   .main-navigation li {
     margin: 0 1px;
   }
@@ -4050,20 +4049,54 @@ form.inline .form-control select {
   }
 }
 .container {
-  max-width: 1100px;
   margin: 0 auto;
+}
+@media only screen and (min-width: 768px) and (max-width: 992px) {
+  .container {
+    max-width: 760px;
+  }
+}
+@media only screen and (min-width: 992px) and (max-width: 1200px) {
+  .container {
+    max-width: 960px;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  .container {
+    max-width: 1100px;
+  }
 }
 .site-header,
 .site-content,
 .site-title {
-  max-width: 1100px;
   margin: 0 auto;
+}
+@media only screen and (min-width: 768px) and (max-width: 992px) {
+  .site-header,
+  .site-content,
+  .site-title {
+    max-width: 760px;
+  }
+}
+@media only screen and (min-width: 992px) and (max-width: 1200px) {
+  .site-header,
+  .site-content,
+  .site-title {
+    max-width: 960px;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  .site-header,
+  .site-content,
+  .site-title {
+    max-width: 1100px;
+  }
 }
 .site-header .site-branding {
   margin: 1em;
   text-align: center;
 }
-@media only screen and (min-width: 768px) and (max-width: 992px), only screen and (min-width: 992px), only screen and (min-width: 1200px) {
+@media only screen and (min-width: 768px) and (max-width: 992px), only screen and (min-width: 992px) and (max-width: 1200px), only screen and (min-width: 1200px) {
   .site-header .site-branding {
     text-align: inherit;
   }
@@ -4094,7 +4127,7 @@ form.inline .form-control select {
 .site-header .main-navigation {
   margin: 1em;
 }
-@media only screen and (min-width: 768px) and (max-width: 992px), only screen and (min-width: 992px), only screen and (min-width: 1200px) {
+@media only screen and (min-width: 768px) and (max-width: 992px), only screen and (min-width: 992px) and (max-width: 1200px), only screen and (min-width: 1200px) {
   .site-header .main-navigation {
     margin: inherit;
   }
@@ -4103,7 +4136,7 @@ form.inline .form-control select {
   padding: 1em;
   display: none;
 }
-@media only screen and (min-width: 768px) and (max-width: 992px), only screen and (min-width: 992px), only screen and (min-width: 1200px) {
+@media only screen and (min-width: 768px) and (max-width: 992px), only screen and (min-width: 992px) and (max-width: 1200px), only screen and (min-width: 1200px) {
   .site-title {
     display: inherit;
   }
@@ -4163,7 +4196,7 @@ h1.page-title span {
   flex: 1;
   margin: 0 1em;
 }
-@media only screen and (min-width: 768px) and (max-width: 992px), only screen and (min-width: 992px), only screen and (min-width: 1200px) {
+@media only screen and (min-width: 768px) and (max-width: 992px), only screen and (min-width: 992px) and (max-width: 1200px), only screen and (min-width: 1200px) {
   .site-content #content {
     -webkit-box-ordinal-group: 3;
     -moz-box-ordinal-group: 3;
@@ -4181,7 +4214,7 @@ h1.page-title span {
 .site-content #secondary {
   margin: 0 1em;
 }
-@media only screen and (min-width: 768px) and (max-width: 992px), only screen and (min-width: 992px), only screen and (min-width: 1200px) {
+@media only screen and (min-width: 768px) and (max-width: 992px), only screen and (min-width: 992px) and (max-width: 1200px), only screen and (min-width: 1200px) {
   .site-content #secondary {
     -webkit-box-ordinal-group: 2;
     -moz-box-ordinal-group: 2;
@@ -4201,8 +4234,22 @@ h1.page-title span {
   background-image: linear-gradient(to bottom, #bdbdae, #acac99);
 }
 .site-footer .sponsorship-area .sponsorship-title-container .sponsorship-title {
-  max-width: 1100px;
   margin: 0 auto;
+}
+@media only screen and (min-width: 768px) and (max-width: 992px) {
+  .site-footer .sponsorship-area .sponsorship-title-container .sponsorship-title {
+    max-width: 760px;
+  }
+}
+@media only screen and (min-width: 992px) and (max-width: 1200px) {
+  .site-footer .sponsorship-area .sponsorship-title-container .sponsorship-title {
+    max-width: 960px;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  .site-footer .sponsorship-area .sponsorship-title-container .sponsorship-title {
+    max-width: 1100px;
+  }
 }
 .site-footer .sponsorship-area .sponsorship-title-container .sponsorship-title h3 {
   padding: 1em;
@@ -4259,9 +4306,23 @@ h1.page-title span {
   background-image: linear-gradient(to bottom, #bdbdae, #acac99);
 }
 .site-footer .widget-area > div {
-  max-width: 1100px;
   margin: 0 auto;
   padding: 1em;
+}
+@media only screen and (min-width: 768px) and (max-width: 992px) {
+  .site-footer .widget-area > div {
+    max-width: 760px;
+  }
+}
+@media only screen and (min-width: 992px) and (max-width: 1200px) {
+  .site-footer .widget-area > div {
+    max-width: 960px;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  .site-footer .widget-area > div {
+    max-width: 1100px;
+  }
 }
 .site-footer .widget-area .menu-main-menu-container ul {
   width: 100%;
@@ -4288,11 +4349,25 @@ h1.page-title span {
   font-weight: normal;
 }
 .site-footer .site-info-area {
-  max-width: 1100px;
   margin: 0 auto;
   padding: 1em;
   font-size: 13px;
   font-size: 0.8125rem;
+}
+@media only screen and (min-width: 768px) and (max-width: 992px) {
+  .site-footer .site-info-area {
+    max-width: 760px;
+  }
+}
+@media only screen and (min-width: 992px) and (max-width: 1200px) {
+  .site-footer .site-info-area {
+    max-width: 960px;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  .site-footer .site-info-area {
+    max-width: 1100px;
+  }
 }
 .site-footer .site-info-area .copyright {
   float: right;
@@ -4301,7 +4376,7 @@ h1.page-title span {
   float: right;
   max-width: 320px;
 }
-@media only screen and (min-width: 768px) and (max-width: 992px), only screen and (min-width: 992px), only screen and (min-width: 1200px) {
+@media only screen and (min-width: 768px) and (max-width: 992px), only screen and (min-width: 992px) and (max-width: 1200px), only screen and (min-width: 1200px) {
   .contact-page {
     display: -webkit-box;
     display: -moz-box;
@@ -4352,7 +4427,7 @@ h1.page-title span {
   display: block;
   margin: 0 auto;
 }
-@media only screen and (min-width: 768px) and (max-width: 992px), only screen and (min-width: 992px), only screen and (min-width: 1200px) {
+@media only screen and (min-width: 768px) and (max-width: 992px), only screen and (min-width: 992px) and (max-width: 1200px), only screen and (min-width: 1200px) {
   .contact-page form {
     width: 100%;
     max-width: 480px;
@@ -4450,6 +4525,195 @@ h1.page-title span {
 }
 .our-team .aura-person .fa {
   width: 16px;
+  text-align: center;
+}
+#referral-form {
+  max-width: 640px;
+  margin: 0 auto;
+}
+#referral-form legend {
+  text-align: center;
+  font-size: 0.75em;
+  margin-bottom: 1em;
+}
+#referral-form .heading dl {
+  font-size: 0.75em;
+}
+#referral-form .heading dl dt:before {
+  content: "";
+  display: block;
+}
+#referral-form .heading dl dt {
+  float: left;
+  max-width: 140px;
+  width: 100%;
+}
+#referral-form .heading dl dd {
+  display: block;
+  margin: 0;
+}
+#referral-form .row-set {
+  margin-bottom: 2em;
+  -webkit-box-shadow: 0 3px 3px rgba(0, 0, 0, 0.125);
+  -moz-box-shadow: 0 3px 3px rgba(0, 0, 0, 0.125);
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.125);
+}
+#referral-form .row-set .row {
+  padding: 1em;
+  margin: 0;
+  border-bottom: 1px solid rgba(189, 189, 174, 0.25);
+}
+#referral-form .row-set .row:nth-child(odd) {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+#referral-form .row-set .row.clear-bg {
+  background-color: inherit;
+}
+#referral-form .row-set .row.flat {
+  display: block;
+  padding: 0;
+}
+#referral-form .row-set .row .row {
+  border-bottom: none;
+}
+#referral-form .row-set .row .row:not(:last-child) {
+  padding-bottom: 0;
+}
+#referral-form .row-set .row .row:nth-child(odd) {
+  background-color: transparent;
+}
+#referral-form .form-control {
+  margin-bottom: 0;
+}
+#referral-form .section-buttons {
+  justify-content: flex-end;
+  margin-bottom: 1em;
+}
+#referral-form .section-buttons button {
+  font-size: 14px;
+  font-size: 0.875rem;
+}
+#referral-form #patient-photos,
+#referral-form #patient-documents {
+  flex-direction: column;
+}
+#referral-form #patient-photos .form-control,
+#referral-form #patient-documents .form-control {
+  margin-left: 0;
+  margin-right: 0;
+}
+#referral-form .confirm-labels {
+  font-size: 14px;
+  font-size: 0.875rem;
+}
+#referral-form .confirm-labels label {
+  font-weight: bold;
+}
+#referral-form .confirm-labels div {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5em 1em;
+}
+#referral-form .confirm-labels div:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+#referral-form .confirm-labels div label {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
+#referral-form .confirm-labels div span {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
+#referral-preamble {
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+}
+#referral-preamble ol li {
+  margin-bottom: 1em;
+}
+#referral-progress {
+  margin-bottom: 1em;
+  margin-top: 2em;
+}
+#referral-progress ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+}
+#referral-progress ul li {
+  display: inline-block;
+  height: 40px;
+  width: 40px;
+  border-radius: 20px;
+  border: 1px solid #047cf1;
+  line-height: 40px;
+  vertical-align: middle;
+  text-align: center;
+  color: white;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+  font-weight: bold;
+  -webkit-box-shadow: 0 3px 3px rgba(0, 0, 0, 0.125);
+  -moz-box-shadow: 0 3px 3px rgba(0, 0, 0, 0.125);
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.125);
+  background-color: #52a8fc;
+  background-image: -webkit-linear-gradient(top, #52a8fc, #2c95fb);
+  background-image: -moz-linear-gradient(top, #52a8fc, #2c95fb);
+  background-image: -ms-linear-gradient(top, #52a8fc, #2c95fb);
+  background-image: -o-linear-gradient(top, #52a8fc, #2c95fb);
+  background-image: linear-gradient(to bottom, #52a8fc, #2c95fb);
+}
+#referral-progress ul li.active {
+  border: 1px solid #df6013;
+  background-color: #ef8443;
+  background-image: -webkit-linear-gradient(top, #ef8443, #ec6d20);
+  background-image: -moz-linear-gradient(top, #ef8443, #ec6d20);
+  background-image: -ms-linear-gradient(top, #ef8443, #ec6d20);
+  background-image: -o-linear-gradient(top, #ef8443, #ec6d20);
+  background-image: linear-gradient(to bottom, #ef8443, #ec6d20);
+}
+#referral-progress ul li:not(:last-child) {
+  margin-right: 1em;
+}
+#referral-progress ul li a {
+  color: #eee;
+}
+#referral-progress ul li a:hover {
+  color: #fff;
+}
+.referral-controls {
+  text-align: center;
+  width: 100%;
+  margin: 1em 0;
+}
+.referral-controls button,
+.referral-controls input {
+  display: inline-block;
+  margin: 0 0.5em;
+  width: 7em;
+  height: 2.5em;
+}
+.referral-controls .reset {
+  padding-top: 1em;
+  font-size: 12px;
+  font-size: 0.75rem;
+}
+.referral-message {
+  margin: 3em auto 0;
+  max-width: 720px;
   text-align: center;
 }
 .aura-people-snaps .aura-person {
@@ -4995,104 +5259,6 @@ object {
 /*--------------------------------------------------------------
 14.1 Patient Referral Form
 --------------------------------------------------------------*/
-#referral-form legend {
-  text-align: center;
-  font-size: 0.75em;
-}
-#referral-form .section-buttons {
-  justify-content: flex-end;
-  margin-bottom: 1em;
-}
-#referral-form .section-buttons button {
-  font-size: 14px;
-  font-size: 0.875rem;
-}
-#referral-form #patient-photos,
-#referral-form #patient-documents {
-  flex-direction: column;
-}
-#referral-form #patient-photos .form-control,
-#referral-form #patient-documents .form-control {
-  margin-left: 0;
-  margin-right: 0;
-}
-#referral-form .confirm-labels {
-  margin-bottom: 1em;
-  font-size: 14px;
-  font-size: 0.875rem;
-}
-#referral-form .confirm-labels label {
-  font-weight: bold;
-}
-#referral-form .confirm-labels div {
-  display: -webkit-box;
-  display: -moz-box;
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  justify-content: space-between;
-  margin: .5em 0;
-}
-#referral-form .confirm-labels div:nth-child(even) {
-  background-color: rgba(255, 255, 255, 0.5);
-}
-#referral-form .confirm-labels div label {
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-}
-#referral-form .confirm-labels div span {
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-}
-#referral-progress {
-  margin-bottom: 1em;
-  margin-top: 2em;
-}
-#referral-progress ul {
-  display: flex;
-  justify-content: center;
-  list-style: none;
-  margin: 0 auto;
-  padding: 0;
-}
-#referral-progress ul li {
-  display: inline-block;
-  height: 40px;
-  width: 40px;
-  border-radius: 20px;
-  border: 1px solid #52a8fc;
-  background-color: #52a8fc;
-  line-height: 40px;
-  vertical-align: middle;
-  text-align: center;
-  color: white;
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
-  font-weight: bold;
-}
-#referral-progress ul li.active {
-  border: 1px solid #ef8443;
-  background-color: #ef8443;
-}
-#referral-progress ul li:not(:last-child) {
-  margin-right: 1em;
-}
-.referral-controls {
-  text-align: center;
-  width: 100%;
-  margin: 1em 0;
-}
-.referral-controls button,
-.referral-controls input {
-  display: inline-block;
-  margin: 0 0.5em;
-  width: 6em;
-}
 img[id^='patient-photo-'] {
   border: 1px solid #ccc;
   padding: .5em;
